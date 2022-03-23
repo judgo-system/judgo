@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Django Static folders
+src/staticfiles
+src/fixtures
+.DS_Store

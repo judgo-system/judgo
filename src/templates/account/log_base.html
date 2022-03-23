@@ -1,0 +1,65 @@
+{% load i18n static raven has_group crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="Judgo">
+      <meta name="author" content="University of Waterloo - Information Retrieval Lab">
+      <title>Judgo - {% block pagetitle %}Log{% endblock %}</title>
+      <!-- Bootstrap core CSS -->
+      <link href="{% static 'css/hical-bootstrap.min.css' %}" rel="stylesheet">
+      <!-- Custom styles -->
+      <link href="{% static 'css/log.css' %}" rel="stylesheet">
+      <link href="{% static 'css/font-awesome-all.css' %}" rel="stylesheet">
+      <!-- Other -->
+      <link href="{% static 'css/pace.css' %}" rel="stylesheet">
+      {% include "raven-config.html" %}
+      <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+      <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+      {% block extra_head %}{% endblock %}
+
+  </head>
+
+  <body class="text-center">
+
+    <div class="form-signin">
+      {% block messages %}
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+          <span>&times;</span>
+        </button>
+        <div class="d-flex flex-row">
+          <h5 class="mb-0 -items-center align-self-center pr-3"><i class="fas fa-info-circle"></i></h5>
+          <span class="align-self-center">
+            {{ message }}
+          </span>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
+      {% endblock %}
+      <!-- <img class="mb-4 img-fluid" src="{% static 'images/Judgo.png' %}" alt="Judgo"> -->
+      {% block inner %}
+      {% endblock %}
+      <p class="mt-5 mb-3 text-muted">&copy; 2022-{{ current_year }} </p>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'js/jquery.mark.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script>
+      window.paceOptions = {ajax: { trackMethods: ['GET', 'POST'] }};
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+
+    <script src="{% static 'js/pace.min.js' %}"></script>
+  </body>
+</html>

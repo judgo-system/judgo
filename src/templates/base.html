@@ -1,0 +1,69 @@
+{% load i18n static raven has_group crispy_forms_tags notifications_tags %}
+{% notifications_unread as unread_count %}
+<!DOCTYPE html>
+<html lang="en" {% block extra_html_tag %}{% endblock %}>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="Judgo">
+      <meta name="author" content="University of Waterloo - Information Retrieval Lab">
+      <title>Judgo - {% block pagetitle %}home{% endblock %}</title>
+      <!-- Bootstrap core CSS -->
+      <link href="{% static 'css/hical-bootstrap.min.css' %}" rel="stylesheet">
+      <!-- Custom styles for Judgo -->
+      <link href="{% static 'css/project.css' %}" rel="stylesheet">
+      <!-- Other -->
+      <link href="{% static 'css/pace.css' %}" rel="stylesheet">
+      <link href="{% static 'css/font-awesome-all.css' %}" rel="stylesheet">
+      <link href="{% static 'css/loadawesome.css' %}" rel="stylesheet">
+      {% include "raven-config.html" %}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js" type="application/javascript"></script>
+      <script src="{% static 'js/identicon.js' %}"></script>
+      <script>
+        // set up options
+        var IdenticonHash = "d3b0sdffd113edec49eaa6238ad5ff00";  // 15+ hex chars
+        var IdenticonOptions = {
+            format: 'svg'                             // use SVG instead of PNG
+        };
+
+        function createIdenticonImage(input, width, height, css){
+          // create a base64 encoded SVG
+          const svg = new Identicon(input+IdenticonHash, IdenticonOptions).toString();
+          // write to a data URI
+          if (!css){
+            css = "";
+          }
+          document.write(`<img alt="${input}" title="${input}" width=${width} height=${height} class="${css}" src="data:image/svg+xml;base64, ${svg} ">`);
+        }
+      </script>
+
+
+      {% block extra_head %}{% endblock %}
+
+  </head>
+
+  <body>
+
+
+    <div class="container-fluid">
+      <div class="row">
+        <main class="{%block main-class%}col-12 pt-4{%endblock%}">
+          {% block messages %}
+          {% include 'alert.html' %}
+          {% endblock %}
+
+          {% block main %}
+          MAIN CONTENT HERE
+          {% endblock %}
+        </main>
+
+        {% block extra_body %}{% endblock %}
+
+      </div>
+    </div>
+
+   
+
+    <script src="{% static 'js/pace.min.js' %}"></script>
+  </body>
+</html>

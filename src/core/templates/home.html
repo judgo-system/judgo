@@ -1,0 +1,65 @@
+{% load i18n static raven has_group crispy_forms_tags notifications_tags %}
+{% notifications_unread as unread_count %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/home-style.css' %}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Preference Judgment Home</title>
+</head>
+<body>
+    <div class="main">
+        <button class="button absolute-button btn-logout">
+        <a href="{% url 'account_logout' %}">
+            <button class="button absolute-button btn-logout">Log out</button>
+        </a>
+          
+        <!-- <button class="button absolute-button btn-logout">
+          <a href="{% url 'account_logout' %}">
+              Log out</a>
+        </button> -->
+        <!-- <button class="button absolute-button btn-logout" href="{% url 'account_logout'  %}">Log out</button> -->
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="container">
+                <div class="select-container">
+                    <label class="select" for="slct">
+                        <select id="slct" required="required" name="selected_question">
+                        <option value="" disabled="disabled" selected="selected">Select a question</option>
+                        {% for  q in questions %}
+                            <option name="option" value=" {{ q.question_id}}">{{q.content}}</option>
+                        {% endfor %}
+                        </select>
+                        <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                        </svg>
+                    </label>
+                    <!-- SVG Sprites-->
+                    <svg class="sprites">
+                        <symbol id="select-arrow-down" viewbox="0 0 10 6">
+                            <polyline points="1 1 5 5 9 1"></polyline>
+                        </symbol>
+                    </svg>
+                </div>
+                <!-- <button class="button-start">Start Judgment!</button> -->
+
+                        <!-- <button type="submit">Make Mortal</button> -->
+                <button class="button-start" type="submit">Start Judgment!</button>
+    
+            </form>
+            
+        </div>
+
+    </div>
+    
+</body>
+</html>
