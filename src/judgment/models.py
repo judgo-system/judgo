@@ -19,7 +19,10 @@ class Judgment(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", blank=True, null=True, on_delete=models.SET_NULL)
+
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
+
 
     # contain a pickle object of pref class
     state = models.BinaryField(verbose_name='State')
@@ -43,6 +46,8 @@ class Judgment(models.Model):
                                     null=True, blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+
 
 
     def __str__(self):

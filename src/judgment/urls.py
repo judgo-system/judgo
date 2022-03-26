@@ -8,6 +8,6 @@ app_name = "judgment"
 urlpatterns = [
     path('', JudgmentView.as_view(),
          name='judgment'),
-    path(r'^(?P<user_id>\w+)/(?P<question_id>\w+)/', JudgmentView.as_view(),
+    re_path(r'^(?P<user_id>\d+)/(?P<judgment_id>\d+)/', JudgmentView.as_view(),
          name='judgment'),
 ]

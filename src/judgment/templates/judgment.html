@@ -30,7 +30,7 @@
         </button>
             
             <div class="question-header">
-                <input  value="{{question_id}}" name="question_id"></h2>
+                <!-- <input  value="{{question_id}}" name="question_id"></h2> -->
                 <h2 class="q-indicator">Question:</h2>
                 <h2>{{ question_content }}</h2>
             </div>
@@ -44,7 +44,10 @@
         <div class="container">
             <div class="documents">
                 <div class="document">
-                    <h2 class="document-id"><input value="{{left_id}}" name="left_doc_id"></h2>
+                    <h2 class="document-id">
+                        {{left_id}}
+                        <!-- <input value="{{left_id}}" name="left_doc_id"> -->
+                    </h2>
                     <div class="document-content">
                         <p>
                             {{ left_txt }}
@@ -53,7 +56,9 @@
                 </div>
     
                 <div class="document">
-                    <h2 class="document-id"> <input value="{{right_id}}" name="right_doc_id" ></h2>
+                    <h2 class="document-id">
+                        {{right_id}} 
+                    </h2>
                     <div class="document-content">
                         <p>
                             {{ right_txt }}
