@@ -5,12 +5,14 @@ from braces.views import LoginRequiredMixin
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+
 from document.models import Documents
-from question.models import Question
 from judgment.models import Judgment, JudgingChoices
 from users.models import User
 
 from interfaces import pref
+import re
+from django.utils.html import format_html
 
 
 class JudgmentView(LoginRequiredMixin, generic.TemplateView):
@@ -30,17 +32,21 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             (left, right) = pref.get_documents(prev_judge.state)
             context['question_id'] = prev_judge.question.question_id
             context['question_content'] = prev_judge.question.content
+            context['status'] = pref.get_str(prev_judge.state)
+
             context['left_id'] = left
-            context['left_txt'] = Documents.objects.get(uuid=left).content
             context['right_id'] = right
-            context['right_txt'] = Documents.objects.get(uuid=right).content
+            context['highlight'] = prev_judge.question.highlights
+
+            left_doc = Documents.objects.get(uuid=left)
+            right_doc = Documents.objects.get(uuid=right)
+            context['left_txt'] = left_doc.content
+            context['right_txt'] = right_doc.content
+                
         return context
 
     def get(self, request, *args, **kwargs):
-        print("=======================================")
-        print("GET")
-        print(kwargs)
-
+        
         if "judgment_id" in kwargs and 'user_id' in kwargs:
             prev_judge = Judgment.objects.get(id=kwargs['judgment_id'])
 
@@ -51,41 +57,54 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request, *args, **kwargs):
         
-        print("POST")
-        
-        print(request.POST)
 
         user = User.objects.get(id=request.user.id)
         prev_judge = user.latest_judgment
 
-        if 'prev' in request.POST: 
-            if prev_judge.parent:
-            
-                user.latest_judgment = prev_judge.parent
-                user.save()
+        if request.POST['highlight']:
+            question = prev_judge.question
+            question.highlights = question.highlights + request.POST['highlight'].strip() + ";"
+            question.save()
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+ 
 
-                return HttpResponseRedirect(
+        if 'prev' in request.POST: 
+            return self.handle_prev_button(user, prev_judge)
+
+        if 'left' in request.POST or 'right' in request.POST or 'equal' in request.POST:
+            return self.handle_main_judgment(user, prev_judge, request.POST)
+
+        return HttpResponseRedirect(reverse_lazy('core:home'))
+
+
+    def handle_prev_button(self, user, prev_judge):
+
+        if prev_judge.parent:    
+            user.latest_judgment = prev_judge.parent
+            user.save()
+            return HttpResponseRedirect(
                     reverse_lazy(
                         'judgment:judgment', 
                         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.parent.id}
                     )
                 )
-            else:
-                return HttpResponseRedirect(reverse_lazy('core:home'))
-                
-
+        else:
+            return HttpResponseRedirect(reverse_lazy('core:home'))
+    
+    def handle_main_judgment(self, user, prev_judge, requested_action):
         # get documents 
         (left, right) = pref.get_documents(prev_judge.state)
 
         state = None
         action = None
-        if 'left' in request.POST:
+
+        if 'left' in requested_action:
             action = JudgingChoices.LEFT
             state = pref.evaluate(prev_judge.state, left)
-        elif 'right' in request.POST:
+        elif 'right' in requested_action:
             action = JudgingChoices.RIGHT
             state = pref.evaluate(prev_judge.state, right)
-        elif 'equal' in request.POST:
+        elif 'equal' in requested_action:
             action = JudgingChoices.EQUAL
             state = pref.evaluate(prev_judge.state, right, equal=True)
         
@@ -94,7 +113,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             doc_right = Documents.objects.get(uuid=right)
 
             judgement = Judgment.objects.create(
-                    user=request.user,
+                    user=user,
                     question=prev_judge.question,
                     state=state,
                     action=action,
@@ -113,7 +132,5 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 )
             )
         
-        return HttpResponseRedirect(reverse_lazy('judgment:judgment'))
-
 
     

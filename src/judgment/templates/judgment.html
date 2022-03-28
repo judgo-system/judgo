@@ -1,4 +1,4 @@
-{% load i18n static raven has_group crispy_forms_tags notifications_tags %}
+{% load i18n static raven has_group crispy_forms_tags notifications_tags highlight_keywords %}
 {% notifications_unread as unread_count %}
 <!DOCTYPE html>
 <html lang="en">
@@ -34,23 +34,40 @@
                 <h2 class="q-indicator">Question:</h2>
                 <h2>{{ question_content }}</h2>
             </div>
+
+
+            
             <div class="form-group">
-                <input class="form-field" type="text" placeholder="domain.tld">
+                <input class="form-field" type="text" placeholder="enter a keyword to highlight" name="highlight">
             </div>
         </div>
+
         
-        
+        <div class="header">
+            <div class="question-header">
+                <h2 class="q-indicator">Highlight:</h2>
+                <h2>{{highlight}}</h2>
+            </div>
+        </div>
+
+        <!-- <div class="header">
+            <div class="question-header">
+                <h2 class="q-indicator">Status:</h2>
+                <h2>{{ status }}</h2>
+            </div>
+        </div> -->
 
         <div class="container">
+            
+
             <div class="documents">
                 <div class="document">
                     <h2 class="document-id">
                         {{left_id}}
-                        <!-- <input value="{{left_id}}" name="left_doc_id"> -->
                     </h2>
                     <div class="document-content">
                         <p>
-                            {{ left_txt }}
+                            {{ left_txt |highlight_search:highlight}}
                         </p>
                     </div>
                 </div>
@@ -61,7 +78,7 @@
                     </h2>
                     <div class="document-content">
                         <p>
-                            {{ right_txt }}
+                            {{ right_txt |highlight_search:highlight}}
                         </p>
                     </div>
                 </div>
@@ -72,9 +89,7 @@
                     <button class="button" type="submit" value="left" name="left">Left</button>
                     <button class="button" type="submit" value="equal" name="equal">Equal</button>
                     <button class="button" type="submit" value="right" name="right">Right</button>
-                    <!-- <button class="button">Left</button>
-                    <button class="button">Equal</button>
-                    <button class="button">Right</button> -->
+                    
                 </div>
             </div>
         </div>

@@ -7,7 +7,7 @@ class Question(models.Model):
 
     content = models.TextField(null=False)
 
-    highlights = models.TextField(null=True, blank=True)
+    highlights = models.TextField(default="")
     
     def __str__(self):
         return f"{self.question_id} : {self.content}"

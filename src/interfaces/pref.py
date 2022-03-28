@@ -272,3 +272,15 @@ def evaluate(pref_obj, element=None, equal=False):
 
     return pickle.dumps(pref_obj) 
 
+
+
+def get_str(pref_obj):
+    """
+    Args:
+
+    Returns:
+        
+    """
+    
+    pref_obj = pickle.loads(pref_obj)
+    return pref_obj.__str__()
