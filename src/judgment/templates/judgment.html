@@ -1,0 +1,99 @@
+{% load i18n static raven has_group crispy_forms_tags notifications_tags highlight_keywords %}
+{% notifications_unread as unread_count %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./main.css" /> -->
+
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+    <form method='post' action="{% url 'judgment:judgment'%}">
+    {% csrf_token %}
+    
+    <div class="main">
+        <div class="header">
+
+        <button class="button prev-document" type="submit" value="prev" name="prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
+            </svg>
+            Prev
+        </button>
+            
+            <div class="question-header">
+                <!-- <input  value="{{question_id}}" name="question_id"></h2> -->
+                <h2 class="q-indicator">Question:</h2>
+                <h2>{{ question_content }}</h2>
+            </div>
+
+
+            
+            <div class="form-group">
+                <input class="form-field" type="text" placeholder="enter a keyword to highlight" name="highlight">
+            </div>
+        </div>
+
+        
+        <div class="header">
+            <div class="question-header">
+                <h2 class="q-indicator">Highlight:</h2>
+                <h2>{{highlight}}</h2>
+            </div>
+        </div>
+
+        <!-- <div class="header">
+            <div class="question-header">
+                <h2 class="q-indicator">Status:</h2>
+                <h2>{{ status }}</h2>
+            </div>
+        </div> -->
+
+        <div class="container">
+            
+
+            <div class="documents">
+                <div class="document">
+                    <h2 class="document-id">
+                        {{left_id}}
+                    </h2>
+                    <div class="document-content">
+                        <p>
+                            {{ left_txt |highlight_search:highlight}}
+                        </p>
+                    </div>
+                </div>
+    
+                <div class="document">
+                    <h2 class="document-id">
+                        {{right_id}} 
+                    </h2>
+                    <div class="document-content">
+                        <p>
+                            {{ right_txt |highlight_search:highlight}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="question">
+                <p>Which one do you prefer?</p>
+                <div class="answer-box">
+                    <button class="button" type="submit" value="left" name="left">Left</button>
+                    <button class="button" type="submit" value="equal" name="equal">Equal</button>
+                    <button class="button" type="submit" value="right" name="right">Right</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>   
+</body>
+</html>
