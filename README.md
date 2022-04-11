@@ -1,5 +1,8 @@
 # judgo
 
+https://judgo.herokuapp.com
+
+
 ## Install
 
 Step 0- Before install this project make sure your sysytem has `docker` and `docker-compose` installed.
@@ -21,4 +24,8 @@ python manage.py shell < fixtures/ingest_data.py
 ```
 
 Step 2- Open http://0.0.0.0:8000/
+
+
+
+
 
