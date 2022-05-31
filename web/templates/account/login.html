@@ -1,0 +1,19 @@
+{% extends "account/log_base.html" %}
+{% load i18n static crispy_forms_tags %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block inner %}
+
+  <form class="login mb-3" method="POST" action="{% url 'account_login' %}" autocomplete="off">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <!-- {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+      {% endif %} -->
+      <button class="btn btn-outline-primary btn-block" type="submit">{% trans "Sign In" %}</button>
+    </form>
+    <p class="text-left">{% blocktrans %}Click <a href="{{ signup_url }}">here</a> to make a new account. {% endblocktrans %}</p>
+
+{% endblock %}
+
