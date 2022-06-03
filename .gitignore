@@ -128,11 +128,13 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+#front 
+.json
 #database
 data/
 
 # Django Static folders
-src/staticfiles
-src/fixtures
+web/staticfiles
+web/fixtures
 .DS_Store
 

@@ -36,7 +36,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
     def post(self, request, *args, **kwargs):
         
         
-        print(f"Post things ===========>{self.request.POST}")
         if "start_question_judment" in self.request.POST:
             
             return HttpResponseRedirect(

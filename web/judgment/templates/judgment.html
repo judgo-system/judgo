@@ -6,29 +6,43 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="./reset.css" />
-    <link rel="stylesheet" href="./main.css" /> -->
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Amsify Plugin -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/amsify.suggestags.css' %} ">
 
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script type="text/javascript" src="{% static 'js/jquery.amsify.suggestags.js' %}"></script>
+
     <title>Document</title>
 </head>
 <body>
-    <form method='post' action="{% url 'judgment:judgment'%}">
-    {% csrf_token %}
+    
     
     <div class="main">
         <div class="header">
-
+        <form method='post' action="{% url 'judgment:judgment'%}">
+            {% csrf_token %}
+                    
         <button class="button prev-document" type="submit" value="prev" name="prev">
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
             </svg>
             Prev
         </button>
-            
+        </form> 
             <div class="question-header">
                 <!-- <input  value="{{question_id}}" name="question_id"></h2> -->
                 <h2 class="q-indicator">Question:</h2>
@@ -37,36 +51,26 @@
 
 
             
+            <!-- <div class="form-group">
+                <div id="container"></div>
+            </div> -->
             <div class="form-group">
-                <input class="form-field" type="text" placeholder="enter a keyword to highlight" name="highlight">
+                <input type="text" class="form-control" name="country"/>
             </div>
+    
         </div>
 
-        
-        <div class="header">
-            <div class="question-header">
-                <h2 class="q-indicator">Highlight:</h2>
-                <h2>{{highlight}}</h2>
-            </div>
-        </div>
-
-        <!-- <div class="header">
-            <div class="question-header">
-                <h2 class="q-indicator">Status:</h2>
-                <h2>{{ status }}</h2>
-            </div>
-        </div> -->
+    
 
         <div class="container">
             
-
             <div class="documents">
                 <div class="document">
                     <h2 class="document-id">
                         {{left_id}}
                     </h2>
-                    <div class="document-content">
-                        <p>
+                    <div class="document-content" >
+                        <p id="left-doc">
                             {{ left_txt }}
                         </p>
                     </div>
@@ -76,8 +80,8 @@
                     <h2 class="document-id">
                         {{right_id}} 
                     </h2>
-                    <div class="document-content">
-                        <p>
+                    <div class="document-content" >
+                        <p id="right-doc">
                             {{ right_txt }}
                         </p>
                     </div>
@@ -85,15 +89,145 @@
             </div>
             <div class="question">
                 <p>Which one do you prefer?</p>
-                <div class="answer-box">
-                    <button class="button" type="submit" value="left" name="left">Left</button>
-                    <button class="button" type="submit" value="equal" name="equal">Equal</button>
-                    <button class="button" type="submit" value="right" name="right">Right</button>
-                    
-                </div>
+                <form method='post' action="{% url 'judgment:judgment'%}">
+                    {% csrf_token %}
+                    <div class="answer-box">
+                        <button class="button" type="submit" value="left" name="left">Left</button>
+                        <button class="button" type="submit" value="equal" name="equal">Equal</button>
+                        <button class="button" type="submit" value="right" name="right">Right</button>
+                        
+                    </div>
+                </form>  
+
             </div>
         </div>
     </div>
-    </form>   
+    
+    
+    <!-- JavaScript Block -->
+    <script>
+      
+        mouseXPosition = 0;
+            $(document).ready(function () {
+
+                
+                
+                $("#left-doc").mousedown(function (e1) {
+                    mouseXPosition = e1.pageX;//register the mouse down position
+                });
+
+                $("#left-doc").mouseup(function (e2) {
+                    var highlighted = false;
+                    var selection = window.getSelection();
+                    var selectedText = selection.toString();
+                    var startPoint = window.getSelection().getRangeAt(0).startOffset;
+                    var endPoint = window.getSelection().getRangeAt(0).endOffset;
+                    var anchorTag = selection.anchorNode.parentNode;
+                    var focusTag = selection.focusNode.parentNode;
+                    console.log(selectedText)
+                    if ((e2.pageX - mouseXPosition) < 0) {
+                        focusTag = selection.anchorNode.parentNode;
+                        anchorTag = selection.focusNode.parentNode;
+                    }
+                    if (selectedText.length === (endPoint - startPoint)) {
+                        highlighted = true;
+
+                        if (anchorTag.className !== "highlight") {
+                            highlightSelection();
+                        } else {
+                            var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
+                            anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
+                            anchorTag.insertAdjacentHTML('afterend', afterText);
+                        }
+
+                    }else{
+                        if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
+                            highlightSelection();  
+                            highlighted = true;
+                        }
+                        
+                    }
+
+
+                    if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
+                        highlighted = true;
+
+                        var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                        var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
+                        var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                        var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
+                        var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                        selection.deleteFromDocument();
+                        anchorTag.innerHTML = anchorInnerhtml;
+                        focusTag.innerHTml = focusInnerHtml;
+                        var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
+                        anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
+
+
+                    }
+
+                    if (anchorTag.className === "highlight" && !highlighted) {
+                        highlighted = true;
+						var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                        var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                        var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
+                        selection.deleteFromDocument();
+                        anchorTag.innerHTML = Innerhtml;
+                        anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
+                     }
+                    
+                    if (focusTag.className === 'highlight' && !highlighted) {
+                        highlighted = true;
+						var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                        var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
+                        selection.deleteFromDocument();
+                        focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
+                        outerHtml += beforeHtml;
+                        focusTag.insertAdjacentHTML('beforebegin', outerHtml );
+
+
+                    }
+                    if (!highlighted) {
+                        highlightSelection();
+                    }
+                    $('.highlight').each(function(){
+                        if($(this).html() == ''){
+                            $(this).remove();
+                        }
+                    });
+                    selection.removeAllRanges();
+                });
+            });
+
+            function highlightSelection() {
+                var selection;
+
+                //Get the selected stuff
+                if (window.getSelection)
+                    selection = window.getSelection();
+                else if (typeof document.selection != "undefined")
+                    selection = document.selection;
+
+                //Get a the selected content, in a range object
+                var range = selection.getRangeAt(0);
+
+                //If the range spans some text, and inside a tag, set its css class.
+                if (range && !selection.isCollapsed) {
+                    if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+                        var span = document.createElement('span');
+                        span.className = 'highlight';
+                        span.textContent = selection.toString();
+                        selection.deleteFromDocument();
+                        range.insertNode(span);
+//                        range.surroundContents(span);
+                    }
+                }
+            }
+
+
+	
+	    $('input[name="country"]').amsifySuggestags();
+	
+    </script>
 </body>
 </html>

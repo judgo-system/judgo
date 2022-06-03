@@ -18,7 +18,11 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
 from django.views.generic import TemplateView
+from rest_framework import routers
+from inquiry import api
 
+router = routers.DefaultRouter()
+router.register(r"inquiry", api.InquiryAPIView, 'inquiry')
 
 urlpatterns = [
     # path('', include('core.urls', namespace='core')),
@@ -30,6 +34,5 @@ urlpatterns = [
     # User management
     path('user/', include('user.urls', namespace='user')),
     path('accounts/', include('allauth.urls')),
-    path('hello-webpack/', TemplateView.as_view(template_name='hello_webpack.html'))
-
+    path('api/', include(router.urls)),
 ]

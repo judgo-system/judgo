@@ -9,12 +9,20 @@ from django.urls import reverse_lazy
 from response.models import Document
 from judgment.models import Judgment, JudgingChoices
 from user.models import User
-
 from interfaces import pref
 
 class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'judgment.html'
     pref_obj = None
+    
+
+    def render_to_response(self, context, **response_kwargs):
+        "please don'w say you come here"
+        response = super().render_to_response(context, **response_kwargs)
+        response.set_cookie("inquiry_id", self.inquiry_id)
+
+        
+        return response
 
 
     def get_context_data(self, **kwargs):
@@ -38,6 +46,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             right_doc = Document.objects.get(uuid=right)
             context['left_txt'] = left_doc.content
             context['right_txt'] = right_doc.content
+            self.inquiry_id = prev_judge.inquiry.id
                 
         return context
 

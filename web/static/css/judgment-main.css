@@ -250,3 +250,15 @@ body {
 .form-group {
   max-width: 250px;
 }
+
+.highlight {
+    background-color: yellow;
+}
+#left-doc::-moz-selection { /* Code for Firefox */
+    background: yellow;
+}
+
+#left-doc::selection {
+    background: yellow;
+}
+           
