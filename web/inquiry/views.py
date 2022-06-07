@@ -32,7 +32,7 @@ class InquiryView(LoginRequiredMixin, generic.TemplateView):
             )
             state = pref.create_new_pref_obj(question)
             
-            inquiry = Inquiry.objects.create(
+            inquiry, created = Inquiry.objects.get_or_create(
                 question=question, 
                 session=self.request.user.active_session
             )

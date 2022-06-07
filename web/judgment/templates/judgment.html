@@ -26,6 +26,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <script type="text/javascript" src="{% static 'js/jquery.amsify.suggestags.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/judgment.js' %}"></script>
 
     <title>Document</title>
 </head>
@@ -44,23 +45,17 @@
         </button>
         </form> 
             <div class="question-header">
-                <!-- <input  value="{{question_id}}" name="question_id"></h2> -->
                 <h2 class="q-indicator">Question:</h2>
                 <h2>{{ question_content }}</h2>
             </div>
 
 
-            
-            <!-- <div class="form-group">
-                <div id="container"></div>
-            </div> -->
             <div class="form-group">
-                <input type="text" class="form-control" name="country"/>
+                <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
             </div>
     
         </div>
 
-    
 
         <div class="container">
             
@@ -70,8 +65,9 @@
                         {{left_id}}
                     </h2>
                     <div class="document-content" >
-                        <p id="left-doc">
-                            {{ left_txt }}
+                        <p id="left-doc" class="editable-doc">
+                            {% autoescape off %}{{ left_txt }}{% endautoescape %} 
+                            <!-- {{ left_txt}} -->
                         </p>
                     </div>
                 </div>
@@ -81,8 +77,9 @@
                         {{right_id}} 
                     </h2>
                     <div class="document-content" >
-                        <p id="right-doc">
-                            {{ right_txt }}
+                        <p id="right-doc" class="editable-doc">
+                            {% autoescape off %}{{ right_txt }}{% endautoescape %} 
+                            <!-- {{ right_txt }} -->
                         </p>
                     </div>
                 </div>
@@ -107,16 +104,31 @@
     <!-- JavaScript Block -->
     <script>
       
-        mouseXPosition = 0;
-            $(document).ready(function () {
 
-                
-                
-                $("#left-doc").mousedown(function (e1) {
-                    mouseXPosition = e1.pageX;//register the mouse down position
+      function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                        const cookies = document.cookie.split(";");
+                        for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+            return cookieValue;
+        }
+        mouseXPosition = 0;
+        
+            $(document).ready(function () {
+  
+                $(".editable-doc").mousedown(function (e1) {
+                    mouseXPosition = e1.pageX; //register the mouse down position
                 });
 
-                $("#left-doc").mouseup(function (e2) {
+                $(".editable-doc").mouseup(function (e2) {
                     var highlighted = false;
                     var selection = window.getSelection();
                     var selectedText = selection.toString();
@@ -124,7 +136,8 @@
                     var endPoint = window.getSelection().getRangeAt(0).endOffset;
                     var anchorTag = selection.anchorNode.parentNode;
                     var focusTag = selection.focusNode.parentNode;
-                    console.log(selectedText)
+                    
+
                     if ((e2.pageX - mouseXPosition) < 0) {
                         focusTag = selection.anchorNode.parentNode;
                         anchorTag = selection.focusNode.parentNode;
@@ -144,10 +157,8 @@
                         if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
                             highlightSelection();  
                             highlighted = true;
-                        }
-                        
+                        } 
                     }
-
 
                     if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
                         highlighted = true;
@@ -190,14 +201,76 @@
                     if (!highlighted) {
                         highlightSelection();
                     }
-                    $('.highlight').each(function(){
-                        if($(this).html() == ''){
+                    var doc_highlights = "";
+
+                    $('.highlight').each(function(e4){
+                        if($(this).html() == ''){  
                             $(this).remove();
                         }
                     });
+
                     selection.removeAllRanges();
+                   
                 });
             });
+            
+
+            $("button").click( function(e3){
+                var right_doc_highlights = "";
+                var left_doc_highlights = "";
+
+                $('.highlight').each(function(e4){
+                    if ($(this).parent().attr("id")=='left-doc'){
+                        left_doc_highlights +=  $(this).html() + ","
+                    }else{
+                        right_doc_highlights +=  $(this).html() + ","
+                    }
+                });
+                
+                var data = {"highlight": left_doc_highlights}
+                $.ajax
+                ({ 
+                    url: "/../../add_highlight/" + getCookie("left_doc_id") + "/" ,
+                    data: JSON.stringify(data),
+                    method: 'PUT',
+
+                    credentials: "same-origin",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    success: function(result)
+                    {
+                        console.log("left movafagh shodi")
+                        console.log(result)
+                    },
+                    error: (error) => {
+                        console.log(error)
+                    },
+                });
+                var data = {"highlight": right_doc_highlights}
+
+                $.ajax
+                ({ 
+                    url: "/../../add_highlight/" + getCookie("right_doc_id") + "/" ,
+                    data: JSON.stringify(data),
+                    method: 'PUT',
+
+                    credentials: "same-origin",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    success: function(result){
+                        console.log("right movafagh shodi")
+                        console.log(result)
+                    },
+                    error: (error) => {
+                        console.log(error)
+                    },
+                });
+            })
+
 
             function highlightSelection() {
                 var selection;
@@ -219,14 +292,80 @@
                         span.textContent = selection.toString();
                         selection.deleteFromDocument();
                         range.insertNode(span);
-//                        range.surroundContents(span);
                     }
                 }
             }
 
 
-	
-	    $('input[name="country"]').amsifySuggestags();
+        
+        function highlight_tags(search_area, tag){
+            var textarea = $(search_area);    
+            var enew = '';
+            var query = new RegExp("("+tag+")", "gim"); 
+            newtext= textarea.html().replace(query, "<mark>$1</mark>");    
+            textarea.html(newtext);   
+        }
+
+        
+        function dehighlight_tags(search_area, tag){
+            var textarea = $(search_area);    
+            var enew = ''; 
+            var query = new RegExp("(<mark>"+tag+"</mark>)", "gim");    
+            newtext= textarea.html().replace(query, tag);    
+            textarea.html(newtext);   
+        }
+
+
+	    $('input[name="question_highlight"]').amsifySuggestags({
+            type : 'amsify',
+            afterAdd: function(value) {
+                const data ={
+                    tags:value
+                } 
+                var put_url = "/../../add_tag/" + getCookie("inquiry_id") + "/" 
+                fetch(put_url, {
+                    method: "PUT",
+                    credentials: "same-origin",
+                    headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify({payload: data})
+                })
+                .then(response => 
+                    response.json()
+                )
+                .then(data => {
+                    highlight_tags("#left-doc", value)
+                    highlight_tags("#right-doc", value)
+
+                });
+            },
+
+            afterRemove: function(value) {
+                const data ={
+                    tags:value
+                } 
+                var put_url = "/../../remove_tag/" + getCookie("inquiry_id") + "/" 
+                fetch(put_url, {
+                    method: "PUT",
+                    credentials: "same-origin",
+                    headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify({payload: data})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    dehighlight_tags("#left-doc", value)
+                    dehighlight_tags("#right-doc", value)
+
+                });
+            },
+
+
+        });
 	
     </script>
 </body>

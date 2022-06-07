@@ -17,12 +17,8 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from django.views.generic import TemplateView
-from rest_framework import routers
-from inquiry import api
-
-router = routers.DefaultRouter()
-router.register(r"inquiry", api.InquiryAPIView, 'inquiry')
+from inquiry.api import add_tag, remove_tag
+from response.api import add_highlight, remove_highlight
 
 urlpatterns = [
     # path('', include('core.urls', namespace='core')),
@@ -34,5 +30,10 @@ urlpatterns = [
     # User management
     path('user/', include('user.urls', namespace='user')),
     path('accounts/', include('allauth.urls')),
-    path('api/', include(router.urls)),
+
+    path('add_tag/<int:inquiryId>/', add_tag, name='add_tag'),
+    path('remove_tag/<int:inquiryId>/', remove_tag, name='remove_tag'),
+    path('add_highlight/<int:responseId>/', add_highlight, name='add_highlight'),
+    path('remove_highlight/<int:responseId>/', remove_highlight, name='remove_highlight'),
+
 ]

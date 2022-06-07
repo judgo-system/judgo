@@ -22,7 +22,7 @@ class Document(models.Model):
 # A table representing many-to-many relation between documents and session
 class Response(models.Model):
 
-    Document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
     
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
 

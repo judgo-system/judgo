@@ -1,4 +1,5 @@
 
+from pdb import post_mortem
 import re
 from braces.views import LoginRequiredMixin
 
@@ -18,7 +19,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
-        # context["questions"] = Question.objects.all()
         return context
 
     def get(self, request, *args, **kwargs):
@@ -27,6 +27,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                 name='first session',
                 username = self.request.user
             )
+
             self.request.user.active_session = session
             self.request.user.save()
 
@@ -35,9 +36,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request, *args, **kwargs):
         
-        
         if "start_question_judment" in self.request.POST:
-            
             return HttpResponseRedirect(
                 reverse_lazy(
                     'inquiry:inquiry', 
@@ -45,6 +44,21 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                         "session_id": self.request.user.active_session.id}
                 )
             )
+            
+        elif "start_new_session" in self.request.POST:
+
+            name = self.request.user.name + "-new-session"
+            
+            if 'session_name' in self.request.POST:
+                name = self.request.POST['session_name']
+            
+            session = Session.objects.create(
+                name=name,
+                username = self.request.user
+            )
+
+            self.request.user.active_session = session
+            self.request.user.save()
 
         return HttpResponseRedirect(reverse_lazy('core:home'))
 

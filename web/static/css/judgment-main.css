@@ -248,7 +248,7 @@ body {
 }
 
 .form-group {
-  max-width: 250px;
+  max-width: 400px;
 }
 
 .highlight {
@@ -261,4 +261,9 @@ body {
 #left-doc::selection {
     background: yellow;
 }
-           
+         
+mark { 
+  background-color: red !important; 
+  color: black !important;
+}
+

@@ -1,15 +1,15 @@
-from ast import arg
-from pydoc import Doc
+import re
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from response.models import Document
+from response.models import Document, Response
 from judgment.models import Judgment, JudgingChoices
 from user.models import User
 from interfaces import pref
+# from web.judgment.templatetags.highlight_keywords import highlight_search
 
 class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'judgment.html'
@@ -20,10 +20,24 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         "please don'w say you come here"
         response = super().render_to_response(context, **response_kwargs)
         response.set_cookie("inquiry_id", self.inquiry_id)
+        response.set_cookie("left_doc_id", self.left_doc_id)
+        response.set_cookie("right_doc_id", self.right_doc_id)
 
-        
         return response
 
+    def highlight_document(self, text, highlight):
+        if not highlight:
+            return text
+        highlights = highlight.split(",")[:-1]
+        
+        for part in highlights:
+            highlighted = re.sub(
+                part, 
+                "<span class = 'highlight'>{}</span>".format(part), 
+                text, 
+                flags=re.IGNORECASE)
+            text = highlighted
+        return text
 
     def get_context_data(self, **kwargs):
         
@@ -44,9 +58,36 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
             left_doc = Document.objects.get(uuid=left)
             right_doc = Document.objects.get(uuid=right)
-            context['left_txt'] = left_doc.content
-            context['right_txt'] = right_doc.content
+            left_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=left_doc)
+            right_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=right_doc)
+
+            if left_response.highlight :
+                print("left one")
+                print(left_response.highlight)
+                context['left_txt'] = self.highlight_document(
+                    left_response.document.content,
+                    left_response.highlight
+                ) 
+            else:
+                context['left_txt'] = left_response.document.content
+            
+            if right_response.highlight:
+                print('right one')
+                print(right_response.highlight)
+                context['right_txt'] = self.highlight_document(
+                    right_response.document.content,
+                    right_response.highlight
+                ) 
+            else:
+                context['right_txt'] = right_response.document.content
+
+            self.left_doc_id = left_response.id
+            self.right_doc_id = right_response.id
             self.inquiry_id = prev_judge.inquiry.id
+            
+            # if there is no tag is we don't need to fill it out.
+            if prev_judge.inquiry.tags:
+                context['highlights'] = prev_judge.inquiry.tags
                 
         return context
 
@@ -109,8 +150,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
         if state:
         
-            left_response = Document.objects.get(uuid=left)
-            right_response = Document.objects.get(uuid=right)
+            left_doc = Document.objects.get(uuid=left)
+            right_doc = Document.objects.get(uuid=right)
+            left_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=left_doc)
+            right_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=right_doc)
 
             judgement = Judgment.objects.create(
                     user=user,

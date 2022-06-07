@@ -2,7 +2,7 @@ from django.db import models
 
 from core.models import Session
 from inquiry.models import Inquiry
-from response.models import Response, Document
+from response.models import Response
 from web.settings import AUTH_USER_MODEL as User
 
 
@@ -42,11 +42,11 @@ class Judgment(models.Model):
     is_complete = models.BooleanField(default=False)
 
     left_response = models.ForeignKey(
-        Document, on_delete=models.CASCADE, 
+        Response, on_delete=models.CASCADE, 
         related_name="left_response", null=True, blank=True
     )
     right_response = models.ForeignKey(
-        Document, on_delete=models.CASCADE, 
+        Response, on_delete=models.CASCADE, 
         related_name="right_response", null=True, blank=True
     )
 

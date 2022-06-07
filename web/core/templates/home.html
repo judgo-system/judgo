@@ -8,7 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://kit.fontawesome.com/f957e0be27.js" crossorigin="anonymous"></script>
-
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- <link rel="stylesheet" href="reset.css" />
     <link rel="stylesheet" href="home-basic.css" /> -->
     <link rel="stylesheet" href="{% static 'css/home-basic.css' %}" />
@@ -89,19 +92,10 @@
 
         <nav class="main-menu"> 
             <ul>
-                <!-- <li>
-                    <a href="#">
-                        <i class="fa fa-home fa-2x"></i>
-                        <span class="nav-text">
-                            Home
-                        </span>
-                    </a>
-                
-                </li> -->
-                <li class="has-subnav">
-                    <a href="#">
+                <li class="has-subnav" >
+                    <a href="#" id="new_session">
                         <i class="fa fa-plus fa-2x"></i>
-                        <span class="nav-text">
+                        <span class="nav-text"  >
                             New Session
                         </span>
                     </a>  
@@ -154,5 +148,45 @@
                 </li>  
             </ul>
         </nav>
-    </form>    
+
+        
+     <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+        
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4>Session</h4>
+            </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                <form role="form">
+                    <div class="form-group">
+                    <label for="session-name">A name for new session it can be empty!</label>
+                    <input type="text" class="form-control" id="session_name" placeholder="Enter session name." name="session_name">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success btn-block" name="start_new_session"> Start</button>
+                </form>
+                </div>
+                
+            </div>
+            
+            </div>
+        </div>
+        
+    </form> 
+    
+
+    <script>
+
+        $(document).ready(function(){
+            $("#new_session").click(function(){
+                $("#myModal").modal();
+                console.log('hey there')
+            });
+        });
+    </script>
+
 </body>
