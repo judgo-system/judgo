@@ -100,6 +100,68 @@
         </div>
     </div>
     
+
+
+    
+     <!-- Continue Modal -->
+     <div class="modal fade" id="continue-modal" role="dialog">
+        <div class="modal-dialog">
+        
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h3>{{inquiry_question}}</h3>
+            </div>
+
+            <div class="modal-header" style="padding:35px 50px;">
+                <h4 class="session-name">Best Answer</h4>
+                <p >{{ best_answer_list}}</p>
+            </div>
+            <div class="modal-body" style="padding:40px 50px;">
+                    <div class="form-group">
+
+                    <p class="session-name"> Do you want to stop at this step?</p>
+                    </div>
+                    <form method='post'>
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-block" name="yes_stop">
+                            Yes
+                        </button>
+                    </form>
+                </div>
+            </div>
+            </div>
+        </div>
+    
+
+
+     <!-- Finish Modal -->
+     <div class="modal fade" id="ccomplete-modal" role="dialog">
+        <div class="modal-dialog">
+        
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+                <h3>Evaluation is DONE!</h3>
+            </div>
+
+            <div class="modal-header" style="padding:35px 50px;">
+                <h4 class="session-name">{{inquiry_question}}</h4>
+                <p >{{ best_answer_list}}</p>
+            </div>
+            <div class="modal-body" style="padding:40px 50px;">
+                <form method='post'>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-block" name="back_home">
+                            Home
+                    </button>
+                </form>
+                </div>
+            </div>
+            </div>
+        </div>
+
     
     <!-- JavaScript Block -->
     <script>
@@ -123,6 +185,14 @@
         mouseXPosition = 0;
         
             $(document).ready(function () {
+
+                const judgment_status = "{{is_finished}}"
+                if(judgment_status=="complete"){
+                    $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
+                }
+                if(judgment_status=="yes"){
+                    $("#continue-modal").modal();
+                }
   
                 $(".editable-doc").mousedown(function (e1) {
                     mouseXPosition = e1.pageX; //register the mouse down position
@@ -221,9 +291,9 @@
 
                 $('.highlight').each(function(e4){
                     if ($(this).parent().attr("id")=='left-doc'){
-                        left_doc_highlights +=  $(this).html() + ","
+                        left_doc_highlights +=  $(this).html() + "|||"
                     }else{
-                        right_doc_highlights +=  $(this).html() + ","
+                        right_doc_highlights +=  $(this).html() + "|||"
                     }
                 });
                 

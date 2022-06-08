@@ -18,9 +18,9 @@ def add_highlight(request, responseId):
             highlights = data.get('highlight')
             
             if response.highlight:
-                tag_set = set(response.highlight.split(","))
+                tag_set = set(response.highlight.split("|||"))
                 tag_set.add(highlights)
-                response.highlight = ','.join(tag for tag in tag_set)
+                response.highlight = '|||'.join(tag for tag in tag_set)
             else:
                 response.highlight = highlights
             

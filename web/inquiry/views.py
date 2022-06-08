@@ -11,6 +11,7 @@ from interfaces import pref
 from .models import Question, Inquiry
 
 
+
 class InquiryView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'inquiry.html'
 

@@ -46,9 +46,8 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             )
             
         elif "start_new_session" in self.request.POST:
-
-            name = self.request.user.name + "-new-session"
             
+            name = self.request.user.name + "-new-session"            
             if 'session_name' in self.request.POST:
                 name = self.request.POST['session_name']
             

@@ -243,7 +243,7 @@ def get_documents(pref_obj):
         return pref_obj.request() 
     return None
 
-def is_finish(pref_obj):
+def is_judgment_finished(pref_obj):
     """
     Args:
 
@@ -254,6 +254,17 @@ def is_finish(pref_obj):
     pref_obj = pickle.loads(pref_obj)
     return pref_obj.done()
         
+
+def is_judgment_completed(pref_obj):
+    """
+    Args:
+
+    Returns:
+        
+    """
+    
+    pref_obj = pickle.loads(pref_obj)
+    return pref_obj.empty()
 
 def evaluate(pref_obj, element=None, equal=False):
     """
@@ -284,3 +295,17 @@ def get_str(pref_obj):
     
     pref_obj = pickle.loads(pref_obj)
     return pref_obj.__str__()
+
+def get_best(pref_obj):
+
+    pref_obj = pickle.loads(pref_obj)
+    return pref_obj.best()
+
+
+def pop_best(pref_obj):
+
+    pref_obj = pickle.loads(pref_obj)
+    pref_obj.pop()
+    return pickle.dumps(pref_obj) 
+
+

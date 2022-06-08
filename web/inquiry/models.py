@@ -23,7 +23,10 @@ class Inquiry(models.Model):
     tags = models.TextField(null=True)
 
     # a list for saving best answer
-    best_answers = models.JSONField(null=True)
+    best_answers = models.TextField(null=True)
+
+    # if all answers are graded or not
+    is_completed = models.BooleanField(default=False)
 
 
 

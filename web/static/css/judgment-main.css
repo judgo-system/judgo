@@ -228,6 +228,11 @@ body {
   position: relative;
   display: flex;
   width: 100%;
+  justify-content: flex-end;
+  margin-right: 20px;
+  align-items: center;
+  margin-bottom: 0;
+  max-width: 400px;
 }
 
 .form-group .form-field {
@@ -247,9 +252,6 @@ body {
   margin-bottom: 0;
 }
 
-.form-group {
-  max-width: 400px;
-}
 
 .highlight {
     background-color: yellow;
@@ -267,3 +269,20 @@ mark {
   color: black !important;
 }
 
+.amsify-suggestags-area {
+  width: 300px;
+}
+
+.amsify-suggestags-area .amsify-suggestags-input-area {
+  height: 35px;
+  overflow: scroll;
+}
+
+.amsify-suggestags-area .amsify-suggestags-input-area .amsify-suggestags-input {
+  width: 100%;
+}
+
+
+.session-name {
+  margin-bottom: 10px;
+}
