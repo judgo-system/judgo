@@ -14,7 +14,7 @@ class User(AbstractUser):
         Session, blank=True, 
         null=True, on_delete=models.SET_NULL
     )
-
+    
     latest_judgment = models.OneToOneField(
         Judgment, blank=True, 
         null=True, on_delete=models.SET_NULL,

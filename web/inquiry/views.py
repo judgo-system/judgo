@@ -18,6 +18,7 @@ class InquiryView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(InquiryView, self).get_context_data(**kwargs)
         context["questions"] = Question.objects.all()
+        
         return context
 
     def get(self, request, *args, **kwargs):
@@ -29,33 +30,42 @@ class InquiryView(LoginRequiredMixin, generic.TemplateView):
         if "selected_question" in self.request.POST: 
 
             question = Question.objects.get(
-                question_id=self.request.POST["selected_question"].strip()
+                    question_id=self.request.POST["selected_question"].strip()
             )
             state = pref.create_new_pref_obj(question)
-            
+                
             inquiry, created = Inquiry.objects.get_or_create(
-                question=question, 
-                session=self.request.user.active_session
+                    question=question, 
+                    session=self.request.user.active_session
             )
 
-            judgement = Judgment.objects.create(
-                    user=self.request.user,
-                    session= self.request.user.active_session,
-                    inquiry=inquiry,
-                    state=state,
-                    is_initialized=True
-                )
+            if inquiry.is_completed:
+                judgement = Judgment.objects.get(
+                        user=self.request.user,
+                        session= self.request.user.active_session,
+                        inquiry=inquiry, 
+                        is_complete=True, 
+                    )
+            else:
+
+                judgement = Judgment.objects.create(
+                        user=self.request.user,
+                        session= self.request.user.active_session,
+                        inquiry=inquiry,
+                        state=state,
+                        is_initialized=True
+                    )
 
             user = User.objects.get(id=self.request.user.id)
             user.latest_judgment = judgement
             user.save()
 
             return HttpResponseRedirect(
-                reverse_lazy(
-                    'judgment:judgment', 
-                    kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+                    reverse_lazy(
+                        'judgment:judgment', 
+                        kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+                    )
                 )
-            )
 
         return HttpResponseRedirect(
                     reverse_lazy(

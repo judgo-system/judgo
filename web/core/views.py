@@ -44,7 +44,21 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                         "session_id": self.request.user.active_session.id}
                 )
             )
+        
+        elif "continue_question_judment" in self.request.POST:
             
+            judgement = self.request.user.latest_judgment
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {
+                        "user_id" : self.request.user.id, 
+                        "judgment_id": judgement.id
+                    }
+                )
+            )
+
+
         elif "start_new_session" in self.request.POST:
             
             name = self.request.user.name + "-new-session"            

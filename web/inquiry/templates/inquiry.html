@@ -46,9 +46,6 @@
                         </symbol>
                     </svg>
                 </div>
-                <!-- <button class="button-start">Start Judgment!</button> -->
-
-                        <!-- <button type="submit">Make Mortal</button> -->
                 <button class="button-start" type="submit">Start Judgment!</button>
     
             </form>
@@ -57,5 +54,39 @@
 
     </div>
     
+    <!-- Finish Modal -->
+    <div class="modal fade" id="complete-modal" role="dialog">
+        <div class="modal-dialog">
+        
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+                <h3>Evaluation for this question is DONE!</h3>
+            </div>
+
+            <div class="modal-body" style="padding:40px 50px;">
+                <!-- <form method='post'>
+                    {% csrf_token %} -->
+                    <button type="submit" class="btn btn-success btn-block" name="ok_home">
+                            OK
+                    <!-- </button> -->
+                </form>
+                </div>
+            </div>
+            </div>
+    </div>
+
+
+
+    <!-- JavaScript -->
+    <script>
+        $(document).ready(function () {
+
+            const inquiry_status = "{{inquiry_complete}}"
+            if(inquiry_status=="yes"){
+                $("#complete-modal").modal({backdrop: 'static', keyboard: false});
+            }
+        })
+    </script>
 </body>
 </html>

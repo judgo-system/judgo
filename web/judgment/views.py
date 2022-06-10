@@ -48,6 +48,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             context['question_id'] = prev_judge.inquiry.question.question_id
             context['question_content'] = prev_judge.inquiry.question.content
             self.inquiry_id = prev_judge.inquiry.id
+            
 
             if prev_judge.is_complete:
                 context["is_finished"] = "complete"
@@ -70,8 +71,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 right_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=right_doc)
 
                 if left_response.highlight :
-                    print(f"\n\nleft one ==> {left_response.id}")
-                    print(left_response.highlight)
+
                     context['left_txt'] = self.highlight_document(
                         left_response.document.content,
                         left_response.highlight
@@ -80,8 +80,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                     context['left_txt'] = left_response.document.content
                 
                 if right_response.highlight:
-                    print(f"\n\nright one ==> {right_response.id}")
-                    print(right_response.highlight)
+                    
                     context['right_txt'] = self.highlight_document(
                         right_response.document.content,
                         right_response.highlight
@@ -226,11 +225,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
                 if pref.is_judgment_completed(judgement.state):
                     judgement.is_complete = True
+                    judgement.inquiry.is_completed = True
+                    judgement.inquiry.save()
                     judgement.save() 
                     break
-                    # user.latest_judgment = judgement
-                    # user.save()
-                    # return HttpResponseRedirect(reverse_lazy('core:home'))
 
 
             user.latest_judgment = judgement
