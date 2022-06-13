@@ -1,0 +1,88 @@
+{% load i18n static raven has_group crispy_forms_tags notifications_tags  %}
+{% notifications_unread as unread_count %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <div class="main">
+        <div class="header">
+        <form method='post'>
+            {% csrf_token %}
+                    
+        <button class="button prev-document" type="submit" value="prev" name="prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
+            </svg>
+            Prev
+        </button>
+        </form> 
+            <div class="question-header">
+                <h2 class="q-indicator">Question:</h2>
+                <h2>{{ question_content }}</h2>
+            </div>
+        </div>
+
+
+        <div class="container">
+            
+            <div>
+                
+            {% for document in documents %}
+                <div>
+                    <button class="collapsible"> {{ document.uuid }}</button>
+                    <div class="content">
+                    <p>{{ document.content }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+                
+            </div>
+            <div class="question">
+                <p>Do you want to continue?</p>
+                <form method='post' >
+                    {% csrf_token %}
+                    <div class="answer-box">
+                        <button class="button" type="submit" value="yes" name="yes">Yes</button>
+                        <button class="button" type="submit" value="no" name="no">No</button>
+                    </div>
+                </form>  
+            </div>
+        </div>
+    </div>
+    
+
+    
+    <!-- JavaScript Block -->
+    <script> 
+    
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+    coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+        content.style.maxHeight = null;
+        } else {
+        content.style.maxHeight = content.scrollHeight + "px";
+        } 
+    });
+    }
+    </script>
+</body>
+</html>

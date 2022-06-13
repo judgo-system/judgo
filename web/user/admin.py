@@ -44,3 +44,17 @@ class MyUserAdmin(AuthUserAdmin):
 
     list_display = ('username', 'name', 'is_superuser')
     search_fields = ['name']
+
+
+
+# @admin.register(Reviewer)
+# class ReviewerAdmin(admin.ModelAdmin):
+
+#     list_display = (..., 'get_username',  'last_active_time')
+
+#     def get_username(self, obj):
+#         return obj.user.username
+
+#     get_username.short_description = 'UserName'
+
+    # search_fields = ['name']

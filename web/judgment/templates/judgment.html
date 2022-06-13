@@ -166,7 +166,14 @@
     <!-- JavaScript Block -->
     <script>
       
+        
+        history.pushState(null, null, location.href);
+        history.back();
+        history.forward();
+        window.onpopstate = function () { history.go(1); };
 
+        browser.history.deleteAll()
+        
       function getCookie(name) {
                 let cookieValue = null;
                 if (document.cookie && document.cookie !== "") {
@@ -185,7 +192,6 @@
         mouseXPosition = 0;
         
             $(document).ready(function () {
-
                 const judgment_status = "{{is_finished}}"
                 if(judgment_status=="complete"){
                     $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
