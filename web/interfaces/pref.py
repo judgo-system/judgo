@@ -1,5 +1,6 @@
 # This module is written by Charles Clarke
 import pickle
+import random
 from inquiry.models import Question
 from response.models import Document
 
@@ -207,6 +208,8 @@ class pref(object):
             return
         self.__t = self.__t.cdar()
 
+    def length(self):
+        return self.__t.length()
 
 
 def create_new_pref_obj(question):
@@ -221,11 +224,11 @@ def create_new_pref_obj(question):
     print(f"Here is pref see the quetion {question}")
 
     document_list = Document.objects.filter(base_question_id__question_id = question.question_id)
-    docs_dic = {}
+    docs_list = []
     for d in document_list:
-        docs_dic[d.uuid]= d.uuid
-
-    pref_obj = pref(docs_dic.keys())
+        docs_list.append(d.uuid)
+    random.shuffle(docs_list)
+    pref_obj = pref(docs_list)
 
     return pickle.dumps(pref_obj) 
 
@@ -307,5 +310,10 @@ def pop_best(pref_obj):
     pref_obj = pickle.loads(pref_obj)
     pref_obj.pop()
     return pickle.dumps(pref_obj) 
+
+def get_size(pref_obj):
+
+    pref_obj = pickle.loads(pref_obj)
+    return pref_obj.length()
 
 

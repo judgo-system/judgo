@@ -1,5 +1,14 @@
+html {
+  height: 100%;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
+  height: 100%;
+}
+
+.main {
+  height: 100%;
 }
 
 .progress-container {
@@ -23,13 +32,13 @@ body {
 .progress-container h3 {
   text-align: center;
   margin-top: 10px;
-  font-size: 20px;
+  font-size: 14px;
   display: inline-block;
   position: absolute;
   color: #94b49f;
   width: 50px;
   margin-left: -25px;
-  margin-top: 15px;
+  margin-top: -12px;
 }
 
 .arrow-up {
@@ -40,7 +49,7 @@ body {
   border-bottom: 5px solid #94b49f;
   position: absolute;
   margin-left: -5px;
-  margin-top: 5px;
+  margin-top: -18px;
 }
 
 .container {
@@ -324,4 +333,32 @@ mark {
   overflow: hidden;
   transition: max-height 0.2s ease-out;
   background-color: #f1f1f1;
+  line-height: 1.5;
+  text-align: justify;
 }
+
+.best-answer-container {
+  width: 100%;
+  height: calc(100% - 70px);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.best-answer-container h2 {
+  background: #789395;
+  padding: 10px;
+  color: white;
+  font-size: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.best-answer-list {
+  width: 500px;
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+}
+

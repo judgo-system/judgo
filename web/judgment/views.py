@@ -1,3 +1,4 @@
+import math
 import re
 from braces.views import LoginRequiredMixin
 
@@ -36,6 +37,17 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
         return text
 
+    def get_progress_count(self, prev_judge):
+
+        total_doc = Document.objects.filter(
+            base_question=prev_judge.inquiry.question.id
+        ).count()
+
+        
+        remaining = pref.get_size(prev_judge.before_state)
+        print(f' {total_doc}  - {remaining} - {math.floor(( total_doc - remaining)/ total_doc * 100) }')
+        return str(math.floor(( total_doc - remaining) / total_doc * 100) )
+
     def get_context_data(self, **kwargs):
         
         context = super(JudgmentView, self).get_context_data(**kwargs)
@@ -45,10 +57,12 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
             
+
             # context['question_id'] = prev_judge.inquiry.question.question_id
             context['question_content'] = prev_judge.inquiry.question.content
             self.inquiry_id = prev_judge.inquiry.id
             
+            context["progress_bar_width"] = self.get_progress_count(prev_judge)
 
             if prev_judge.is_complete:
                 context["is_finished"] = "complete"
@@ -61,11 +75,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             else:
 
                 
-                
                 context['status'] = pref.get_str(prev_judge.before_state)
                 
-                print("current status: ")
-                print(context['status'])
 
 
                 (left, right) = pref.get_documents(prev_judge.before_state)

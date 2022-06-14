@@ -30,13 +30,15 @@
                 <h2 class="q-indicator">Question:</h2>
                 <h2>{{ question_content }}</h2>
             </div>
+            <div></div>
+
         </div>
 
 
-        <div class="container">
+        <div class="best-answer-container">
             
-            <div>
-                
+            <h2>Best answers!</h2>
+            <div class="best-answer-list">
             {% for document in documents %}
                 <div>
                     <button class="collapsible"> {{ document.uuid }}</button>
