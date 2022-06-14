@@ -28,8 +28,12 @@ class Judgment(models.Model):
     inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
 
 
-    # contain a pickle object of pref class
-    state = models.BinaryField(verbose_name='State')
+    # contain a pickle object of pref class before action
+    before_state = models.BinaryField(verbose_name='Before State')
+
+    # contain a pickle object of pref class after action
+    after_state = models.BinaryField(verbose_name='After State')
+
 
     # Indicate if it's the first judment by this user in this session for this question
     is_initialized = models.BooleanField(default=False)
@@ -67,6 +71,6 @@ class Judgment(models.Model):
         "the left docuemnt is {}\n" \
         " the right document is {} " \
         "the action made by user is {}".format(
-            self.session.user, self.inquiry, self.left_reponse, 
+            self.user, self.inquiry, self.left_reponse, 
             self.right_reponse, self.action
         )

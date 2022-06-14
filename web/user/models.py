@@ -10,6 +10,8 @@ class User(AbstractUser):
 
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
 
+    is_reviewer = models.BooleanField(default=False)
+
     active_session = models.ForeignKey(
         Session, blank=True, 
         null=True, on_delete=models.SET_NULL
@@ -21,8 +23,23 @@ class User(AbstractUser):
         related_name="+"
     )
 
+    last_active_time = models.DateTimeField(auto_now_add=True)
+    
+
     def __str__(self):
         return self.username
 
     def get_absolute_url(self):
         return reverse('users:detail', kwargs={'username': self.username})
+
+
+
+# class Reviewer(models.Model):
+
+#     user = models.OneToOneField(
+#         User, 
+#         on_delete=models.CASCADE, 
+#         primary_key=True
+#     )
+
+    

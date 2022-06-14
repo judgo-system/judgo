@@ -1,3 +1,4 @@
+import math
 import re
 from braces.views import LoginRequiredMixin
 
@@ -36,6 +37,17 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
         return text
 
+    def get_progress_count(self, prev_judge):
+
+        total_doc = Document.objects.filter(
+            base_question=prev_judge.inquiry.question.id
+        ).count()
+
+        
+        remaining = pref.get_size(prev_judge.before_state)
+        print(f' {total_doc}  - {remaining} - {math.floor(( total_doc - remaining)/ total_doc * 100) }')
+        return str(math.floor(( total_doc - remaining) / total_doc * 100) )
+
     def get_context_data(self, **kwargs):
         
         context = super(JudgmentView, self).get_context_data(**kwargs)
@@ -45,10 +57,12 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
             
-            context['question_id'] = prev_judge.inquiry.question.question_id
+
+            # context['question_id'] = prev_judge.inquiry.question.question_id
             context['question_content'] = prev_judge.inquiry.question.content
             self.inquiry_id = prev_judge.inquiry.id
             
+            context["progress_bar_width"] = self.get_progress_count(prev_judge)
 
             if prev_judge.is_complete:
                 context["is_finished"] = "complete"
@@ -59,9 +73,13 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                     x for x in prev_judge.inquiry.best_answers.split("|")
                 )
             else:
-                context['status'] = pref.get_str(prev_judge.state)
 
-                (left, right) = pref.get_documents(prev_judge.state)
+                
+                context['status'] = pref.get_str(prev_judge.before_state)
+                
+
+
+                (left, right) = pref.get_documents(prev_judge.before_state)
                 context['left_id'] = left
                 context['right_id'] = right
 
@@ -95,11 +113,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 if prev_judge.inquiry.tags:
                     context['highlights'] = prev_judge.inquiry.tags
 
-                count = self.get_number_best_answer(prev_judge)
-                if count > 0:
-                    context["is_finished"] = "yes"
-                    context["inquiry_question"] = prev_judge.inquiry.question.content
-                    context["best_answer_list"] = "\n".join([ ans for ans in prev_judge.inquiry.best_answers.split("|")[:-count]])
                     
 
         return context
@@ -111,10 +124,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request, *args, **kwargs):
         
-
-        if 'yes_stop' in request.POST: 
-            return HttpResponseRedirect(reverse_lazy('core:home'))
-
+        
         user = User.objects.get(id=request.user.id)
         prev_judge = user.latest_judgment
 
@@ -135,25 +145,24 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             temp = temp.parent
         return count
 
-    def add_new_answer(self, judge):
-        best_docs = pref.get_best(judge.state)
 
+    def add_new_answer(self, state, inquiry):
+        best_docs = pref.get_best(state)
 
-        new_ans = judge.inquiry.best_answers if judge.inquiry.best_answers else "" 
+        new_ans = inquiry.best_answers if inquiry.best_answers else "" 
         for doc in best_docs:
             if doc in new_ans:
                 new_ans = new_ans.replace(f'{doc}|', '')
             new_ans += doc + "|"
 
-        judge.inquiry.best_answers = new_ans
-        judge.inquiry.save()
+        inquiry.best_answers = new_ans
+        inquiry.save()
 
         return best_docs
 
-
     def handle_prev_button(self, user, prev_judge):
 
-        if prev_judge.parent:    
+        if prev_judge.parent and not prev_judge.is_round_done:    
             user.latest_judgment = prev_judge.parent
             user.save()
             return HttpResponseRedirect(
@@ -162,6 +171,19 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.parent.id}
                     )
                 )
+        elif prev_judge.parent and  prev_judge.is_round_done:    
+            user.latest_judgment = prev_judge.parent.parent
+            user.save()
+            return HttpResponseRedirect(
+                    reverse_lazy(
+                        'judgment:judgment', 
+                        kwargs = {
+                            "user_id" : user.id, 
+                            "judgment_id": prev_judge.parent.parent.id
+                        }
+                    )
+                )
+
         else:
             return HttpResponseRedirect(reverse_lazy('core:home'))
 
@@ -169,71 +191,89 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     def handle_judgment_actions(self, user, prev_judge, requested_action):
         
         # get documents 
-        (left, right) = pref.get_documents(prev_judge.state)
+        (left, right) = pref.get_documents(prev_judge.before_state)
 
-        state = None
+        after_state = None
         action = None
 
         if 'left' in requested_action:
             action = JudgingChoices.LEFT
-            state = pref.evaluate(prev_judge.state, left)
+            after_state = pref.evaluate(prev_judge.before_state, left)
         elif 'right' in requested_action:
             action = JudgingChoices.RIGHT
-            state = pref.evaluate(prev_judge.state, right)
+            after_state = pref.evaluate(prev_judge.before_state, right)
         elif 'equal' in requested_action:
             action = JudgingChoices.EQUAL
-            state = pref.evaluate(prev_judge.state, right, equal=True)
+            after_state = pref.evaluate(prev_judge.before_state, right, equal=True)
         
-        if state:
+        if after_state:
         
-            left_doc = Document.objects.get(uuid=left)
-            right_doc = Document.objects.get(uuid=right)
-            left_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=left_doc)
-            right_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=right_doc)
+            # the user is back to the same judment so we need to make a copy of this    
+            if prev_judge.action != None:
+                
+                print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+                prev_judge = Judgment.objects.create(
+                    user=user,
+                    session = user.active_session,
+                    inquiry=prev_judge.inquiry,
+                    before_state=prev_judge.before_state,
+                    parent=prev_judge.parent
+                )
+                
+            
+            # update pre_judge action
+            prev_judge.action = action
+            prev_judge.after_state = after_state
+            prev_judge.save()
+
+            while pref.is_judgment_finished(after_state):
+
+                answer = self.add_new_answer(after_state, prev_judge.inquiry)
+                
+                print(f'best answer so far: {answer}')
+
+                prev_judge.is_round_done = True
+                prev_judge.save() 
+                after_state = pref.pop_best(after_state)
+                
+                prev_judge.after_state = after_state
+                prev_judge.save()
+            
+            
+                if pref.is_judgment_completed(after_state):
+                    prev_judge.is_complete = True
+                    prev_judge.inquiry.is_completed = True
+
+                    prev_judge.inquiry.save()
+                    prev_judge.save()
+                    return HttpResponseRedirect(
+                        reverse_lazy(
+                            'inquiry:inquiry_complete', 
+                            kwargs = {"user_id" : user.id, "inquiry_id": prev_judge.inquiry.id}
+                        )
+                    )  
+
+
+            
+            if prev_judge.is_round_done:
+                
+                return HttpResponseRedirect(
+                    reverse_lazy(
+                        'inquiry:best_answer', 
+                        kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+                    )
+                )    
 
             judgement = Judgment.objects.create(
                     user=user,
                     session = user.active_session,
                     inquiry=prev_judge.inquiry,
-                    state=state,
-                    action=action,
-                    left_response=left_response,
-                    right_response=right_response,
+                    before_state=after_state,
                     parent=prev_judge
                 )
 
-
-            while pref.is_judgment_finished(judgement.state):
-
-                answer = self.add_new_answer(judgement)
-                
-                print(f'best answer so far: {answer}')
-
-                judgement.is_round_done = True
-                judgement.save() 
-                state = pref.pop_best(judgement.state)
-                judgement = Judgment.objects.create(
-                    user=user,
-                    session = user.active_session,
-                    inquiry=judgement.inquiry,
-                    state=state,
-                    parent=judgement,
-                    is_initialized=True,
-                )
-
-                
-
-                if pref.is_judgment_completed(judgement.state):
-                    judgement.is_complete = True
-                    judgement.inquiry.is_completed = True
-                    judgement.inquiry.save()
-                    judgement.save() 
-                    break
-
-
             user.latest_judgment = judgement
             user.save()
-            
             return HttpResponseRedirect(
                 reverse_lazy(
                     'judgment:judgment', 
