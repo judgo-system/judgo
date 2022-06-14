@@ -182,13 +182,22 @@
     <!-- JavaScript Block -->
     <script>
       
-        
+      function disableBack() { window.history.forward(); }
+        setTimeout("disableBack()", 0);
+        window.onunload = function () { null };
+
         history.pushState(null, null, location.href);
-        history.back();
-        history.forward();
+        // history.back();
+        // history.forward();
         window.onpopstate = function () { history.go(1); };
 
-        browser.history.deleteAll()
+        // history.pushState(null, null, location.href);
+        // window.onpopstate = function () {
+        //     history.go(1);
+        // }
+
+        
+        // browser.history.deleteAll()
         
       function getCookie(name) {
                 let cookieValue = null;
