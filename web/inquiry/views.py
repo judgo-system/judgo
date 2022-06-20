@@ -44,7 +44,9 @@ class InquiryView(LoginRequiredMixin, generic.TemplateView):
                         session=self.request.user.active_session.id,
                         inquiry=inquiry.id
                 ).order_by('id').latest('id')
-                state = prev_judge.after_state
+                state = prev_judge.before_state
+                if prev_judge.after_state:
+                    state = prev_judge.after_state
             except Exception as e:
                 print(f" There is no previous judgment for this question and user")
                 state = pref.create_new_pref_obj(question)
@@ -98,7 +100,7 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
 
         prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
         context['question_content'] = prev_judge.inquiry.question.content
-        answer_list = prev_judge.inquiry.best_answers.split('|')[:-1]
+        answer_list = prev_judge.inquiry.best_answers.split('--')[-1].split('|')[:-1]
         documets = []
         for answer in answer_list:
             documets.append(Document.objects.get(uuid=answer))
@@ -120,6 +122,9 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
 
         elif 'prev' in request.POST: 
             judgement = user.latest_judgment
+            # remove the best answer so far in case of changes
+            prev_judge.inquiry.best_answers = '--'.join(x for x in prev_judge.inquiry.best_answers.split("--")[:-1])
+            prev_judge.inquiry.save()
 
         if 'yes' in request.POST:
             judgement = Judgment.objects.create(
@@ -148,11 +153,21 @@ class InquiryCompleteView(LoginRequiredMixin, generic.TemplateView):
 
         inquiry = Inquiry.objects.get(id=self.kwargs['inquiry_id'])
         context['question_content'] = inquiry.question.content
-        answer_list = inquiry.best_answers.split('|')[:-1]
-        documets = []
-        for answer in answer_list:
-            documets.append(Document.objects.get(uuid=answer))
-        context['documents'] = documets
+        
+        answer_list = {}
+        for i, answer in enumerate(inquiry.best_answers.split('--')[1:]):
+            answer_list[i+1] = answer
+         
+        for k, v in answer_list.items():
+            documets = []
+
+            for doc in v.split('|')[:-1]:    
+               documets.append(Document.objects.get(uuid=doc))
+            
+            answer_list[k] = documets
+        
+        
+        context['answer_list'] = answer_list
         return context
 
 

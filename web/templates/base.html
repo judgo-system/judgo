@@ -1,4 +1,4 @@
-{% load i18n static raven has_group crispy_forms_tags notifications_tags %}
+{% load i18n static has_group crispy_forms_tags notifications_tags %}
 {% notifications_unread as unread_count %}
 <!DOCTYPE html>
 <html lang="en" {% block extra_html_tag %}{% endblock %}>
@@ -16,7 +16,6 @@
       <link href="{% static 'css/pace.css' %}" rel="stylesheet">
       <link href="{% static 'css/font-awesome-all.css' %}" rel="stylesheet">
       <link href="{% static 'css/loadawesome.css' %}" rel="stylesheet">
-      {% include "raven-config.html" %}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js" type="application/javascript"></script>
       <script src="{% static 'js/identicon.js' %}"></script>
       <script>

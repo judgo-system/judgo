@@ -7,7 +7,6 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import User
 
 
-
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -36,25 +35,12 @@ class MyUserAdmin(AuthUserAdmin):
     form = MyUserChangeForm
     add_form = MyUserCreationForm
     fieldsets = (
-            ('User Profile', {'fields': ('name',)}),
+            ('User Profile', {'fields': ('first_name', 'last_name', 'username')}),
     ) + AuthUserAdmin.fieldsets
     fieldsets = (
-            ('User Profile', {'fields': ('name', 'current_session')}),
+            ('User Profile', {'fields': ('name', 'is_reviewer')}),
     ) + AuthUserAdmin.fieldsets
 
     list_display = ('username', 'name', 'is_superuser')
-    search_fields = ['name']
+    search_fields = ['username']
 
-
-
-# @admin.register(Reviewer)
-# class ReviewerAdmin(admin.ModelAdmin):
-
-#     list_display = (..., 'get_username',  'last_active_time')
-
-#     def get_username(self, obj):
-#         return obj.user.username
-
-#     get_username.short_description = 'UserName'
-
-    # search_fields = ['name']

@@ -1,4 +1,4 @@
-{% load i18n static raven has_group crispy_forms_tags %}
+{% load i18n static has_group crispy_forms_tags %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -14,7 +14,6 @@
       <link href="{% static 'css/font-awesome-all.css' %}" rel="stylesheet">
       <!-- Other -->
       <link href="{% static 'css/pace.css' %}" rel="stylesheet">
-      {% include "raven-config.html" %}
       <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
       <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
       {% block extra_head %}{% endblock %}

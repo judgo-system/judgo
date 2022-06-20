@@ -274,7 +274,7 @@ body {
 }
          
 mark { 
-  background-color: red !important; 
+  background-color: rgb(239, 132, 223) !important; 
   color: black !important;
 }
 
@@ -294,6 +294,7 @@ mark {
 
 .session-name {
   margin-bottom: 10px;
+  font-size: 30px;
 }
 
 
@@ -362,3 +363,7 @@ mark {
   overflow: auto;
 }
 
+.level-content {
+  padding: 10px;
+  margin-top: 10px;
+}
