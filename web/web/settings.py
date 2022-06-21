@@ -164,6 +164,7 @@ SOCIALACCOUNT_ADAPTER = 'user.adapters.SocialAccountAdapter'
 # Select the correct user model
 AUTH_USER_MODEL = 'user.User'
 LOGIN_REDIRECT_URL = 'core:home'
+LOGOUT_REDIRECT_URL = 'core:home'
 LOGIN_URL = 'account_login'
 
 SITE_ID = 1
