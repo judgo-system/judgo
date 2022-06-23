@@ -25,8 +25,8 @@ urlpatterns = [
     path('', include('core.urls', namespace='core')),
     path('inquiry/', include('inquiry.urls', namespace='inquiry')),
     path('judgment/', include('judgment.urls', namespace='judgment')),
-
     path('admin/', admin.site.urls),
+
     # User management
     path('user/', include('user.urls', namespace='user')),
     path('accounts/', include('allauth.urls')),

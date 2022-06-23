@@ -161,7 +161,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 100px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 
@@ -274,16 +274,16 @@ body {
 }
          
 mark { 
-  background-color: red !important; 
+  background-color: rgb(239, 132, 223) !important; 
   color: black !important;
 }
 
 .amsify-suggestags-area {
-  width: 300px;
+  width: 400px;
 }
 
 .amsify-suggestags-area .amsify-suggestags-input-area {
-  height: 35px;
+  height: 55px;
   overflow: scroll;
 }
 
@@ -294,6 +294,7 @@ mark {
 
 .session-name {
   margin-bottom: 10px;
+  font-size: 30px;
 }
 
 
@@ -362,3 +363,7 @@ mark {
   overflow: auto;
 }
 
+.level-content {
+  padding: 10px;
+  margin-top: 10px;
+}

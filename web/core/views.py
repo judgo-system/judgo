@@ -22,6 +22,10 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
+
+        if request.user.is_superuser:
+            return HttpResponseRedirect(reverse_lazy('admin:index'))
+
         if not self.request.user.active_session:
             session = Session.objects.create(
                 name='first session',

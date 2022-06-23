@@ -38,7 +38,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'dal',
     'dal_select2',
-    # 'dal_admin_filters',
     
     'django.contrib.admin',
 
@@ -46,7 +45,7 @@ INSTALLED_APPS = [
     'allauth',  # registration
     'allauth.account',  # registration
     # 'allauth.socialaccount',  # registration
-    'raven.contrib.django.raven_compat',
+    # 'raven.contrib.django.raven_compat',
     'notifications',
 
 
@@ -165,6 +164,7 @@ SOCIALACCOUNT_ADAPTER = 'user.adapters.SocialAccountAdapter'
 # Select the correct user model
 AUTH_USER_MODEL = 'user.User'
 LOGIN_REDIRECT_URL = 'core:home'
+LOGOUT_REDIRECT_URL = 'core:home'
 LOGIN_URL = 'account_login'
 
 SITE_ID = 1

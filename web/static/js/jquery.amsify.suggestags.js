@@ -45,7 +45,7 @@ var AmsifySuggestags;
 		};
 		this.method        = undefined;
 		this.name          = null;
-		this.defaultLabel  = 'Enter tags';
+		this.defaultLabel  = 'Enter tag:';
 		this.classes       = {
 			sTagsArea     : '.amsify-suggestags-area',
 			inputArea     : '.amsify-suggestags-input-area',

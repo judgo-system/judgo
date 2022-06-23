@@ -33,13 +33,3 @@ class User(AbstractUser):
         return reverse('users:detail', kwargs={'username': self.username})
 
 
-
-# class Reviewer(models.Model):
-
-#     user = models.OneToOneField(
-#         User, 
-#         on_delete=models.CASCADE, 
-#         primary_key=True
-#     )
-
-    
