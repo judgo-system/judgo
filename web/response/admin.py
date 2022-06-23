@@ -10,5 +10,5 @@ class DocumentAdmin(admin.ModelAdmin):
 
 @admin.register(Response)
 class ResponseAdmin(admin.ModelAdmin):
-    list_display = ('id', 'document_id', 'session_id', 'highlight')
+    list_display = ('id', 'document_id', 'user_id', 'highlight')
     search_fields = ['document_id']

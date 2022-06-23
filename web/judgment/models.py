@@ -1,7 +1,8 @@
 from django.db import models
 
-from core.models import Session
-from inquiry.models import Inquiry
+# from core.models import Session
+# from inquiry.models import Inquiry
+from core.models import Task
 from response.models import Response
 from web.settings import AUTH_USER_MODEL as User
 
@@ -17,7 +18,7 @@ class Judgment(models.Model):
         get_latest_by = "created_at"
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    # session = models.ForeignKey(Session, on_delete=models.CASCADE)
     
     # each judgment have a single parent which point to previos state of pref obj
     parent = models.ForeignKey(
@@ -25,7 +26,9 @@ class Judgment(models.Model):
         null=True, on_delete=models.SET_NULL
     )
 
-    inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
+    # inquiry = models.ForeignKey(Inquiry, on_delete=models.CASCADE)
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
 
     # contain a pickle object of pref class before action

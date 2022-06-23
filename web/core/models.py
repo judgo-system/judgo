@@ -1,13 +1,35 @@
 from django.db import models
 from web.settings import AUTH_USER_MODEL as User
+from inquiry.models import Question
 
-class Session(models.Model):
 
-    name = models.CharField(blank=True, max_length=255)
+class Task(models.Model):
 
-    username = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
     
-    last_active_time = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # user can have several keyword to highlight in documents
+    tags = models.TextField(null=True, blank=True)
+
+    # a list for saving best answer
+    best_answers = models.TextField(null=True, blank=True)
+
+    # if all answers are graded or not
+    is_completed = models.BooleanField(default=False)
+    
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+
+    def __str__(self) -> str:
+        return f'{self.id} -- {self.created_at} -- {self.user} -- {self.question.content} '
+
+# class Session(models.Model):
+
+#     name = models.CharField(blank=True, max_length=255)
+
+#     username = models.ForeignKey(User, on_delete=models.CASCADE)
+#     created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    
+#     last_active_time = models.DateTimeField(auto_now_add=True)
     

@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from core.models import Session
+# from core.models import Session
 from judgment.models import Judgment
 
 class User(AbstractUser):
@@ -12,10 +12,10 @@ class User(AbstractUser):
 
     is_reviewer = models.BooleanField(default=False)
 
-    active_session = models.ForeignKey(
-        Session, blank=True, 
-        null=True, on_delete=models.SET_NULL
-    )
+    # active_session = models.ForeignKey(
+    #     Session, blank=True, 
+    #     null=True, on_delete=models.SET_NULL
+    # )
     
     latest_judgment = models.OneToOneField(
         Judgment, blank=True, 

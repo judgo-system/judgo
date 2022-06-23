@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
 
-from .models import Inquiry
+from core.models import Task
 
 
 def add_tag(request, inquiryId):
@@ -11,7 +11,7 @@ def add_tag(request, inquiryId):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
-        inquiry = get_object_or_404(Inquiry, id=inquiryId)
+        inquiry = get_object_or_404(Task, id=inquiryId)
 
         if request.method == 'PUT':
             data = json.load(request)
@@ -35,7 +35,7 @@ def remove_tag(request, inquiryId):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
-        inquiry = get_object_or_404(Inquiry, id=inquiryId)
+        inquiry = get_object_or_404(Task, id=inquiryId)
 
         if request.method == 'PUT':
             data = json.load(request)

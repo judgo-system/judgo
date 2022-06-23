@@ -8,9 +8,9 @@ from django.urls import reverse_lazy
 from judgment.models import Judgment
 from user.models import User
 from interfaces import pref
-from .models import Question, Inquiry
+from .models import Question
 from response.models import Document
-
+from core.models import Task
 
 class InquiryView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'inquiry.html'
@@ -25,60 +25,60 @@ class InquiryView(LoginRequiredMixin, generic.TemplateView):
         return super(InquiryView, self).get(self, request, *args, **kwargs)
 
 
-    def post(self, request, *args, **kwargs):
+    # def post(self, request, *args, **kwargs):
 
-        if "selected_question" in self.request.POST: 
+    #     if "selected_question" in self.request.POST: 
 
-            question = Question.objects.get(
-                    question_id=self.request.POST["selected_question"].strip()
-            )
-            inquiry, created = Inquiry.objects.get_or_create(
-                    question=question, 
-                    session=self.request.user.active_session
-            )
+            # question = Question.objects.get(
+            #         question_id=self.request.POST["selected_question"].strip()
+            # )
+            # inquiry, created = Inquiry.objects.get_or_create(
+            #         question=question, 
+            #         session=self.request.user.active_session
+            # )
 
-            prev_judge = None
-            try:
-                prev_judge = Judgment.objects.filter(
-                        user = self.request.user.id,
-                        session=self.request.user.active_session.id,
-                        inquiry=inquiry.id
-                ).order_by('id').latest('id')
-                state = prev_judge.before_state
-                if prev_judge.after_state:
-                    state = prev_judge.after_state
-            except Exception as e:
-                print(f" There is no previous judgment for this question and user")
-                state = pref.create_new_pref_obj(question)
+            # prev_judge = None
+            # try:
+            #     prev_judge = Judgment.objects.filter(
+            #             user = self.request.user.id,
+            #             session=self.request.user.active_session.id,
+            #             inquiry=inquiry.id
+            #     ).order_by('id').latest('id')
+            #     state = prev_judge.before_state
+            #     if prev_judge.after_state:
+            #         state = prev_judge.after_state
+            # except Exception as e:
+            #     print(f" There is no previous judgment for this question and user")
+            #     state = pref.create_new_pref_obj(question)
 
 
-            if not prev_judge or not prev_judge.is_complete:
+            # if not prev_judge or not prev_judge.is_complete:
 
-                judgement = Judgment.objects.create(
-                        user=self.request.user,
-                        session= self.request.user.active_session,
-                        inquiry=inquiry,
-                        before_state=state,
-                        parent=prev_judge,
-                    )
+            #     judgement = Judgment.objects.create(
+            #             user=self.request.user,
+            #             session= self.request.user.active_session,
+            #             inquiry=inquiry,
+            #             before_state=state,
+            #             parent=prev_judge,
+            #         )
 
-                user = User.objects.get(id=self.request.user.id)
-                user.latest_judgment = judgement
-                user.save()
+            #     user = User.objects.get(id=self.request.user.id)
+            #     user.latest_judgment = judgement
+            #     user.save()
 
-                return HttpResponseRedirect(
-                        reverse_lazy(
-                            'judgment:judgment', 
-                            kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
-                        )
-                    )
-            else:
-                return HttpResponseRedirect(
-                        reverse_lazy(
-                            'inquiry:inquiry_complete', 
-                            kwargs = {"user_id" : self.request.user.id, "inquiry_id": prev_judge.inquiry.id}
-                        )
-                    ) 
+            #     return HttpResponseRedirect(
+            #             reverse_lazy(
+            #                 'judgment:judgment', 
+            #                 kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+            #             )
+            #         )
+            # else:
+            #     return HttpResponseRedirect(
+            #             reverse_lazy(
+            #                 'inquiry:inquiry_complete', 
+            #                 kwargs = {"user_id" : self.request.user.id, "inquiry_id": prev_judge.inquiry.id}
+            #             )
+            #         ) 
 
 
         return HttpResponseRedirect(
@@ -99,8 +99,8 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
         context = super(BestAnswersView, self).get_context_data(**kwargs)
 
         prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-        context['question_content'] = prev_judge.inquiry.question.content
-        answer_list = prev_judge.inquiry.best_answers.split('--')[-1].split('|')[:-1]
+        context['question_content'] = prev_judge.task.question.content
+        answer_list = prev_judge.task.best_answers.split('--')[-1].split('|')[:-1]
         documets = []
         for answer in answer_list:
             documets.append(Document.objects.get(uuid=answer))
@@ -123,14 +123,13 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
         elif 'prev' in request.POST: 
             judgement = user.latest_judgment
             # remove the best answer so far in case of changes
-            prev_judge.inquiry.best_answers = '--'.join(x for x in prev_judge.inquiry.best_answers.split("--")[:-1])
-            prev_judge.inquiry.save()
+            prev_judge.task.best_answers = '--'.join(x for x in prev_judge.task.best_answers.split("--")[:-1])
+            prev_judge.task.save()
 
         if 'yes' in request.POST:
             judgement = Judgment.objects.create(
                     user=user,
-                    session = user.active_session,
-                    inquiry=prev_judge.inquiry,
+                    task=prev_judge.task,
                     before_state=prev_judge.after_state,
                     parent=prev_judge
                 )
@@ -151,11 +150,11 @@ class InquiryCompleteView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(InquiryCompleteView, self).get_context_data(**kwargs)
 
-        inquiry = Inquiry.objects.get(id=self.kwargs['inquiry_id'])
-        context['question_content'] = inquiry.question.content
+        task = Task.objects.get(id=self.kwargs['inquiry_id'])
+        context['question_content'] = task.question.content
         
         answer_list = {}
-        for i, answer in enumerate(inquiry.best_answers.split('--')[1:]):
+        for i, answer in enumerate(task.best_answers.split('--')[1:]):
             answer_list[i+1] = answer
          
         for k, v in answer_list.items():

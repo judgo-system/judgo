@@ -1,5 +1,6 @@
 import math
 import re
+from urllib import request
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
@@ -14,7 +15,7 @@ from interfaces import pref
 class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'judgment.html'
     # pref_obj = None
-    inquiry_id = None
+    task_id = None
     left_doc_id = None
     right_doc_id = None
 
@@ -24,7 +25,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         response = super().render_to_response(context, **response_kwargs)
 
         # for taging and highlighting purpose
-        response.set_cookie("inquiry_id", self.inquiry_id)
+        response.set_cookie("task_id", self.task_id)
         response.set_cookie("left_doc_id", self.left_doc_id)
         response.set_cookie("right_doc_id", self.right_doc_id)
 
@@ -39,10 +40,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-            self.inquiry_id = prev_judge.inquiry.id
+            self.task_id = prev_judge.task.id
             (left, right) = pref.get_documents(prev_judge.before_state)
             
-            context['question_content'] = prev_judge.inquiry.question.content
+            context['question_content'] = prev_judge.task.question.content
             context["progress_bar_width"] = self.get_progress_count(prev_judge)
             context['state_object'] = pref.get_str(prev_judge.before_state)
             
@@ -51,8 +52,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
             left_doc = Document.objects.get(uuid=left)
             right_doc = Document.objects.get(uuid=right)
-            left_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=left_doc)
-            right_response, _ = Response.objects.get_or_create(session= prev_judge.session, document=right_doc)
+            left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
+            right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
 
@@ -74,8 +75,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
                 
             # if there is no tag is we don't need to fill it out.
-            if prev_judge.inquiry.tags:
-                context['highlights'] = prev_judge.inquiry.tags
+            if prev_judge.task.tags:
+                context['highlights'] = prev_judge.task.tags
 
         return context
 
@@ -91,10 +92,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return HttpResponseRedirect(reverse_lazy('core:home'))
 
 
-    def add_new_answer(self, state, inquiry):
+    def add_new_answer(self, state, task):
         best_docs = pref.get_best(state)
 
-        prev_ans = inquiry.best_answers if inquiry.best_answers else "" 
+        prev_ans = task.best_answers if task.best_answers else "" 
         new_ans = ""
 
         for doc in best_docs:
@@ -102,8 +103,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             #     new_ans = new_ans.replace(f'{doc}|', '')
             new_ans += doc + "|"
 
-        inquiry.best_answers = prev_ans +"--"+new_ans
-        inquiry.save()
+        task.best_answers = prev_ans +"--"+new_ans
+        task.save()
 
         return best_docs
 
@@ -120,14 +121,16 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                     )
                 )
 
-        else:
-            return HttpResponseRedirect(
-                reverse_lazy(
-                    'inquiry:inquiry', 
-                    kwargs = {"user_id" : self.request.user.id, 
-                        "session_id": self.request.user.active_session.id}
-                )
-            )
+        # TODO : if there is no parent after that it shouldn't go back
+
+        # else:
+        #     return HttpResponseRedirect(
+        #         reverse_lazy(
+        #             'inquiry:inquiry', 
+        #             kwargs = {"user_id" : self.request.user.id, 
+        #                 "session_id": self.request.user.active_session.id}
+        #         )
+        #     )
         
     
     def handle_judgment_actions(self, user, prev_judge, requested_action):
@@ -141,8 +144,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge = Judgment.objects.create(
                 user=user,
-                session = user.active_session,
-                inquiry=prev_judge.inquiry,
+                task=prev_judge.task,
                 before_state=prev_judge.before_state,
                 parent=prev_judge.parent
             )
@@ -158,7 +160,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         # check if this round of judgment is finished or not!
         while pref.is_judgment_finished(after_state):
 
-            answer = self.add_new_answer(after_state, prev_judge.inquiry)
+            answer = self.add_new_answer(after_state, prev_judge.task)
             
             print(f'best answer so far: {answer}')
 
@@ -171,16 +173,24 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     
             if pref.is_judgment_completed(after_state):
                 prev_judge.is_complete = True
-                prev_judge.inquiry.is_completed = True
+                prev_judge.task.is_completed = True
 
-                prev_judge.inquiry.save()
+                prev_judge.task.save()
                 prev_judge.save()
+
+                # TODO go back to home!
                 return HttpResponseRedirect(
                     reverse_lazy(
-                        'inquiry:inquiry_complete', 
-                        kwargs = {"user_id" : user.id, "inquiry_id": prev_judge.inquiry.id}
+                        'core:home'
                     )
                 )  
+
+                # return HttpResponseRedirect(
+                #     reverse_lazy(
+                #         'inquiry:inquiry_complete', 
+                #         kwargs = {"user_id" : user.id, "task_id": prev_judge.inquiry.id}
+                #     )
+                # )  
 
         if prev_judge.is_round_done:
             
@@ -193,8 +203,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         judgement = Judgment.objects.create(
                 user=user,
-                session = user.active_session,
-                inquiry=prev_judge.inquiry,
+                task=prev_judge.task,
                 before_state=after_state,
                 parent=prev_judge
             )
@@ -243,7 +252,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     def get_progress_count(self, prev_judge):
 
         total_doc = Document.objects.filter(
-            base_question=prev_judge.inquiry.question.id
+            base_question=prev_judge.task.question.id
         ).count()        
         remaining = pref.get_size(prev_judge.before_state)
 

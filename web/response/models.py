@@ -2,7 +2,8 @@ from xml.dom.minidom import Document
 from django.db import models
 
 from inquiry.models import Question
-from core.models import Session
+from web.settings import AUTH_USER_MODEL as User
+# from core.models import Session 
 
 class Document(models.Model):
 
@@ -24,7 +25,7 @@ class Response(models.Model):
 
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    # in each session, user can highlight several parts of documents
+    # Each user, user can highlight several parts of documents
     highlight = models.TextField(null=True)
