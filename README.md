@@ -18,7 +18,7 @@ docker ps
 docker exec -i -t judgo_web_xx /bin/bash
 cd src
 # ingest data to dataset with the following command
-python manage.py shell < fixtures/ingest_data.py 
+python manage.py shell < fixtures/ingest_msmarco_data.py 
 
 # Press CTRL+D to exit from container
 ```
