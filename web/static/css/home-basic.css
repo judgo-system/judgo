@@ -134,9 +134,11 @@ background-color:#94b49f;
 
 
 .main-page{
-display: flex;
-flex-wrap: wrap;
-text-align: center;
+  height: 100%;
+  width: 100%;
+/* display: flex; */
+/* flex-wrap: wrap; */
+/* text-align: center; */
 }
 .center-column {
   flex: 80%;
@@ -252,7 +254,9 @@ text-align: center;
  }
  
  .header{
+  margin-top: 100px;
   font-size: 30px;
+  text-align: center;
  }
 
  .para{

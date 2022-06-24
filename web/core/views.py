@@ -15,7 +15,7 @@ from interfaces import pref
 
 
 class Home(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'home.html'
+    template_name = 'home_with_no_task.html'
 
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)

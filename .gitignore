@@ -137,5 +137,5 @@ data/
 
 # Django Static folders
 web/staticfiles
-web/fixtures
+web/fixtures/data
 .DS_Store

@@ -1,0 +1,94 @@
+{% load i18n static has_group crispy_forms_tags notifications_tags  %}
+{% notifications_unread as unread_count %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>    
+
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-core.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.0/js/anychart-bundle.min.js"></script>
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <div class="main">
+        <div class="header">
+            <div class="tree-header">
+                Tree Visualiztion!
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- <div class="documents"></div> -->
+
+            <div class='documents' id="container"> {{tree}}</div>
+            <!-- <div class="documents">
+                <div class="tree-body" id="container">
+                    
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+</body>
+
+
+<script>
+    anychart.onDocumentReady(function () {
+
+    // create data
+    var data = [
+    {value:     "---",
+    children: [
+        {value:   "A", children: [
+        {value: "C"},
+        {value: "D"},
+        {value: "E"}
+        ]},
+        {value:   "B", children: [
+        {value: "F"},
+        {value: "G"},
+        {value: "H"}
+        ]},
+        {value:   "C", children: [
+        {value: "I"},
+        ]}  
+    ]} 
+    ];
+
+    // create a chart and set the data
+    var chart = anychart.wordtree(data, "as-tree");
+
+
+    // set the container id
+    chart.container("container");
+
+    chart.tooltip(false);
+
+    // var interactivity = chart.interactivity();
+    // interactivity.selectionMode("none");
+
+    // initiate drawing the chart
+    // chart.draw();
+    });
+
+</script>
+
+</html>

@@ -82,7 +82,6 @@
                     <div class="document-content" >
                         <p id="left-doc" class="editable-doc">
                             {% autoescape off %}{{ left_txt }}{% endautoescape %} 
-                            <!-- {{ left_txt}} -->
                         </p>
                     </div>
                 </div>
@@ -109,26 +108,18 @@
                         <button class="button" type="submit" value="equal" name="equal">Equal</button>
                         <button class="button" type="submit" value="right" name="right">Right</button>
                     </form>  
-
-                        <button class="button" id="chart" >Visualize Tree</button>
-
+                        <!-- <button class="button" id="chart" >Visualize Tree</button> -->
                     </div>
 
             </div>
         </div>
 
-        
-
     </div>
     
 
-
-    
      <!-- Continue Modal -->
-     <div class="modal fade" id="chart-modal" role="dialog">
+     <!-- <div class="modal fade" id="chart-modal" role="dialog">
         <div class="modal-dialog">
-        
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" style="padding:35px 50px;">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -143,34 +134,19 @@
 
             </div>
         </div>
-    </div>
+    </div> -->
     
-
-
     
     <!-- JavaScript Block -->
     <script>
-      
-      $( "#chart" ).submit(function( event ) {
-        event.preventDefault();
-        });
 
       function disableBack() { window.history.forward(); }
         setTimeout("disableBack()", 0);
         window.onunload = function () { null };
 
         history.pushState(null, null, location.href);
-        // history.back();
-        // history.forward();
         window.onpopstate = function () { history.go(1); };
 
-        // history.pushState(null, null, location.href);
-        // window.onpopstate = function () {
-        //     history.go(1);
-        // }
-
-        
-        // browser.history.deleteAll()
         
       function getCookie(name) {
                 let cookieValue = null;
@@ -191,57 +167,6 @@
         
             $(document).ready(function () {
                 
-            
-                $( "#chart" ).click(function() {
-                                        
-                    (function($){
-
-                    $(function() {
-
-                    var datascource = {
-                        'name': 'Lao Lao',
-                        'title': 'general manager',
-                        'children': [
-                        { 'name': 'Bo Miao', 'title': 'department manager', 'className': 'middle-level',
-                            'children': [
-                            { 'name': 'Li Jing', 'title': 'senior engineer', 'className': 'product-dept' },
-                            { 'name': 'Li Xin', 'title': 'senior engineer', 'className': 'product-dept',
-                                'children': [
-                                { 'name': 'To To', 'title': 'engineer', 'className': 'pipeline1' },
-                                { 'name': 'Fei Fei', 'title': 'engineer', 'className': 'pipeline1' },
-                                { 'name': 'Xuan Xuan', 'title': 'engineer', 'className': 'pipeline1' }
-                                ]
-                            }
-                            ]
-                        },
-                        { 'name': 'Su Miao', 'title': 'department manager', 'className': 'middle-level',
-                            'children': [
-                            { 'name': 'Pang Pang', 'title': 'senior engineer', 'className': 'rd-dept' },
-                            { 'name': 'Hei Hei', 'title': 'senior engineer', 'className': 'rd-dept',
-                                'children': [
-                                { 'name': 'Xiang Xiang', 'title': 'UE engineer', 'className': 'frontend1' },
-                                { 'name': 'Dan Dan', 'title': 'engineer', 'className': 'frontend1' },
-                                { 'name': 'Zai Zai', 'title': 'engineer', 'className': 'frontend1' }
-                                ]
-                            }
-                            ]
-                        }
-                        ]
-                    };
-
-                    var oc = $('#chart-container').orgchart({
-                        'data' : datascource,
-                        'nodeContent': 'title'
-                    });
-
-                    });
-
-                    });
-
-                    $("#chart-modal").modal();
-
-                })
-
                 $(".editable-doc").mousedown(function (e1) {
                     mouseXPosition = e1.pageX; //register the mouse down position
                 });
@@ -441,7 +366,7 @@
                 const data ={
                     tags:value
                 } 
-                var put_url = "/../../add_tag/" + getCookie("inquiry_id") + "/" 
+                var put_url = "/../../add_tag/" + getCookie("task_id") + "/" 
                 fetch(put_url, {
                     method: "PUT",
                     credentials: "same-origin",
@@ -465,7 +390,7 @@
                 const data ={
                     tags:value
                 } 
-                var put_url = "/../../remove_tag/" + getCookie("inquiry_id") + "/" 
+                var put_url = "/../../remove_tag/" + getCookie("task_id") + "/" 
                 fetch(put_url, {
                     method: "PUT",
                     credentials: "same-origin",
@@ -485,10 +410,7 @@
 
 
         });
-	
 
-        // Charts
-        'use strict';
 
     </script>
 </body>

@@ -121,27 +121,23 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                     )
                 )
 
-        # TODO : if there is no parent after that it shouldn't go back
+        return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+                )
+            )
 
-        # else:
-        #     return HttpResponseRedirect(
-        #         reverse_lazy(
-        #             'inquiry:inquiry', 
-        #             kwargs = {"user_id" : self.request.user.id, 
-        #                 "session_id": self.request.user.active_session.id}
-        #         )
-        #     )
-        
     
     def handle_judgment_actions(self, user, prev_judge, requested_action):
 
-        print(f'before judgment: {pref.get_str(prev_judge.before_state)}')
+        # print(f'before judgment: {pref.get_str(prev_judge.before_state)}')
         action, after_state = self.evaluate_after_state(requested_action, prev_judge.before_state)
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
             
-            print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+            # print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -155,21 +151,21 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         prev_judge.after_state = after_state
         prev_judge.save()
 
-        print(f'after judgment: {pref.get_str(prev_judge.after_state)}')
+        # print(f'after judgment: {pref.get_str(prev_judge.after_state)}')
 
         # check if this round of judgment is finished or not!
         while pref.is_judgment_finished(after_state):
 
             answer = self.add_new_answer(after_state, prev_judge.task)
             
-            print(f'best answer so far: {answer}')
+            # print(f'best answer so far: {answer}')
 
             prev_judge.is_round_done = True
             after_state = pref.pop_best(after_state)
             prev_judge.after_state = after_state
             prev_judge.save()
 
-            print(f'after judgment: {pref.get_str(prev_judge.after_state)}')
+            # print(f'after judgment: {pref.get_str(prev_judge.after_state)}')
     
             if pref.is_judgment_completed(after_state):
                 prev_judge.is_complete = True
@@ -178,19 +174,13 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 prev_judge.task.save()
                 prev_judge.save()
 
-                # TODO go back to home!
+                # go back to home!
                 return HttpResponseRedirect(
                     reverse_lazy(
                         'core:home'
                     )
                 )  
-
-                # return HttpResponseRedirect(
-                #     reverse_lazy(
-                #         'inquiry:inquiry_complete', 
-                #         kwargs = {"user_id" : user.id, "task_id": prev_judge.inquiry.id}
-                #     )
-                # )  
+  
 
         if prev_judge.is_round_done:
             
@@ -257,3 +247,21 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         remaining = pref.get_size(prev_judge.before_state)
 
         return str(math.floor(( total_doc - remaining) / total_doc * 100) )
+
+
+
+
+class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'judgment_debug.html'
+
+
+    def get_context_data(self, **kwargs):
+        
+        context = super(DebugJudgmentView, self).get_context_data(**kwargs)
+        
+        if "judgment_id" in kwargs and 'user_id' in kwargs:            
+            prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
+            tree = pref.get_str(prev_judge.before_state).split("[")[0]
+            context['tree'] = tree
+        return context
+
