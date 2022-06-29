@@ -28,10 +28,6 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
         return context
 
 
-    def get(self, request, *args, **kwargs):
-        return super(BestAnswersView, self).get(self, request, *args, **kwargs)
-
-
     def post(self, request, *args, **kwargs):
 
         user = User.objects.get(id=request.user.id)
@@ -57,7 +53,7 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
             user.save()
         return HttpResponseRedirect(
                 reverse_lazy(
-                    'judgment:judgment', 
+                    'judgment:debug', 
                     kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
                 )
         ) 

@@ -12,6 +12,9 @@ class Task(models.Model):
     # user can have several keyword to highlight in documents
     tags = models.TextField(null=True, blank=True)
 
+    # number of best answer so far
+    num_ans = models.IntegerField(default=0)
+
     # a list for saving best answer
     best_answers = models.TextField(null=True, blank=True)
 
@@ -23,13 +26,3 @@ class Task(models.Model):
 
     def __str__(self) -> str:
         return f'{self.id} -- {self.created_at} -- {self.user} -- {self.question.content} '
-
-# class Session(models.Model):
-
-#     name = models.CharField(blank=True, max_length=255)
-
-#     username = models.ForeignKey(User, on_delete=models.CASCADE)
-#     created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    
-#     last_active_time = models.DateTimeField(auto_now_add=True)
-    

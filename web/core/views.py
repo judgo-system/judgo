@@ -15,10 +15,24 @@ from interfaces import pref
 
 
 class Home(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'home_with_no_task.html'
+    template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
+
+        tasks = Task.objects\
+            .filter(user_id=self.request.user, is_completed=False)\
+            .order_by('created_at')
+            
+
+        if tasks:
+            context["tasks"] = tasks
+            context["message"] = 'Please pick one of the following quesions to review.'      
+        else:
+            context["task_exist"] = 'false'
+            context["message"] = 'There is no quesiton to review right now.'      
+
+
         return context
 
     def get(self, request, *args, **kwargs):
@@ -27,39 +41,22 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         if request.user.is_superuser:
             return HttpResponseRedirect(reverse_lazy('admin:index'))
 
-        # for reviewer 
-        else:
-            # retreive available task
-            tasks = Task.objects\
-                .filter(user_id=request.user, is_completed=False)\
-                .order_by('created_at')
-            
-            print(tasks)
-
-            if tasks:
-                return self.start_judgment(tasks[0])
-
-        # if not self.request.user.active_session:
-            # session = Session.objects.create(
-            #     name='first session',
-            #     username = self.request.user
-            # )
-
-            # self.request.user.active_session = session
-
         return super(Home, self).get(self, request, *args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
 
-    def start_judgment(self, task):
+        if "selected_question" in self.request.POST: 
+            return self.start_judgment(self.request.POST["selected_question"])
+        
 
-        print(f' iyooo->> {task.question}')
+    def start_judgment(self, task_id):
+
+        task = Task.objects\
+            .get(id=task_id)
         question = Question.objects.get(id=task.question.id)
-        # inquiry, created = Inquiry.objects.get_or_create(
-        #         question=question, 
-        #         session=self.request.user.active_session
-        # )
 
         prev_judge = None
+
         try:
             prev_judge = Judgment.objects.filter(
                     user = self.request.user.id,
@@ -93,47 +90,3 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                     )
                 )
   
-
-
-
-    # def post(self, request, *args, **kwargs):
-        
-    #     if "start_question_judment" in self.request.POST:
-    #         return HttpResponseRedirect(
-    #             reverse_lazy(
-    #                 'inquiry:inquiry', 
-    #                 kwargs = {"user_id" : self.request.user.id, 
-    #                     "session_id": self.request.user.active_session.id}
-    #             )
-    #         )
-        
-    #     elif "continue_question_judment" in self.request.POST:
-            
-    #         judgement = self.request.user.latest_judgment
-    #         return HttpResponseRedirect(
-    #             reverse_lazy(
-    #                 'judgment:judgment', 
-    #                 kwargs = {
-    #                     "user_id" : self.request.user.id, 
-    #                     "judgment_id": judgement.id
-    #                 }
-    #             )
-    #         )
-
-
-    #     elif "start_new_session" in self.request.POST:
-            
-    #         name = self.request.user.name + "-new-session"            
-    #         if 'session_name' in self.request.POST:
-    #             name = self.request.POST['session_name']
-            
-    #         # session = Session.objects.create(
-    #         #     name=name,
-    #         #     username = self.request.user
-    #         # )
-
-    #         # self.request.user.active_session = session
-    #         self.request.user.save()
-
-    #     return HttpResponseRedirect(reverse_lazy('core:home'))
-

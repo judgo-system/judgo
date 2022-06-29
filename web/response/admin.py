@@ -4,7 +4,7 @@ from .models import Document, Response
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'content')
+    list_display = ('uuid', 'content', 'base_question')
     search_fields = ['uuid']
 
 

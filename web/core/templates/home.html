@@ -1,3 +1,41 @@
+<!-- {% load i18n static has_group crispy_forms_tags notifications_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Preference Judgment Home</title>
+</head>
+<body>
+
+    <div class="main-page">
+        <h1 class="header">
+            There is no task to review!
+        </h1>
+    </div>
+
+    <div class="container">
+        <div class="question">
+            <p>You can log out!</p>
+
+                <div class="answer-box">
+                <form method='post' action="{% url 'account_logout' %}">
+                    {% csrf_token %}
+                    <button class="button" type="submit" value="right" name="right">Logout</button>
+                </form>  
+                </div>
+
+        </div>
+    </div>            
+</body> -->
 {% load i18n static has_group crispy_forms_tags notifications_tags %}
 {% notifications_unread as unread_count %}
 <!DOCTYPE html>
@@ -6,17 +44,10 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <script src="https://kit.fontawesome.com/f957e0be27.js" crossorigin="anonymous"></script>
     
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <!-- <link rel="stylesheet" href="reset.css" />
-    <link rel="stylesheet" href="home-basic.css" /> -->
-    <link rel="stylesheet" href="{% static 'css/home-basic.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/home-reset.css' %}" />
-
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/home-style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,168 +55,73 @@
     <title>Preference Judgment Home</title>
 </head>
 <body>
-    <form method="post">
-    {% csrf_token %}
-        <div class="main-page">
-            <div class="center-column">
-                <h1 class="header">
-                    Instruction
-                </h1>
-                <p class="para">
-                    There are two steps in this application:
-                    <br>1- Find relevant question.</br>
-                    2- Judge pool of answer for each question.
-                </p>
-
-                <div id="cards">
-                    <div id="card">
-                        <div id="content">
-                            Step1: Mark Relevant Question!
-                            
-                            <div id="card-btn">
-                                <button name="start_find_relevant"> start </button>
-                                <button name="continue_find_relevant"> continue </button>
-                            </div>
-                    </div>
-                    </div>  
-                    
-                    <div id="card">
-                        <div id="content">
-                        Step2: Judge Question Pool!
-                            
-                            <div id="card-btn">
-                            <button name="start_question_judment"> start </button>
-                            <button name="continue_question_judment"> continue </button>
-                        </div>
-                    </div>
-                    </div>  
-                    
-                </div>
-            </div>
+    <div class="main">
+        <div class="header">
             
-            <!-- <div class="history-column">
-                <div class="items">
-                    <div class="items-head">
-                    <p>Judgment History</p>
-                    </div>
-                    
-                    <div class="items-body">
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                        <div class="items-body-content"><span>Question 1</span><i class="fa fa-angle-right"></i></div>
-                    </div>
-                </div>
+            <div class="home-header">
+                <h2 class="home-message"> {{ message }}</h2>
             </div>
-        </div> -->
+            <a href="{% url 'account_logout' %}">
+                <button class="button">Log out</button>
+            </a>
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div id='container' class="container">
 
-        <nav class="main-menu"> 
-            <ul>
-                <li class="has-subnav" >
-                    <a href="#" id="new_session">
-                        <i class="fa fa-plus fa-2x"></i>
-                        <span class="nav-text"  >
-                            New Session
-                        </span>
-                    </a>  
-                </li>
                 
-                <li class="has-subnav">
-                    <a href="#">
-                        <i class="fa fa-magnifying-glass fa-2x"></i>
-                        <span class="nav-text">
-                            Search
-                        </span>
-                    </a>  
-                </li>
+                <div id="select-container" class="select-container">
+                    <label class="select" for="slct">
+                        <select id="slct" required="required" name="selected_question">
+                        <option value="" disabled="disabled" selected="selected">Select a question</option>
+                        {% for task in tasks %}
+                            <option name="option" value=" {{ task.id}}">{{task.question.content}}</option>
+                        {% endfor %}
+                        </select>
+                        <svg>
+                        <use xlink:href="#select-arrow-down"></use>
+                        </svg>
+                    </label>
+                    <!-- SVG Sprites-->
+                    <svg class="sprites">
+                        <symbol id="select-arrow-down" viewbox="0 0 10 6">
+                            <polyline points="1 1 5 5 9 1"></polyline>
+                        </symbol>
+                    </svg>
+                </div>
+                <button class="button-start" type="submit">Start Judgment!</button>
+    
+            </form>
+           
+            <div class="question">
+                <p>Which one do you prefer?</p>
+                
+                    <div class="answer-box">
+                        <form method='post' action="{% url 'judgment:judgment'%}">
+                                {% csrf_token %}
+                            <button class="button" type="submit" value="left" name="left">Left</button>
+                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
+                            <button class="button" type="submit" value="right" name="right">Right</button>
+                        
+                        </form>  
 
-                <li>
-                    <a href="#">
-                        <i class="fa fa-bar-chart-o fa-2x"></i>
-                        <span class="nav-text">
-                            Judgment History
-                        </span>
-                    </a>
-                </li>
-            
-                <li>
-                    <a href="#">
-                            <i class="fa fa-user fa-2x"></i>
-                            <span class="nav-text">
-                                User Profile
-                            </span>
-                        </a>
-                </li>
-                <li>
-                    <a href="#">
-                    <i class="fa fa-info fa-2x"></i>
-                        <span class="nav-text">
-                            About
-                        </span>
-                    </a>
-                </li>
-            </ul>
-
-            <ul class="logout">
-                <li>
-                <a href="{% url 'account_logout' %}">
-                        <i class="fa fa-power-off fa-2x"></i>
-                        <span class="nav-text">
-                            Logout
-                        </span>
-                    </a>
-                </li>  
-            </ul>
-        </nav>
-
-        
-     <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-        
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header" style="padding:35px 50px;">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4>Session</h4>
-            </div>
-                <div class="modal-body" style="padding:40px 50px;">
-                <form role="form">
-                    <div class="form-group">
-                    <label for="session-name" class="session-name">A name for new session it can be empty!</label>
-                    <input type="text" class="form-control" id="session_name" placeholder="Enter session name." name="session_name">
                     </div>
                     
-                    <button type="submit" class="btn btn-success btn-block" name="start_new_session"> Start</button>
-                </form>
-                </div>
-                
-            </div>
-            
+                    <a href="{% url 'account_logout' %}">
+                        <button class="button absolute-button btn-logout">Log out</button>
+                    </a>
             </div>
         </div>
-        
-    </form> 
+
+    </div>
     
-
+    <!-- JavaScript -->
     <script>
-
-        $(document).ready(function(){
-            $("#new_session").click(function(){
-                $("#myModal").modal();
-                console.log('hey there')
-            });
-        });
+        var task_exist = "{{task_exist}}"
+        console.log(task_exist)
+        if(task_exist=="false"){
+            document.getElementById('container').style.display = 'none';
+        }
     </script>
-
 </body>
+</html>

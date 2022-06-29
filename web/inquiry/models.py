@@ -1,6 +1,5 @@
 from django.db import models
 
-# from core.models import Session
 
 class Question(models.Model):
     

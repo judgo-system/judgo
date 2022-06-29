@@ -8,10 +8,8 @@ topic_mappping = {}
 with open('fixtures/nist_data/qrels.json', 'r') as f:
     data = json.load(f)
 for topic, documents in data.items():
-    # temp = []
     for doc, value in documents.items():
-        if value !="0":
-            # temp.append(doc)
+        if value !="0" and value !="1":
             topic_mappping[doc] = topic
 print(topic_mappping)
 
@@ -24,9 +22,6 @@ with open('fixtures/nist_data/topics.json', 'r') as f:
             if key in topic_mappping.values():
                 Question.objects.create(question_id=key, content=value['title'])
                 print(f'{key}')
-
-            # else: 
-            #     print(f'there is no topic_mappping for topic id {key}')
         except:
             continue
 
@@ -49,4 +44,3 @@ for doc, content in doc_mappping.items():
             Document.objects.create(uuid=doc, content=" "+content, base_question=q)
         except:
             continue
-            # print(f'question id {topic_mappping[doc]}')

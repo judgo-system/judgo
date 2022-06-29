@@ -60,7 +60,7 @@ body {
 .documents {
   display: flex;
   width: 100%;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 260px);
   justify-content: center;
   align-items: center;
 }
@@ -163,6 +163,7 @@ body {
   align-items: center;
   height: 100px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  text-align: center;
 }
 
 .prev-document {
@@ -373,3 +374,46 @@ mark {
   width: 100%;
 }
 
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 200px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  text-align: center;
+  /* margin-left: 100px; */
+}
+
+.tree-container {
+  height: 100px;
+}
+.previous-action {
+  margin: 10px;
+  text-align: center;
+}
+
+.tree-content {
+  height: 60px;
+  margin: 10px;
+  padding: 5px;
+  text-align: center;
+  overflow: auto;
+}
+
+
+
+.home-header {
+  width: calc(100% - 300px);
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  margin-right: 60px;
+  margin-left: 60px;
+}
+
+.home-message {
+  margin-left: 50px;
+  width: 100%;
+  text-align: center;
+}

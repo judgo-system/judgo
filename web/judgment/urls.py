@@ -10,6 +10,6 @@ urlpatterns = [
          name='judgment'),
     re_path(r'^(?P<user_id>\d+)/(?P<judgment_id>\d+)/$', JudgmentView.as_view(),
          name='judgment'),
-    re_path(r'^(?P<user_id>\d+)/(?P<judgment_id>\d+)/debug', DebugJudgmentView.as_view(),
+    re_path(r'^(?P<user_id>\d+)/(?P<judgment_id>\d+)/debug/', DebugJudgmentView.as_view(),
          name='debug'),
 ]
