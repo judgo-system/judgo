@@ -9,8 +9,8 @@ from web.settings import AUTH_USER_MODEL as User
 
 class JudgingChoices(models.IntegerChoices):
     RIGHT = (1, 'Right')
-    EQUAL = (0, 'Equal')
-    LEFT = (-1, 'Left')
+    EQUAL = (2, 'Equal')
+    LEFT = (3, 'Left')
 
 
 class Judgment(models.Model):
