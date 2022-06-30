@@ -92,6 +92,7 @@ body {
   color: #ff4742;
 }
 
+
 .button-start:active {
   opacity: 0.5;
 }
@@ -156,3 +157,4 @@ body {
   pointer-events: none;
   user-select: none;
 }
+

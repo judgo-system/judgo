@@ -1,5 +1,14 @@
+html {
+  height: 100%;
+}
+
 body {
   font-family: "Open Sans", sans-serif;
+  height: 100%;
+}
+
+.main {
+  height: 100%;
 }
 
 .progress-container {
@@ -23,13 +32,13 @@ body {
 .progress-container h3 {
   text-align: center;
   margin-top: 10px;
-  font-size: 20px;
+  font-size: 14px;
   display: inline-block;
   position: absolute;
   color: #94b49f;
   width: 50px;
   margin-left: -25px;
-  margin-top: 15px;
+  margin-top: -12px;
 }
 
 .arrow-up {
@@ -40,7 +49,7 @@ body {
   border-bottom: 5px solid #94b49f;
   position: absolute;
   margin-left: -5px;
-  margin-top: 5px;
+  margin-top: -18px;
 }
 
 .container {
@@ -51,7 +60,7 @@ body {
 .documents {
   display: flex;
   width: 100%;
-  height: calc(100vh - 140px);
+  height: calc(100vh - 260px);
   justify-content: center;
   align-items: center;
 }
@@ -152,8 +161,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 60px;
+  height: 100px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  text-align: center;
 }
 
 .prev-document {
@@ -228,6 +238,11 @@ body {
   position: relative;
   display: flex;
   width: 100%;
+  justify-content: flex-end;
+  margin-right: 20px;
+  align-items: center;
+  margin-bottom: 0;
+  max-width: 400px;
 }
 
 .form-group .form-field {
@@ -247,6 +262,158 @@ body {
   margin-bottom: 0;
 }
 
-.form-group {
-  max-width: 250px;
+
+.highlight {
+    background-color: yellow;
+}
+#left-doc::-moz-selection { /* Code for Firefox */
+    background: yellow;
+}
+
+#left-doc::selection {
+    background: yellow;
+}
+         
+mark { 
+  background-color: rgb(239, 132, 223) !important; 
+  color: black !important;
+}
+
+.amsify-suggestags-area {
+  width: 400px;
+}
+
+.amsify-suggestags-area .amsify-suggestags-input-area {
+  height: 55px;
+  overflow: scroll;
+}
+
+.amsify-suggestags-area .amsify-suggestags-input-area .amsify-suggestags-input {
+  width: 100%;
+}
+
+
+.session-name {
+  margin-bottom: 10px;
+  font-size: 30px;
+}
+
+
+/* List of answer */
+
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.collapsible:after {
+  content: '\002B';
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #f1f1f1;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.best-answer-container {
+  width: 100%;
+  height: calc(100% - 70px);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.best-answer-container h2 {
+  background: #789395;
+  padding: 10px;
+  color: white;
+  font-size: 20px;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.best-answer-list {
+  width: 500px;
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+}
+
+.level-content {
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.tree-header {
+  text-align: center;
+  width: 100%;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 200px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  text-align: center;
+  /* margin-left: 100px; */
+}
+
+.tree-container {
+  height: 100px;
+}
+.previous-action {
+  margin: 10px;
+  text-align: center;
+}
+
+.tree-content {
+  height: 60px;
+  margin: 10px;
+  padding: 5px;
+  text-align: center;
+  overflow: auto;
+}
+
+
+
+.home-header {
+  width: calc(100% - 300px);
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  margin-right: 60px;
+  margin-left: 60px;
+}
+
+.home-message {
+  margin-left: 50px;
+  width: 100%;
+  text-align: center;
 }
