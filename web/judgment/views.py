@@ -1,3 +1,4 @@
+from cgitb import reset
 import math
 import re
 from urllib import request
@@ -129,8 +130,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         return HttpResponseRedirect(
                 reverse_lazy(
-                    'judgment:judgment', 
-                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+                    'core:home' 
                 )
             )
 
@@ -143,8 +143,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
-            
-            # print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+            print(requested_action)
+            print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -290,7 +290,7 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         
         context = super(DebugJudgmentView, self).get_context_data(**kwargs)
-        
+        print("salaaaaaaammm")
         if "judgment_id" in kwargs and 'user_id' in kwargs:
             
             # get the latest judment for this user and question
@@ -385,12 +385,9 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.parent.id}
                     )
                 )
-
         return HttpResponseRedirect(
                 reverse_lazy(
-                    'judgment:debug', 
-                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
-                )
+                    'core:home')
             )
 
     
@@ -483,5 +480,17 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             after_state = pref.evaluate(before_state, right, equal=True)
         
         return action, after_state
+
+    def highlight_document(self, text, highlight):
+        """
+        """
+        if not highlight:
+            return text
+        highlights = highlight.split("|||")
+
+        for part in highlights:
+            if part:
+                text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
+        return text
 
 

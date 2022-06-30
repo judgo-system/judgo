@@ -70,23 +70,22 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             state = pref.create_new_pref_obj(question)
 
 
-        if not prev_judge or not prev_judge.is_complete:
+        if not prev_judge or prev_judge.is_complete:
 
-            judgement = Judgment.objects.create(
+            prev_judge = Judgment.objects.create(
                     user=self.request.user,
                     task=task,
                     before_state=state,
                     parent=prev_judge,
                 )
+        user = User.objects.get(id=self.request.user.id)
+        user.latest_judgment = prev_judge
+        user.save()
 
-            user = User.objects.get(id=self.request.user.id)
-            user.latest_judgment = judgement
-            user.save()
-
-            return HttpResponseRedirect(
-                    reverse_lazy(
-                        'judgment:judgment', 
-                        kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
-                    )
+        return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
                 )
+            )
   
