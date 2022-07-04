@@ -45,9 +45,6 @@ INSTALLED_APPS = [
     'crispy_forms',  # Form layouts
     'allauth',  # registration
     'allauth.account',  # registration
-    # 'allauth.socialaccount',  # registration
-    # 'raven.contrib.django.raven_compat',
-    'notifications',
 
 
     'django.contrib.auth',
@@ -56,16 +53,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'user.apps.UsersConfig',
     'corsheaders',
-    'rest_framework',
     'core',
     'inquiry', 
     'response',
     'judgment',
-
-
 ]
 
 MIDDLEWARE = [

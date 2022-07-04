@@ -400,8 +400,6 @@ mark {
   overflow: auto;
 }
 
-
-
 .home-header {
   width: calc(100% - 300px);
   justify-content: center;
