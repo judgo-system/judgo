@@ -1,6 +1,7 @@
 # This module is written by Charles Clarke
 import pickle
 import random
+import math
 from inquiry.models import Question
 from response.models import Document
 
@@ -140,6 +141,10 @@ class pref(object):
                 seen.add(item)
         self.__equiv = []
 
+        total_len = self.__t.length()
+        self.total_judgment = (total_len - 1) + math.pow(((total_len-1) //2), 2)
+        self.cur_judgment = 0
+
     def __repr__(self):
         return repr([self.__t, self.__equiv])
 
@@ -210,6 +215,9 @@ class pref(object):
 
     def length(self):
         return self.__t.length()
+
+    def get_max_judgment(self):
+        return 
 
 
 def create_new_pref_obj(question):
@@ -283,6 +291,8 @@ def evaluate(pref_obj, element=None, equal=False):
         pref_obj.better(element)
     else:
         pref_obj.equivalent()
+    # increase number of judgment
+    pref_obj.cur_judgment += 1
 
     return pickle.dumps(pref_obj) 
 
@@ -317,3 +327,8 @@ def get_size(pref_obj):
     return pref_obj.length()
 
 
+def get_progress_count(pref_obj):
+
+    pref_obj = pickle.loads(pref_obj)
+    progress = 100 * (pref_obj.cur_judgment / pref_obj.total_judgment)     
+    return round(progress, 2)

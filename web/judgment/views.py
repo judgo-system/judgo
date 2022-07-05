@@ -51,7 +51,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             
             context['question_content'] = prev_judge.task.question.content
 
-            context["progress_bar_width"] = "0"
+            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
             context['state_object'] = pref.get_str(prev_judge.before_state)
             
@@ -239,29 +239,31 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     # def get_progress_count(self, prev_judge):
 
-    #     total_doc = Document.objects.filter(
-    #         base_question=prev_judge.task.question.id
-    #     ).count()
-    #     nominator = Judgment.objects.filter(
-    #         task=prev_judge.task.id
-    #     ).count()  - 1 
-    #     # 1- catalan number
-    #     # denominator = (math.factorial(total_doc)  / 
-    #     #     (math.factorial(total_doc-2) * math.factorial(2))) - 2
         
-    #     # 2- n + (n-1) + (n-2) + (n-3) + ... + 1
-    #     # denominator = total_doc * (total_doc - 1) / 4 
+        # work with db isn't good idea
+        # total_doc = Document.objects.filter(
+        #     base_question=prev_judge.task.question.id
+        # ).count()
+        # nominator = Judgment.objects.filter(
+        #     task=prev_judge.task.id
+        # ).count()  - 1 
+        # # 1- catalan number
+        # # denominator = (math.factorial(total_doc)  / 
+        # #     (math.factorial(total_doc-2) * math.factorial(2))) - 2
         
-    #     # 3- n + (n/2) + (n/4) + (n/8) + ... + 1
-    #     # https://math.stackexchange.com/questions/401937/how-is-nn-2n-4-1-equal-to-2n-1-using-the-formula-for-geometric-series
-    #     denominator = 2 * total_doc - 1 
+        # # 2- n + (n-1) + (n-2) + (n-3) + ... + 1
+        # # denominator = total_doc * (total_doc - 1) / 4 
         
-    #     progrss_count =  str(math.floor(nominator/ denominator * 100))
-    #     print(f"Progress Count = {progrss_count} judgment count {nominator} {denominator} {total_doc}")
-    #     return progrss_count
-    #     # remaining = pref.get_size(prev_judge.before_state)
+        # # 3- n + (n/2) + (n/4) + (n/8) + ... + 1
+        # # https://math.stackexchange.com/questions/401937/how-is-nn-2n-4-1-equal-to-2n-1-using-the-formula-for-geometric-series
+        # denominator = 2 * total_doc - 1 
+        
+        # progrss_count =  str(math.floor(nominator/ denominator * 100))
+        # print(f"Progress Count = {progrss_count} judgment count {nominator} {denominator} {total_doc}")
+        # return progrss_count
+        # # remaining = pref.get_size(prev_judge.before_state)
 
-    #     # return str(math.floor(( total_doc - remaining) / total_doc * 100) )
+        # # return str(math.floor(( total_doc - remaining) / total_doc * 100) )
 
 
 
@@ -309,7 +311,7 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['previous_action'] = dict(JudgingChoices.choices)[prev_judge.parent.action]
             context['tree_content'] = pref.get_str(prev_judge.before_state)
             
-            context["progress_bar_width"] = "0"
+            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
             context['state_object'] = pref.get_str(prev_judge.before_state)
             
