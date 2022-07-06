@@ -142,7 +142,7 @@ class pref(object):
         self.__equiv = []
 
         total_len = self.__t.length()
-        self.total_judgment = (total_len - 1) + math.pow(((total_len-1) //2), 2)
+        self.total_judgment = (total_len - 1) + math.pow(math.sqrt(total_len), 2)
         self.cur_judgment = 0
 
     def __repr__(self):

@@ -292,7 +292,6 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         
         context = super(DebugJudgmentView, self).get_context_data(**kwargs)
-        print("salaaaaaaammm")
         if "judgment_id" in kwargs and 'user_id' in kwargs:
             
             # get the latest judment for this user and question
@@ -434,11 +433,17 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                 prev_judge.save()
 
                 return HttpResponseRedirect(
-                reverse_lazy(
-                    'judgment:debug', 
-                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
-                )
-            )
+                    reverse_lazy(
+                        'inquiry:inquiry_complete', 
+                        kwargs = {"user_id" : user.id, "task_id": prev_judge.task.id}
+                    )
+                ) 
+            #     return HttpResponseRedirect(
+            #     reverse_lazy(
+            #         'judgment:debug', 
+            #         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+            #     )
+            # )
 
         if prev_judge.is_round_done:
             

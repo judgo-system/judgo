@@ -51,12 +51,18 @@
             </div>
 
 
-            <div class="form-group">
-                <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
-            </div>
-    
+            
+            <a href="{% url 'account_logout' %}">
+                <button class="button absolute-button btn-logout">Log out</button>
+            </a>
+
         </div>
 
+
+        <div class="form-group">
+            <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
+        </div>
+        
         <!-- "width: 35%" -->
         <div class="progress-container">
             <div class="progress">

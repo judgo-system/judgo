@@ -66,7 +66,7 @@ class InquiryCompleteView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(InquiryCompleteView, self).get_context_data(**kwargs)
 
-        task = Task.objects.get(id=self.kwargs['inquiry_id'])
+        task = Task.objects.get(id=self.kwargs['task_id'])
         context['question_content'] = task.question.content
         
         answer_list = {}

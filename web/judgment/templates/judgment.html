@@ -51,12 +51,16 @@
             </div>
 
 
-            <div class="form-group">
-                <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
-            </div>
-    
+            <a href="{% url 'account_logout' %}">
+                <button class="button absolute-button btn-logout">Log out</button>
+            </a>
+
         </div>
 
+
+        <div class="form-group">
+            <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
+        </div>
         <!-- "width: 35%" -->
         <div class="progress-container">
             <div class="progress">
@@ -110,9 +114,6 @@
 
                     </div>
                     
-                    <a href="{% url 'account_logout' %}">
-                        <button class="button absolute-button btn-logout">Log out</button>
-                    </a>
             </div>
         </div>
 
@@ -167,7 +168,7 @@
             return cookieValue;
         }
         mouseXPosition = 0;
-        
+
             $(document).ready(function () {
                 
                 const task_status = "{{task_status}}"
@@ -348,14 +349,13 @@
             }
 
 
-        
         function highlight_tags(search_area, tag){
             var textarea = $(search_area);    
             var enew = '';
             var query = new RegExp("("+tag+")", "gim"); 
             console.log(query)
             newtext= textarea.html().replace(query, "<mark>$1</mark>");    
-            textarea.html(newtext);   
+            textarea.html(newtext);
         }
 
         

@@ -9,6 +9,6 @@ urlpatterns = [
     re_path(r'^best_answer/(?P<user_id>\d+)/(?P<judgment_id>\d+)/', BestAnswersView.as_view(),
          name='best_answer'),
 
-    re_path(r'^inquiry_complete/(?P<user_id>\d+)/(?P<inquiry_id>\d+)/', InquiryCompleteView.as_view(),
+    re_path(r'^inquiry_complete/(?P<user_id>\d+)/(?P<task_id>\d+)/', InquiryCompleteView.as_view(),
          name='inquiry_complete'),
 ]
