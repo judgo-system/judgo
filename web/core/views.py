@@ -1,6 +1,4 @@
-
-from pdb import post_mortem
-import re
+import logging
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
@@ -13,6 +11,7 @@ from inquiry.models import Question
 from user.models import User
 from interfaces import pref
 
+logger = logging.getLogger(__name__)
 
 class Home(LoginRequiredMixin, generic.TemplateView):
     template_name = 'home.html'
@@ -66,7 +65,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             if prev_judge.after_state:
                 state = prev_judge.after_state
         except Exception as e:
-            print(f" There is no previous judgment for this question and user")
+            logger.warning(f"There is no previous judgment for question={question.content} and user={self.request.user.username}")
             state = pref.create_new_pref_obj(question)
 
 

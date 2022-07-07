@@ -136,6 +136,6 @@ dmypy.json
 data/
 
 # Django Static folders
-web/staticfiles
+web/staticfiles/
 web/fixtures/data
 .DS_Store

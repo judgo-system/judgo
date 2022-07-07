@@ -1,6 +1,4 @@
-from cgitb import reset
-import math
-import re
+import logging
 from urllib import request
 from braces.views import LoginRequiredMixin
 
@@ -11,6 +9,8 @@ from django.urls import reverse_lazy
 from response.models import Document, Response
 from judgment.models import Judgment, JudgingChoices
 from interfaces import pref
+
+logger = logging.getLogger(__name__)
 
 class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'judgment.html'
@@ -85,7 +85,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             # if there is no tag is we don't need to fill it out.
             if prev_judge.task.tags:
                 context['highlights'] = prev_judge.task.tags
-
+        
         return context
 
 
@@ -138,13 +138,11 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     def handle_judgment_actions(self, user, prev_judge, requested_action):
         """
         """
-        # print(f'before judgment: {pref.get_str(prev_judge.before_state)}')
         action, after_state = self.evaluate_after_state(requested_action, prev_judge.before_state)
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
-            print(requested_action)
-            print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+            logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -152,7 +150,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 parent=prev_judge.parent
             )
             
-        
+        logger.info(f"This user had action: {prev_judge.action} about judment {prev_judge.id}")
+
         # update pre_judge action
         prev_judge.action = action
         prev_judge.after_state = after_state
@@ -184,7 +183,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             )
 
         if prev_judge.is_round_done:
-            print(f'One round is finished! you are going to the next step!')
+            logger.info(f'One round is finished! you are going to the next step!')
 
         judgement = Judgment.objects.create(
                 user=user,
@@ -235,36 +234,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             if part:
                 text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
         return text
-
-
-    # def get_progress_count(self, prev_judge):
-
-        
-        # work with db isn't good idea
-        # total_doc = Document.objects.filter(
-        #     base_question=prev_judge.task.question.id
-        # ).count()
-        # nominator = Judgment.objects.filter(
-        #     task=prev_judge.task.id
-        # ).count()  - 1 
-        # # 1- catalan number
-        # # denominator = (math.factorial(total_doc)  / 
-        # #     (math.factorial(total_doc-2) * math.factorial(2))) - 2
-        
-        # # 2- n + (n-1) + (n-2) + (n-3) + ... + 1
-        # # denominator = total_doc * (total_doc - 1) / 4 
-        
-        # # 3- n + (n/2) + (n/4) + (n/8) + ... + 1
-        # # https://math.stackexchange.com/questions/401937/how-is-nn-2n-4-1-equal-to-2n-1-using-the-formula-for-geometric-series
-        # denominator = 2 * total_doc - 1 
-        
-        # progrss_count =  str(math.floor(nominator/ denominator * 100))
-        # print(f"Progress Count = {progrss_count} judgment count {nominator} {denominator} {total_doc}")
-        # return progrss_count
-        # # remaining = pref.get_size(prev_judge.before_state)
-
-        # # return str(math.floor(( total_doc - remaining) / total_doc * 100) )
-
 
 
 
@@ -394,13 +363,11 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
     
     def handle_judgment_actions(self, user, prev_judge, requested_action):
 
-        # print(f'before judgment: {pref.get_str(prev_judge.before_state)}')
         action, after_state = self.evaluate_after_state(requested_action, prev_judge.before_state)
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
             
-            # print(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
