@@ -141,6 +141,8 @@
             </div>
     </div>
     
+
+
     <!-- JavaScript Block -->
     <script>
 
@@ -293,7 +295,6 @@
                     },
                     success: function(result)
                     {
-                        console.log("left movafagh shodi")
                         console.log(result)
                     },
                     error: (error) => {
@@ -314,7 +315,6 @@
                         "X-CSRFToken": getCookie("csrftoken"),
                     },
                     success: function(result){
-                        console.log("right movafagh shodi")
                         console.log(result)
                     },
                     error: (error) => {
@@ -348,23 +348,87 @@
                 }
             }
 
+        // color list 
+        const colorGlobalList = ["#E6E6FA","#D8BFD8","#DDA0DD","#EE82EE","#DA70D6",
+        "#FF00FF","#FF00FF","#BA55D3","#9370DB","#663399","#8A2BE2","#9400D3",
+        "#9932CC","#8B008B","#800080","#4B0082","#6A5ACD","#483D8B","#7B68EE"]
 
         function highlight_tags(search_area, tag){
+            
+            if (tag.length <2) return
+
             var textarea = $(search_area);    
             var enew = '';
             var query = new RegExp("("+tag+")", "gim"); 
-            console.log(query)
-            newtext= textarea.html().replace(query, "<mark>$1</mark>");    
+            
+            tagLower = tag.toLowerCase()
+            var randomColor;
+            var tagColorDic = localStorage['colorDic']
+            var colorList = localStorage['colorList']
+            
+            
+            if (tagColorDic==null){
+                tagColorDic = {}
+            }else{
+                tagColorDic = JSON.parse(tagColorDic);
+            }
+            if(colorList==null){
+                colorList = colorGlobalList
+            }else{
+                colorList = JSON.parse(colorList);
+            }
+
+            if (tagLower in tagColorDic){
+                randomColor = tagColorDic[tagLower]
+            }else{
+                randomColor = colorList.shift()
+                tagColorDic[tagLower] = randomColor
+
+                localStorage['colorList'] = JSON.stringify(colorList);
+                localStorage['colorDic'] = JSON.stringify(tagColorDic);
+            }
+            
+            const markTag = "<mark style='background: "+ randomColor +"!important'>"
+            
+            newtext= textarea.html().replace(query, markTag+"$1</mark>");    
             textarea.html(newtext);
         }
 
         
-        function dehighlight_tags(search_area, tag){
+        function dehighlight_tags(search_area, tag, second){
             var textarea = $(search_area);    
             var enew = ''; 
-            var query = new RegExp("(<mark>"+tag+"</mark>)", "gim");    
-            newtext= textarea.html().replace(query, tag);    
-            textarea.html(newtext);   
+            var tagColorDic = localStorage['colorDic']
+            var colorList = localStorage['colorList']
+            
+            
+            tagColorDic = JSON.parse(tagColorDic);
+            colorList = JSON.parse(colorList);
+
+            randomColor = tagColorDic[tag.toLowerCase()]
+
+            if (second == true){
+
+                colorList.push(randomColor)
+                delete tagColorDic[tag.toLowerCase()]
+
+                localStorage['colorList'] = JSON.stringify(colorList);
+                localStorage['colorDic'] = JSON.stringify(tagColorDic);
+
+            }
+            const markTag = "<mark style=\"background: " + randomColor + "!important\">"
+            var query = new RegExp("("+markTag+tag+"</mark>)", "gim");   
+            
+            cases = textarea.html().match(query)
+            
+            if (cases !=null){
+                for (let i = 0; i < cases.length; i++) { 
+                    t = cases[i].replace(markTag,"");
+                    t = t.replace("</mark>","");
+                    newtext= textarea.html().replace(cases[i], t);    
+                    textarea.html(newtext); 
+                }
+            }
         }
 
 
@@ -410,16 +474,11 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    dehighlight_tags("#left-doc", value)
-                    dehighlight_tags("#right-doc", value)
-
+                    dehighlight_tags("#left-doc", value, false)
+                    dehighlight_tags("#right-doc", value, true)
                 });
             },
-
-
         });
-
-
     </script>
 </body>
 </html>
