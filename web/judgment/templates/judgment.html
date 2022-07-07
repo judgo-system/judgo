@@ -356,6 +356,20 @@
         function highlight_tags(search_area, tag){
             
             if (tag.length <2) return
+            
+            // in the case there is more than one word in tag
+            splited = tag.split(" ")
+            if (splited.length > 1){
+                temp = ""
+                for (let i = 0; i < splited.length; i++) { 
+                   if(i ==splited.length || i ==0){
+                    temp += splited[i]
+                   }else{
+                    temp += "[^a-zA-Z\d]" + splited[i]
+                   }
+                }
+                tag = temp
+            }
 
             var textarea = $(search_area);    
             var enew = '';
@@ -398,6 +412,21 @@
         function dehighlight_tags(search_area, tag, second){
             var textarea = $(search_area);    
             var enew = ''; 
+
+            // in the case there is more than one word in tag
+            splited = tag.split(" ")
+            if (splited.length > 1){
+                temp = ""
+                for (let i = 0; i < splited.length; i++) { 
+                   if(i ==splited.length || i ==0){
+                    temp += splited[i]
+                   }else{
+                    temp += "[^a-zA-Z\d]" + splited[i]
+                   }
+                }
+                tag = temp
+            }
+
             var tagColorDic = localStorage['colorDic']
             var colorList = localStorage['colorList']
             
