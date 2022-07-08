@@ -150,7 +150,7 @@ LOGGING = {
         },
         'django.security.DisallowedHost': {
             'level': 'ERROR',
-            'handlers': ['file', 'mail_admins', ],
+            'handlers': ['mail_admins', ],
             'propagate': True
         }
     }
