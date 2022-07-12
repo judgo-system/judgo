@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
 
     "default": {
-        "ENGINE":  "django.db.backends.postgresql",
+        "ENGINE":  env("ENGINE"),
         "NAME": env("NAME"),
         "USER": env("USER"),
         "PASSWORD": env("PASSWORD"),
@@ -216,7 +216,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
