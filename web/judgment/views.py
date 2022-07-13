@@ -62,6 +62,11 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             right_doc = Document.objects.get(uuid=right)
             left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
             right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
+
+            prev_judge.left_response = left_response
+            prev_judge.right_response = right_response
+            prev_judge.save()
+
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
 
@@ -290,6 +295,11 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             right_doc = Document.objects.get(uuid=right)
             left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
             right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
+            
+            prev_judge.left_response = left_response
+            prev_judge.right_response = right_response
+            prev_judge.save()
+
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
 

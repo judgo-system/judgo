@@ -8,4 +8,4 @@ class Question(models.Model):
     content = models.TextField(null=False)
 
     def __str__(self):
-        return f"{self.id}: ({self.question_id}, {self.content})"
+        return f"({self.question_id}, {self.content})"
