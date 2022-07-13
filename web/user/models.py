@@ -10,9 +10,6 @@ from judgment.models import Judgment
 class User(AbstractUser):
 
     name = models.CharField(_('Name of User'), blank=True, max_length=255)
-
-    is_reviewer = models.BooleanField(default=False)
-
     
     latest_judgment = models.OneToOneField(
         Judgment, blank=True, 
