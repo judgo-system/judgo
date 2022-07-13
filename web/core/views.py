@@ -4,7 +4,7 @@ from braces.views import LoginRequiredMixin
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-
+from datetime import datetime
 from .models import Task
 from judgment.models import Judgment
 from inquiry.models import Question
@@ -19,6 +19,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
 
+
         tasks = Task.objects\
             .filter(user_id=self.request.user, is_completed=False)\
             .order_by('created_at')
@@ -31,12 +32,15 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             context["task_exist"] = 'false'
             context["message"] = 'There is no quesiton to review right now.'      
 
+        if not self.request.user.first_login_time:
+            self.request.user.first_login_time = datetime.now()
+            self.request.user.save()
+            context["instruction_visibility"] = "yes"
 
         return context
 
     def get(self, request, *args, **kwargs):
 
-        # if user is an admin it should reroute to admin page 
         if request.user.is_superuser:
             return HttpResponseRedirect(reverse_lazy('admin:index'))
 

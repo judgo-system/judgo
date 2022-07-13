@@ -122,22 +122,21 @@
     <!-- COMPLETE TASK MODAL -->
     <div class="modal fade" id="ccomplete-modal" role="dialog">
         <div class="modal-dialog">
-        
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header" style="padding:35px 50px;">
-                <h3>This task is DONE!</h3>
-            </div>
-            <div class="modal-body" style="padding:40px 50px;">
-                <form method='post'>
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-success btn-block" name="back_home">
-                            Home
-                    </button>
-                </form>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="padding:35px 50px;">
+                    <h3>This task is DONE!</h3>
                 </div>
-            </div>
-            </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                    <form method='post'>
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-block" name="back_home">
+                                Home
+                        </button>
+                    </form>
+                    </div>
+                </div>
+        </div>
     </div>
     
 

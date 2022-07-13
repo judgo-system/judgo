@@ -1,42 +1,3 @@
-<!-- {% load i18n static has_group crispy_forms_tags  %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
-
-
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <title>Preference Judgment Home</title>
-</head>
-<body>
-
-    <div class="main-page">
-        <h1 class="header">
-            There is no task to review!
-        </h1>
-    </div>
-
-    <div class="container">
-        <div class="question">
-            <p>You can log out!</p>
-
-                <div class="answer-box">
-                <form method='post' action="{% url 'account_logout' %}">
-                    {% csrf_token %}
-                    <button class="button" type="submit" value="right" name="right">Logout</button>
-                </form>  
-                </div>
-
-        </div>
-    </div>            
-</body> -->
 {% load i18n static has_group crispy_forms_tags  %}
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/home-style.css' %}" />
     <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
@@ -52,6 +17,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <title>Preference Judgment Home</title>
 </head>
 <body>
@@ -115,11 +81,46 @@
 
     </div>
     
+
+    <!-- INSTRUCTION MODAL -->
+    <div class="modal fade" id="instruction-modal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header"  style="padding:35px 50px;">
+                    <h3 class="modal-bold">Instruction on Judgment Preference Task</h3>
+                </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                    <p class="modal-sentence"> <strong class="modal-bold">Step 1 :</strong>Choose a topic from topic box and click on Start Judgment button.</p>
+
+                    <p class="modal-sentence"> <strong class="modal-bold">Step 2 :</strong> On the judgment page, you see two documents related to the topic. Choose the one which is more related to the topic. You have three options, including LEFT, RIGHT, and EQUAL. You also can go back using UNDO button and change your mind about your previous judgments.
+                    </p>
+                    
+                    <p class="modal-sentence"> <strong class="modal-bold">Note :</strong>Your consistency is essential in this system! We may show some random judgment from your previous judgment to measure your accuracy.</p>
+                    
+                </div>
+                <div class="modal-footer">
+
+                    <button type="submit" class="btn btn-success btn-block" data-dismiss="modal">
+                        I understood!
+                    </button>
+                </div>
+                </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script>
+         $(document).ready(function () {
+            const task_status = "{{instruction_visibility}}"
+            if(task_status=="yes"){
+                console.log("give me instruction")
+                $("#instruction-modal").modal({backdrop: 'static', keyboard: false});
+            }
+         });
+        
         localStorage.clear()
         var task_exist = "{{task_exist}}"
-        console.log(task_exist)
         if(task_exist=="false"){
             document.getElementById('container').style.display = 'none';
         }
