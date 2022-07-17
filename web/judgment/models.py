@@ -1,7 +1,5 @@
 from django.db import models
 
-# from core.models import Session
-# from inquiry.models import Inquiry
 from core.models import Task
 from response.models import Response
 from web.settings import AUTH_USER_MODEL as User
@@ -45,6 +43,12 @@ class Judgment(models.Model):
     #  all documents sorted in the best_answers.
     is_complete = models.BooleanField(default=False)
 
+    # Indicate if user decided to change this or not!
+    has_changed = models.BooleanField(default=False)
+
+    # Indicate if this judgment is used for test or not!
+    is_tested = models.BooleanField(default=False)    
+
     left_response = models.ForeignKey(
         Response, on_delete=models.CASCADE, 
         related_name="left_response", null=True, blank=True
@@ -67,10 +71,32 @@ class Judgment(models.Model):
 
 
     def __str__(self):
-        if self.left_response and self.right_response:
-            return "(USERNAME: {}, QUESTION{}, LEFT RESPONSE: {}, RIGHT RESPONSE: {})".format(
-                self.user.username, self.task.question, self.left_response.document, self.right_response.docuemnt
-            )            
-        return "(USERNAME: {}, QUESTION{}, )".format(
+        # if self.left_response and self.right_response:
+        #     return "(USERNAME: {}, QUESTION{}, LEFT RESPONSE: {}, RIGHT RESPONSE: {})".format(
+        #         self.user.username, self.task.question, self.left_response.document, self.right_response.docuemnt
+            # )            
+        return "(ID: {} USERNAME: {}, QUESTION{}, )".format(self.pk,
             self.user.username, self.task.question 
         )
+
+
+class JudgmentConsistency(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+
+    judgment = models.ForeignKey(Judgment, on_delete=models.CASCADE)
+
+    previous_action = models.CharField(max_length=10)
+    
+    current_action =  models.CharField(max_length=10)
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def __str__(self) -> str:
+        return f'(User:{self.user.username}, \
+            Question:{self.task.question.content}, \
+            Judgment:{self.judgment.id}, \
+            Previous Action: {self.previous_action} \
+            Current Action: {self.current_action})'

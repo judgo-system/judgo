@@ -17,6 +17,15 @@ class User(AbstractUser):
         related_name="+"
     )
 
+    latest_test_judgment = models.OneToOneField(
+        Judgment, blank=True, 
+        null=True, on_delete=models.SET_NULL,
+        related_name="+"
+    )
+    
+    # indicate if user currently should review test judgment or not!
+    is_tested = models.BooleanField(default=False)
+
     first_login_time = models.DateTimeField(blank=True, null=True)
     
     last_active_time = models.DateTimeField(auto_now_add=True)

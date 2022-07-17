@@ -66,7 +66,3 @@ python manage.py runserver
 ```
 
 Step 4- Open http://0.0.0.0:8000/
-
-
-
-

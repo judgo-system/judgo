@@ -1,12 +1,14 @@
+import uuid
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import Task
+from response.models import Document
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     list_display = ('id', 'view_user', 'view_question', 'is_completed', 'num_ans',
-        'best_answers', 'tags', 'created_at')
+        'view_best_answer', 'tags', 'created_at')
 
     list_filter = ['is_completed', 'user__username', 'created_at']
     search_fields = ['user__username', 'question__question_id']
@@ -18,7 +20,24 @@ class TaskAdmin(admin.ModelAdmin):
 
     def view_question(self, obj):
         url = reverse("admin:inquiry_question_change", args=(obj.question.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.question.question_id)
+        return format_html('<a href="{}">{}</a>', url, obj.question.content)
+
+    def view_best_answer(self, obj):
+        if not obj.best_answers:
+            return None
+        best_answer = obj.best_answers.split('--')[1:]
+        admin_best_ans = ""
+        for i, ans in enumerate(best_answer):
+            temp = ans.split("|")[:-1]
+            if temp:
+                admin_best_ans += f'\n\Grade {i+1}:\n\n'
+            for doc in temp:
+                d = Document.objects.get(uuid=doc)
+                url = reverse("admin:response_document_change", args=(d.id,))
+                admin_best_ans += f"(<a href={url}>{doc}</a>)"
+        
+        return format_html(admin_best_ans)
 
     view_user.short_description = "user"
     view_question.short_description = "question"
+    view_best_answer.short_description = "Best Answer"

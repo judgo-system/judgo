@@ -59,7 +59,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         question = Question.objects.get(id=task.question.id)
 
         prev_judge = None
-
         try:
             prev_judge = Judgment.objects.filter(
                     user = self.request.user.id,
@@ -71,8 +70,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         except Exception as e:
             logger.warning(f"There is no previous judgment for question={question.content} and user={self.request.user.username}")
             state = pref.create_new_pref_obj(question)
-
-
+                    
         if not prev_judge or prev_judge.is_complete:
 
             prev_judge = Judgment.objects.create(
@@ -83,6 +81,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                 )
         user = User.objects.get(id=self.request.user.id)
         user.latest_judgment = prev_judge
+        # user.is_tested=False
         user.save()
 
         return HttpResponseRedirect(

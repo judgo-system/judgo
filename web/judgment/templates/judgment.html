@@ -101,9 +101,9 @@
             </div>
             <div class="question">
                 <p>Which one do you prefer?</p>
-                
+                <!-- action="{% url 'judgment:judgment'%}" -->
                     <div class="answer-box">
-                        <form method='post' action="{% url 'judgment:judgment'%}">
+                        <form method='post'>
                                 {% csrf_token %}
                             <button class="button" type="submit" value="left" name="left">Left</button>
                             <button class="button" type="submit" value="equal" name="equal">Equal</button>
