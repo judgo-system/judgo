@@ -25,4 +25,4 @@ class Task(models.Model):
 
 
     def __str__(self) -> str:
-        return f'{self.id} -- {self.created_at} -- {self.user} -- {self.question.content} '
+        return f'(User:{self.user.username}, Question:{self.question.content})'

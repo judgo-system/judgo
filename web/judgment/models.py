@@ -67,10 +67,6 @@ class Judgment(models.Model):
 
 
     def __str__(self):
-        return "{} is judging question {}\n" \
-        "the left docuemnt is {}\n" \
-        " the right document is {} " \
-        "the action made by user is {}".format(
-            self.user, self.task, self.left_response, 
-            self.right_response, self.action
+        return "(ID: {} USERNAME: {}, QUESTION{}, )".format(self.pk,
+            self.user.username, self.task.question 
         )

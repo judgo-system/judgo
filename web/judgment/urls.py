@@ -1,7 +1,8 @@
 from django.urls import path
 from django.urls.conf import re_path
 
-from judgment.views import JudgmentView, DebugJudgmentView
+from judgment.views import JudgmentView
+from judgment.debug_view import DebugJudgmentView
 
 app_name = "judgment"
 
