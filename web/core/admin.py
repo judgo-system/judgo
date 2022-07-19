@@ -7,20 +7,20 @@ from response.models import Document
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'view_user', 'view_question', 'is_completed', 'num_ans',
+    list_display = ('id', 'view_user', 'view_topic', 'is_completed', 'num_ans',
         'view_best_answer', 'tags', 'created_at')
 
     list_filter = ['is_completed', 'user__username', 'created_at']
-    search_fields = ['user__username', 'question__question_id']
+    search_fields = ['user__username', 'topic__topic_id']
 
 
     def view_user(self, obj):
         url = reverse("admin:user_user_change", args=(obj.user.id,))
         return format_html('<a href="{}">{}</a>', url, obj.user.username)
 
-    def view_question(self, obj):
-        url = reverse("admin:inquiry_question_change", args=(obj.question.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.question.content)
+    def view_topic(self, obj):
+        url = reverse("admin:topic_topic_change", args=(obj.topic.id,))
+        return format_html('<a href="{}">{}</a>', url, obj.topic.title)
 
     def view_best_answer(self, obj):
         if not obj.best_answers:
@@ -39,5 +39,32 @@ class TaskAdmin(admin.ModelAdmin):
         return format_html(admin_best_ans)
 
     view_user.short_description = "user"
-    view_question.short_description = "question"
+    view_topic.short_description = "topic"
     view_best_answer.short_description = "Best Answer"
+
+
+
+
+user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)    
+
+    # if step 1 which is to check if documents are usefull for topic or not is complete.
+    usefulness_checked = models.BooleanField(default=False)
+    
+    # if step 2 which is to check if documents are support topic or not is complete.
+    support_checked = models.BooleanField(default=False)
+    
+    # if step 3 which is to check if documents are support topic or not is complete.
+    credibility_checked = models.BooleanField(default=False)
+    
+    # user can have several keyword to highlight in documents
+    tags = models.TextField(null=True, blank=True)
+
+    # number of best answer so far in step 3.
+    num_ans = models.IntegerField(default=0)
+
+    # a list for saving best answer in step3 
+    best_answers = models.TextField(null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)

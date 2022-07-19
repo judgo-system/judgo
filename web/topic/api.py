@@ -1,7 +1,7 @@
 import json
 
 from django.http import HttpResponseBadRequest, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 
 from core.models import Task
 

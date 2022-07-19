@@ -18,7 +18,7 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
         context = super(BestAnswersView, self).get_context_data(**kwargs)
 
         prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-        context['question_content'] = prev_judge.task.question.content
+        context['question_content'] = prev_judge.task.topic.title
         answer_list = prev_judge.task.best_answers.split('--')[-1].split('|')[:-1]
         documets = []
         for answer in answer_list:
@@ -67,7 +67,7 @@ class InquiryCompleteView(LoginRequiredMixin, generic.TemplateView):
         context = super(InquiryCompleteView, self).get_context_data(**kwargs)
 
         task = Task.objects.get(id=self.kwargs['task_id'])
-        context['question_content'] = task.question.content
+        context['question_content'] = task.topic.title
         
         answer_list = {}
         for i, answer in enumerate(task.best_answers.split('--')[1:]):
