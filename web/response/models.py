@@ -29,3 +29,7 @@ class Response(models.Model):
 
     # Each user, user can highlight several parts of documents
     highlight = models.TextField(null=True)
+
+
+    def __str__(self):
+        return f"{self.document.uuid}"

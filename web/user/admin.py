@@ -3,7 +3,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.forms import UserCreationForm
-
+from django.urls import reverse
+from django.utils.html import format_html
 from .models import User
 
 
@@ -38,9 +39,30 @@ class MyUserAdmin(AuthUserAdmin):
             ('User Profile', {'fields': ('first_name', 'last_name', 'username')}),
     ) + AuthUserAdmin.fieldsets
     fieldsets = (
-            ('User Profile', {'fields': ('name', 'is_reviewer')}),
+            ('User Profile', {'fields': ('name', 'first_login_time')}),
     ) + AuthUserAdmin.fieldsets
 
-    list_display = ('username', 'name', 'is_superuser')
+    list_display = ('username', 'is_superuser', 'is_tested', 'first_login_time', 'last_active_time', \
+        'view_latest_judgment', 'view_latest_test_judgment')
+    list_filter = ['is_superuser', 'last_active_time']
     search_fields = ['username']
 
+    def view_latest_judgment(self, obj):
+        if not obj.latest_judgment:
+            return None
+        id = obj.latest_judgment.id
+        url = reverse("admin:judgment_judgment_change", args=(id,))
+        
+        return format_html('<a href="{}">{} Judgment</a>', url, id)
+
+
+    def view_latest_test_judgment(self, obj):
+        if not obj.latest_test_judgment:
+            return None
+        id = obj.latest_test_judgment.id
+        url = reverse("admin:judgment_judgment_change", args=(id,))
+        
+        return format_html('<a href="{}">{} Judgment</a>', url, id)
+
+    view_latest_judgment.short_description = "latest judgment"
+    view_latest_test_judgment.short_description = "latest test judgment"

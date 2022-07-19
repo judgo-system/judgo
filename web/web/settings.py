@@ -105,7 +105,7 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
 
     "default": {
-        "ENGINE":  "django.db.backends.postgresql",
+        "ENGINE":  env("ENGINE"),
         "NAME": env("NAME"),
         "USER": env("USER"),
         "PASSWORD": env("PASSWORD"),
@@ -150,7 +150,7 @@ LOGGING = {
         },
         'django.security.DisallowedHost': {
             'level': 'ERROR',
-            'handlers': ['file', 'mail_admins', ],
+            'handlers': ['mail_admins', ],
             'propagate': True
         }
     }
