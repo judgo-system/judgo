@@ -12,8 +12,6 @@ from interfaces import pref
 
 logger = logging.getLogger(__name__)
 
-
-
 class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'judgment_debug.html'
     
