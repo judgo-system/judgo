@@ -27,10 +27,7 @@ for i, t in p.iterrows():
 
         q = Question.objects.get(question_id=d[t[0]])
         try:
-            # content = t[1].replace("<", "&lt;")
-            # content = content.replace(">", "&gt;")
             content = html.escape(t[1])
-            # print(content)
             Document.objects.create(uuid=t[0], content=" "+ content, base_question=q)
         except Exception as e:
             print(e)
