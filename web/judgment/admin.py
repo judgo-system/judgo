@@ -23,7 +23,6 @@ class JudgmentAdmin(admin.ModelAdmin):
 
     def view_left_response(self, obj):
         if not obj.left_response:
-            print('inja??? :|')
             return None
         url = reverse("admin:response_response_change", args=(obj.left_response.id,))
         return format_html('<a href="{}">({})</a>', url, obj.left_response.document.uuid)
@@ -31,7 +30,6 @@ class JudgmentAdmin(admin.ModelAdmin):
 
     def view_right_response(self, obj):
         if not obj.right_response:
-            print('onja??')
             return None
         url = reverse("admin:response_response_change", args=(obj.right_response.id,))
         return format_html('<a href="{}">({})</a>', url, obj.right_response.document.uuid)

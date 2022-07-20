@@ -237,7 +237,9 @@ def create_new_pref_obj(question):
         docs_list.append(d.uuid)
     random.shuffle(docs_list)
     pref_obj = pref(docs_list)
-
+    print("===========================")
+    print(pref_obj)
+    print("===========================")
     return pickle.dumps(pref_obj) 
 
 

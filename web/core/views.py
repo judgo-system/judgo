@@ -1,3 +1,4 @@
+import sys
 import logging
 from braces.views import LoginRequiredMixin
 
@@ -12,6 +13,7 @@ from user.models import User
 from interfaces import pref
 
 logger = logging.getLogger(__name__)
+sys.setrecursionlimit(10000)
 
 class Home(LoginRequiredMixin, generic.TemplateView):
     template_name = 'home.html'
