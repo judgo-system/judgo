@@ -31,7 +31,7 @@ class Step1JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         # for taging and highlighting purpose
         response.set_cookie("task_id", self.task_id)
-        response.set_cookie("left_doc_id", self.left_doc_id)
+        response.set_cookie("right_doc_id", self.left_doc_id)
 
         return response
 
@@ -68,6 +68,8 @@ class Step1JudgmentView(LoginRequiredMixin, generic.TemplateView):
             context['document_id'] = doc_id
             doc = Document.objects.get(uuid=doc_id)
             response, _ = Response.objects.get_or_create(user=self.request.user, document=doc)
+            self.right_doc_id = response.id
+
             prev_judge.response = response
             prev_judge.save()
 
@@ -90,7 +92,6 @@ class Step1JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         if 'prev' in request.POST: 
             judgment = Step1Judgment.objects.get(id=request.POST["prev"])
             return self.handle_prev_button(request.user, judgment)

@@ -262,36 +262,37 @@
 
             $("button").click( function(e3){
                 var right_doc_highlights = "";
-                var left_doc_highlights = "";
+                // var left_doc_highlights = "";
 
                 $('.highlight').each(function(e4){
-                    if ($(this).parent().attr("id")=='left-doc'){
-                        left_doc_highlights +=  $(this).html() + "|||"
-                    }else{
+                    if ($(this).parent().attr("id")=='right-doc'){
                         right_doc_highlights +=  $(this).html() + "|||"
                     }
+                    // else{
+                    //     right_doc_highlights +=  $(this).html() + "|||"
+                    // }
                 });
                 
-                var data = {"highlight": left_doc_highlights}
-                $.ajax
-                ({ 
-                    url: "/../../add_highlight/" + getCookie("left_doc_id") + "/" ,
-                    data: JSON.stringify(data),
-                    method: 'PUT',
+                // var data = {"highlight": left_doc_highlights}
+                // $.ajax
+                // ({ 
+                //     url: "/../../add_highlight/" + getCookie("left_doc_id") + "/" ,
+                //     data: JSON.stringify(data),
+                //     method: 'PUT',
 
-                    credentials: "same-origin",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "X-CSRFToken": getCookie("csrftoken"),
-                    },
-                    success: function(result)
-                    {
-                        console.log(result)
-                    },
-                    error: (error) => {
-                        console.log(error)
-                    },
-                });
+                //     credentials: "same-origin",
+                //     headers: {
+                //         "X-Requested-With": "XMLHttpRequest",
+                //         "X-CSRFToken": getCookie("csrftoken"),
+                //     },
+                //     success: function(result)
+                //     {
+                //         console.log(result)
+                //     },
+                //     error: (error) => {
+                //         console.log(error)
+                //     },
+                // });
                 var data = {"highlight": right_doc_highlights}
 
                 $.ajax
@@ -361,7 +362,8 @@
                 }
                 tag = temp
             }
-
+            
+            console.log("miad?")
             var textarea = $(search_area);    
             var enew = '';
             var query = new RegExp("("+tag+")", "gim"); 
@@ -472,7 +474,6 @@
                     response.json()
                 )
                 .then(data => {
-                    highlight_tags("#left-doc", value)
                     highlight_tags("#right-doc", value)
 
                 });
@@ -494,7 +495,6 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    dehighlight_tags("#left-doc", value, false)
                     dehighlight_tags("#right-doc", value, true)
                 });
             },

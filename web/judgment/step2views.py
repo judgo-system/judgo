@@ -31,7 +31,7 @@ class Step2JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         # for taging and highlighting purpose
         response.set_cookie("task_id", self.task_id)
-        response.set_cookie("left_doc_id", self.left_doc_id)
+        response.set_cookie("right_doc_id", self.left_doc_id)
 
         return response
 
@@ -47,7 +47,7 @@ class Step2JudgmentView(LoginRequiredMixin, generic.TemplateView):
             context["judgment_id"] = self.kwargs['judgment_id']
             context["task_id"] = prev_judge.task.id
             context["step_name"] = "STEP 2 "
-            
+
             
             if prev_judge.is_complete:
                 context["task_status"] = "complete"
@@ -68,6 +68,8 @@ class Step2JudgmentView(LoginRequiredMixin, generic.TemplateView):
             context['document_id'] = doc_id
             doc = Document.objects.get(uuid=doc_id)
             response, _ = Response.objects.get_or_create(user=self.request.user, document=doc)
+            self.right_doc_id = response.id
+
             prev_judge.response = response
             prev_judge.save()
 
