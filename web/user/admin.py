@@ -42,18 +42,17 @@ class MyUserAdmin(AuthUserAdmin):
             ('User Profile', {'fields': ('name', )}),
     ) + AuthUserAdmin.fieldsets
 
-    list_display = ('username', 'is_superuser', 'last_active_time', \
-        'view_latest_judgment')
+    list_display = ('username', 'is_superuser', 'last_active_time')
     list_filter = ['is_superuser', 'last_active_time']
     search_fields = ['username']
 
-    def view_latest_judgment(self, obj):
-        if not obj.latest_judgment:
-            return None
-        id = obj.latest_judgment.id
-        url = reverse("admin:judgment_judgment_change", args=(id,))
+    # def view_latest_judgment(self, obj):
+    #     if not obj.latest_judgment:
+    #         return None
+    #     id = obj.latest_judgment.id
+    #     url = reverse("admin:judgment_judgment_change", args=(id,))
         
-        return format_html('<a href="{}">{} Judgment</a>', url, id)
+    #     return format_html('<a href="{}">{} Judgment</a>', url, id)
 
 
-    view_latest_judgment.short_description = "latest judgment"
+    # view_latest_judgment.short_description = "latest judgment"

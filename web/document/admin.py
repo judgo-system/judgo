@@ -9,6 +9,7 @@ class DocumentAdmin(admin.ModelAdmin):
     list_display = ('uuid', 'content', 'view_topic')
     search_fields = ['uuid', "topics__uuid", 'content']
     list_filter = ['topics__uuid']
+    
     def view_topic(self, obj):
         url = reverse("admin:topic_topic_change", args=(obj.topics.id,))
         return format_html('<a href="{}">{}</a>', url, obj.topics.uuid)
@@ -28,7 +29,7 @@ class ResponseAdmin(admin.ModelAdmin):
 
     def view_document(self, obj):
         
-        url = reverse("admin:response_document_change", args=(obj.document.id,))
+        url = reverse("admin:document_document_change", args=(obj.document.id,))
         return format_html('<a href="{}">({})</a>', url, obj.document.uuid)
 
     view_user.short_description = "user"

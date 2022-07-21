@@ -3,10 +3,21 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from .models import Task
+# from import_export import resources
+from import_export.admin import ExportMixin
 from document.models import Document
 
+# class TaskResource(resources.ModelResource):
+
+#     class Meta:
+#         model = Task
+#         fields = ('id', 'user__username', 'topic__content',)
+
+
 @admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
+class TaskAdmin(ExportMixin, admin.ModelAdmin):
+    # resource_class = TaskResource
+
     list_display = ('id', 'view_user', 'view_topic', 'step1_checked', \
         'step2_checked', 'step3_checked', 'num_doc_step1',
         'num_doc_step2', 'num_ans',

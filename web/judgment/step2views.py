@@ -54,7 +54,7 @@ class Step2JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 return context
 
             self.task_id = prev_judge.task.id
-            context['question'] = "Is this document is credible for this topic?"
+            context['question'] = "Is this document CREDIBLE for this topic?"
 
             context['question_content'] = prev_judge.task.topic.title
             doc_list = pickle.loads(prev_judge.state)
@@ -154,12 +154,21 @@ class Step2JudgmentView(LoginRequiredMixin, generic.TemplateView):
         doc_list.pop()
 
         if doc_list:
-            judgement = Step2Judgment.objects.create(
-                user=user,
-                task=prev_judge.task,
-                state=pickle.dumps(doc_list),
-                previous=prev_judge
-                )
+
+            # check if there is any previous judgment for this task!
+            judgement = Step2Judgment.objects.filter(
+               user=user,
+               task=prev_judge.task,
+               previous=prev_judge 
+            ).first()
+            
+            if not judgement:
+                judgement = Step2Judgment.objects.create(
+                    user=user,
+                    task=prev_judge.task,
+                    state=pickle.dumps(doc_list),
+                    previous=prev_judge
+                    )
 
             # user.latest_Step2_judgment = judgement
             user.save()
