@@ -17,13 +17,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from inquiry.api import add_tag, remove_tag
-from response.api import add_highlight, remove_highlight
+from topic.api import add_tag, remove_tag
+from document.api import add_highlight, remove_highlight
 
 urlpatterns = [
     # path('', include('core.urls', namespace='core')),
     path('', include('core.urls', namespace='core')),
-    path('inquiry/', include('inquiry.urls', namespace='inquiry')),
+    path('topic/', include('topic.urls', namespace='topic')),
     path('judgment/', include('judgment.urls', namespace='judgment')),
     path('admin/', admin.site.urls),
 

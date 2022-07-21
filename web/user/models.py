@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 # from core.models import Session
-from judgment.models import Judgment
+from judgment.models import Step1Judgment, Step2Judgment, Step3Judgment
 
 class User(AbstractUser):
 
@@ -13,8 +13,20 @@ class User(AbstractUser):
 
     is_reviewer = models.BooleanField(default=False)
     
+    latest_step1_judment = models.OneToOneField(
+        Step1Judgment, blank=True, 
+        null=True, on_delete=models.SET_NULL,
+        related_name="+"
+    )
+
+    latest_step2_judment = models.OneToOneField(
+        Step2Judgment, blank=True, 
+        null=True, on_delete=models.SET_NULL,
+        related_name="+"
+    )
+    
     latest_judgment = models.OneToOneField(
-        Judgment, blank=True, 
+        Step3Judgment, blank=True, 
         null=True, on_delete=models.SET_NULL,
         related_name="+"
     )

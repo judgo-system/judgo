@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class InquiryConfig(AppConfig):
-    name = 'inquiry'
+class TopicConfig(AppConfig):
+    name = 'topic'

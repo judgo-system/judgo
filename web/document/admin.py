@@ -8,10 +8,10 @@ from .models import Document, Response
 class DocumentAdmin(admin.ModelAdmin):
     list_display = ('uuid', 'content', 'view_topic')
     search_fields = ['uuid', "topics__uuid", 'content']
-
+    list_filter = ['topics__uuid']
     def view_topic(self, obj):
-        url = reverse("admin:topic_topic_change", args=(obj.topic.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.topic.uuid)
+        url = reverse("admin:topic_topic_change", args=(obj.topics.id,))
+        return format_html('<a href="{}">{}</a>', url, obj.topics.uuid)
 
     view_topic.short_description = "topic"
 

@@ -1,19 +1,23 @@
+from copyreg import pickle
 import logging
-from urllib import request
+import random
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from response.models import Document, Response
-from judgment.models import Judgment, JudgingChoices
+from document.models import Document, Response
+from judgment.models import Step3Judgment
 from interfaces import pref
+from . import helper
+# from web.judgment.models import RelevantJudgmentChoices, Step1Judgment
+
 
 logger = logging.getLogger(__name__)
 
-class JudgmentView(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'judgment.html'
+class Step3JudgmentView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'dual_judgment.html'
     # pref_obj = None
     task_id = None
     left_doc_id = None
@@ -35,12 +39,12 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         
-        context = super(JudgmentView, self).get_context_data(**kwargs)
+        context = super(Step3JudgmentView, self).get_context_data(**kwargs)
         
         if "judgment_id" in kwargs and 'user_id' in kwargs:
             
             # get the latest judment for this user and question
-            prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
+            prev_judge = Step3Judgment.objects.get(id=self.kwargs['judgment_id'])
             
             if prev_judge.is_complete:
                 context["task_status"] = "complete"
@@ -49,7 +53,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.task_id = prev_judge.task.id
             (left, right) = pref.get_documents(prev_judge.before_state)
             
-            context['question_content'] = prev_judge.task.question.content
+
+            context['question_content'] = prev_judge.task.topic.title
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
@@ -71,7 +76,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
             if left_response.highlight:
-                context['left_txt'] = self.highlight_document(
+                context['left_txt'] = helper.highlight_document(
                     left_response.document.content,
                     left_response.highlight
                 ) 
@@ -79,7 +84,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['left_txt'] = left_response.document.content
                 
             if right_response.highlight:
-                context['right_txt'] = self.highlight_document(
+                context['right_txt'] = helper.highlight_document(
                     right_response.document.content,
                     right_response.highlight
                 ) 
@@ -105,20 +110,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return HttpResponseRedirect(reverse_lazy('core:home'))
 
 
-    def add_new_answer(self, state, task):
-        best_docs = pref.get_best(state)
-
-        prev_ans = task.best_answers if task.best_answers else "" 
-        new_ans = ""
-
-        for doc in best_docs:
-            new_ans += doc + "|"
-
-        task.best_answers = prev_ans +"--"+new_ans
-        task.num_ans = len(task.best_answers.split("|")) - 1
-        task.save()
-
-        return best_docs
 
 
     def handle_prev_button(self, user, prev_judge):
@@ -128,7 +119,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             user.save()
             return HttpResponseRedirect(
                     reverse_lazy(
-                        'judgment:judgment', 
+                        'judgment:step3', 
                         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.parent.id}
                     )
                 )
@@ -143,12 +134,12 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     def handle_judgment_actions(self, user, prev_judge, requested_action):
         """
         """
-        action, after_state = self.evaluate_after_state(requested_action, prev_judge.before_state)
+        action, after_state = helper.evaluate_after_state(requested_action, prev_judge.before_state)
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
             logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
-            prev_judge = Judgment.objects.create(
+            prev_judge = Step3Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
                 before_state=prev_judge.before_state,
@@ -165,7 +156,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         # check if this round of judgment is finished or not!
         while pref.is_judgment_finished(after_state):
 
-            self.add_new_answer(after_state, prev_judge.task)
+            helper.add_new_answer(after_state, prev_judge.task)
             
             prev_judge.is_round_done = True
             after_state = pref.pop_best(after_state)
@@ -175,14 +166,14 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     
             if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
                 prev_judge.is_complete = True
-                prev_judge.task.is_completed = True
+                prev_judge.task.step3_checked = True
 
                 prev_judge.task.save()
                 prev_judge.save()
 
                 return HttpResponseRedirect(
                 reverse_lazy(
-                    'judgment:judgment', 
+                    'judgment:step3', 
                     kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
                 )
             )
@@ -190,7 +181,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         if prev_judge.is_round_done:
             logger.info(f'One round is finished! you are going to the next step!')
 
-        judgement = Judgment.objects.create(
+        judgement = Step3Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
                 before_state=after_state,
@@ -201,44 +192,19 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         user.save()
         return HttpResponseRedirect(
             reverse_lazy(
-                'judgment:judgment', 
+                'judgment:step3', 
                 kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
             )
         )
 
 
-    def evaluate_after_state(self, requested_action, before_state):
-        """
-        """
-        action, after_state = None, None
-
-        (left, right) = pref.get_documents(before_state)
-
-        if 'left' in requested_action:
-            action = JudgingChoices.LEFT
-            after_state = pref.evaluate(before_state, left)
-        elif 'right' in requested_action:
-            action = JudgingChoices.RIGHT
-            after_state = pref.evaluate(before_state, right)
-        else:
-            action = JudgingChoices.EQUAL
-            after_state = pref.evaluate(before_state, right, equal=True)
         
-        return action, after_state
+        
 
 
     
-    def highlight_document(self, text, highlight):
-        """
-        """
-        if not highlight:
-            return text
-        highlights = highlight.split("|||")
 
-        for part in highlights:
-            if part:
-                text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
-        return text
+    
 
 
 

@@ -68,6 +68,7 @@ body {
 }
 
 .document {
+  width: 50%;
   height: 100%;
   flex: 1;
 }
@@ -98,6 +99,7 @@ body {
 .document-content p {
   line-height: 2;
   text-align: justify;
+  white-space: pre-line;
 }
 
 .question {
@@ -415,4 +417,9 @@ mark {
   margin-left: 50px;
   width: 100%;
   text-align: center;
+}
+
+.modal-sentence{
+  margin-top: 10px;
+  line-height: normal;
 }

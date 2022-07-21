@@ -1,0 +1,512 @@
+{% load i18n static has_group crispy_forms_tags   %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <!-- Amsify Plugin -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/amsify.suggestags.css' %} ">
+
+    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script type="text/javascript" src="{% static 'js/jquery.amsify.suggestags.js' %}"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    
+    
+    <div class="main">
+        <div class="header">
+        <form method='post'>
+            {% csrf_token %}
+                    
+        <button class="button prev-document" type="submit" value="prev" name="prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
+            </svg>
+            Undo
+        </button>
+
+        
+        </form> 
+            <div class="question-header">
+                <h2 class="q-indicator">Question:</h2>
+                <h2>{{ question_content }}</h2>
+            </div>
+
+
+            <a href="{% url 'account_logout' %}">
+                <button class="button absolute-button btn-logout">Log out</button>
+            </a>
+
+        </div>
+
+
+        <div class="form-group">
+            <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
+        </div>
+        <!-- "width: 35%" -->
+        <div class="progress-container">
+            <div class="progress">
+                <span class="progress-bar" style="width: {{ progress_bar_width }}%"></span>
+
+                <span></span>
+            </div>
+
+            <div class="arrow-up" style="left: {{ progress_bar_width }}%"></div>
+            <h3 style="left: {{ progress_bar_width }}%">{{ progress_bar_width }}%</h3>
+
+        </div>
+
+
+        <div class="container">
+            
+            <div class="documents">
+                <div class="document">
+                    <h2 class="document-id">
+                        {{left_id}}
+                    </h2>
+                    <div class="document-content" >
+                        <p id="left-doc" class="editable-doc">
+                            {% autoescape off %}{{ left_txt }}{% endautoescape %} 
+                        </p>
+                    </div>
+                </div>
+    
+                <div class="document">
+                    <h2 class="document-id">
+                        {{right_id}} 
+                    </h2>
+                    <div class="document-content" >
+                        <p id="right-doc" class="editable-doc">
+                            {% autoescape off %}{{ right_txt }}{% endautoescape %} 
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="question">
+                <p>Which one do you prefer?</p>
+                
+                    <div class="answer-box">
+                        <form method='post'>
+                                {% csrf_token %}
+                            <button class="button" type="submit" value="left" name="left">Left</button>
+                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
+                            <button class="button" type="submit" value="right" name="right">Right</button>
+                        
+                        </form>  
+
+                    </div>
+                    
+            </div>
+        </div>
+
+    </div>
+    
+
+    <!-- COMPLETE TASK MODAL -->
+    <div class="modal fade" id="ccomplete-modal" role="dialog">
+        <div class="modal-dialog">
+        
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header" style="padding:35px 50px;">
+                <h3>This task is DONE!</h3>
+            </div>
+            <div class="modal-body" style="padding:40px 50px;">
+                <form method='post'>
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-block" name="back_home">
+                            Home
+                    </button>
+                </form>
+                </div>
+            </div>
+            </div>
+    </div>
+    
+
+
+    <!-- JavaScript Block -->
+    <script>
+
+      function disableBack() { window.history.forward(); }
+        setTimeout("disableBack()", 0);
+        window.onunload = function () { null };
+
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () { history.go(1); };
+
+        
+      function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== "") {
+                        const cookies = document.cookie.split(";");
+                        for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+            return cookieValue;
+        }
+        mouseXPosition = 0;
+
+            $(document).ready(function () {
+                
+                const task_status = "{{task_status}}"
+                if(task_status=="complete"){
+                    $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
+                }
+
+                $(".editable-doc").mousedown(function (e1) {
+                    mouseXPosition = e1.pageX; //register the mouse down position
+                });
+
+                $(".editable-doc").mouseup(function (e2) {
+                    var highlighted = false;
+                    var selection = window.getSelection();
+                    var selectedText = selection.toString();
+                    var startPoint = window.getSelection().getRangeAt(0).startOffset;
+                    var endPoint = window.getSelection().getRangeAt(0).endOffset;
+                    var anchorTag = selection.anchorNode.parentNode;
+                    var focusTag = selection.focusNode.parentNode;
+                    
+
+                    if ((e2.pageX - mouseXPosition) < 0) {
+                        focusTag = selection.anchorNode.parentNode;
+                        anchorTag = selection.focusNode.parentNode;
+                    }
+                    if (selectedText.length === (endPoint - startPoint)) {
+                        highlighted = true;
+
+                        if (anchorTag.className !== "highlight") {
+                            highlightSelection();
+                        } else {
+                            var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
+                            anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
+                            anchorTag.insertAdjacentHTML('afterend', afterText);
+                        }
+
+                    }else{
+                        if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
+                            highlightSelection();  
+                            highlighted = true;
+                        } 
+                    }
+
+                    if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
+                        highlighted = true;
+
+                        var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                        var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
+                        var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                        var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
+                        var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                        selection.deleteFromDocument();
+                        anchorTag.innerHTML = anchorInnerhtml;
+                        focusTag.innerHTml = focusInnerHtml;
+                        var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
+                        anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
+
+
+                    }
+
+                    if (anchorTag.className === "highlight" && !highlighted) {
+                        highlighted = true;
+						var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                        var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                        var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
+                        selection.deleteFromDocument();
+                        anchorTag.innerHTML = Innerhtml;
+                        anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
+                     }
+                    
+                    if (focusTag.className === 'highlight' && !highlighted) {
+                        highlighted = true;
+						var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                        var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
+                        selection.deleteFromDocument();
+                        focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
+                        outerHtml += beforeHtml;
+                        focusTag.insertAdjacentHTML('beforebegin', outerHtml );
+
+
+                    }
+                    if (!highlighted) {
+                        highlightSelection();
+                    }
+                    var doc_highlights = "";
+
+                    $('.highlight').each(function(e4){
+                        if($(this).html() == ''){  
+                            $(this).remove();
+                        }
+                    });
+
+                    selection.removeAllRanges();
+                   
+                });
+            });
+            
+
+            $("button").click( function(e3){
+                var right_doc_highlights = "";
+                var left_doc_highlights = "";
+
+                $('.highlight').each(function(e4){
+                    if ($(this).parent().attr("id")=='left-doc'){
+                        left_doc_highlights +=  $(this).html() + "|||"
+                    }else{
+                        right_doc_highlights +=  $(this).html() + "|||"
+                    }
+                });
+                
+                var data = {"highlight": left_doc_highlights}
+                $.ajax
+                ({ 
+                    url: "/../../add_highlight/" + getCookie("left_doc_id") + "/" ,
+                    data: JSON.stringify(data),
+                    method: 'PUT',
+
+                    credentials: "same-origin",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    success: function(result)
+                    {
+                        console.log(result)
+                    },
+                    error: (error) => {
+                        console.log(error)
+                    },
+                });
+                var data = {"highlight": right_doc_highlights}
+
+                $.ajax
+                ({ 
+                    url: "/../../add_highlight/" + getCookie("right_doc_id") + "/" ,
+                    data: JSON.stringify(data),
+                    method: 'PUT',
+
+                    credentials: "same-origin",
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    success: function(result){
+                        console.log(result)
+                    },
+                    error: (error) => {
+                        console.log(error)
+                    },
+                });
+            })
+
+
+            function highlightSelection() {
+                var selection;
+
+                //Get the selected stuff
+                if (window.getSelection)
+                    selection = window.getSelection();
+                else if (typeof document.selection != "undefined")
+                    selection = document.selection;
+
+                //Get a the selected content, in a range object
+                var range = selection.getRangeAt(0);
+
+                //If the range spans some text, and inside a tag, set its css class.
+                if (range && !selection.isCollapsed) {
+                    if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+                        var span = document.createElement('span');
+                        span.className = 'highlight';
+                        span.textContent = selection.toString();
+                        selection.deleteFromDocument();
+                        range.insertNode(span);
+                    }
+                }
+            }
+
+        // color list 
+        const colorGlobalList = ["#E6E6FA","#D8BFD8","#DDA0DD","#EE82EE","#DA70D6",
+        "#FF00FF","#FF00FF","#BA55D3","#9370DB","#663399","#8A2BE2","#9400D3",
+        "#9932CC","#8B008B","#800080","#4B0082","#6A5ACD","#483D8B","#7B68EE"]
+
+        function highlight_tags(search_area, tag){
+            
+            if (tag.length <2) return
+            
+            // in the case there is more than one word in tag
+            splited = tag.split(" ")
+            if (splited.length > 1){
+                temp = ""
+                for (let i = 0; i < splited.length; i++) { 
+                   if(i ==splited.length || i ==0){
+                    temp += splited[i]
+                   }else{
+                    temp += "[^a-zA-Z\d]" + splited[i]
+                   }
+                }
+                tag = temp
+            }
+
+            var textarea = $(search_area);    
+            var enew = '';
+            var query = new RegExp("("+tag+")", "gim"); 
+            
+            tagLower = tag.toLowerCase()
+            var randomColor;
+            var tagColorDic = localStorage['colorDic']
+            var colorList = localStorage['colorList']
+            
+            
+            if (tagColorDic==null){
+                tagColorDic = {}
+            }else{
+                tagColorDic = JSON.parse(tagColorDic);
+            }
+            if(colorList==null){
+                colorList = colorGlobalList
+            }else{
+                colorList = JSON.parse(colorList);
+            }
+
+            if (tagLower in tagColorDic){
+                randomColor = tagColorDic[tagLower]
+            }else{
+                randomColor = colorList.shift()
+                tagColorDic[tagLower] = randomColor
+
+                localStorage['colorList'] = JSON.stringify(colorList);
+                localStorage['colorDic'] = JSON.stringify(tagColorDic);
+            }
+            
+            const markTag = "<mark style='background: "+ randomColor +"!important'>"
+            
+            newtext= textarea.html().replace(query, markTag+"$1</mark>");    
+            textarea.html(newtext);
+        }
+
+        
+        function dehighlight_tags(search_area, tag, second){
+            var textarea = $(search_area);    
+            var enew = ''; 
+
+            // in the case there is more than one word in tag
+            splited = tag.split(" ")
+            if (splited.length > 1){
+                temp = ""
+                for (let i = 0; i < splited.length; i++) { 
+                   if(i ==splited.length || i ==0){
+                    temp += splited[i]
+                   }else{
+                    temp += "[^a-zA-Z\d]" + splited[i]
+                   }
+                }
+                tag = temp
+            }
+
+            var tagColorDic = localStorage['colorDic']
+            var colorList = localStorage['colorList']
+            
+            
+            tagColorDic = JSON.parse(tagColorDic);
+            colorList = JSON.parse(colorList);
+
+            randomColor = tagColorDic[tag.toLowerCase()]
+
+            if (second == true){
+
+                colorList.push(randomColor)
+                delete tagColorDic[tag.toLowerCase()]
+
+                localStorage['colorList'] = JSON.stringify(colorList);
+                localStorage['colorDic'] = JSON.stringify(tagColorDic);
+
+            }
+            const markTag = "<mark style=\"background: " + randomColor + "!important\">"
+            var query = new RegExp("("+markTag+tag+"</mark>)", "gim");   
+            
+            cases = textarea.html().match(query)
+            
+            if (cases !=null){
+                for (let i = 0; i < cases.length; i++) { 
+                    t = cases[i].replace(markTag,"");
+                    t = t.replace("</mark>","");
+                    newtext= textarea.html().replace(cases[i], t);    
+                    textarea.html(newtext); 
+                }
+            }
+        }
+
+
+	    $('input[name="question_highlight"]').amsifySuggestags({
+            type : 'amsify',
+            afterAdd: function(value) {
+                const data ={
+                    tags:value
+                } 
+                var put_url = "/../../add_tag/" + getCookie("task_id") + "/" 
+                fetch(put_url, {
+                    method: "PUT",
+                    credentials: "same-origin",
+                    headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify({payload: data})
+                })
+                .then(response => 
+                    response.json()
+                )
+                .then(data => {
+                    highlight_tags("#left-doc", value)
+                    highlight_tags("#right-doc", value)
+
+                });
+            },
+
+            afterRemove: function(value) {
+                const data ={
+                    tags:value
+                } 
+                var put_url = "/../../remove_tag/" + getCookie("task_id") + "/" 
+                fetch(put_url, {
+                    method: "PUT",
+                    credentials: "same-origin",
+                    headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify({payload: data})
+                })
+                .then(response => response.json())
+                .then(data => {
+                    dehighlight_tags("#left-doc", value, false)
+                    dehighlight_tags("#right-doc", value, true)
+                });
+            },
+        });
+    </script>
+</body>
+</html>

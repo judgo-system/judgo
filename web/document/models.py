@@ -10,7 +10,7 @@ class Document(models.Model):
 
     content = models.TextField()
     
-    topicss = models.ManyToManyField(
+    topics = models.ForeignKey(
         Topic, null=True, 
         on_delete=models.SET_NULL
     )

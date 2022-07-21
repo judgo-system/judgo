@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class TopicConfig(AppConfig):
-    name = 'topic'
+class DocumentConfig(AppConfig):
+    name = 'document'

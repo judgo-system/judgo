@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 
 from judgment.models import Judgment
 from user.models import User
-from response.models import Document
+from document.models import Document
 from core.models import Task
 
 

@@ -134,6 +134,8 @@ dmypy.json
 .json
 #database
 data/
+*.csv
+*.out
 
 # Django Static folders
 web/staticfiles/

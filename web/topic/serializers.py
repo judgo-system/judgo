@@ -1,7 +1,7 @@
 from rest_framework import serializers
-from .models import Inquiry
+from .models import Topic
 
-class InquirySerializer(serializers.ModelSerializer):
+class TopicSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Inquiry
+        model = Topic
         fields = ('id', 'question', 'session', 'tags', 'best_answers')
