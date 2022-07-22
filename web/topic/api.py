@@ -6,49 +6,49 @@ from django.shortcuts import get_object_or_404, render
 from core.models import Task
 
 
-def add_tag(request, inquiryId):
+def add_tag(request, taskId):
 
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
-        inquiry = get_object_or_404(Task, id=inquiryId)
+        task = get_object_or_404(Task, id=taskId)
 
         if request.method == 'PUT':
             data = json.load(request)
             updated_values = data.get('payload')
             
-            if inquiry.tags:
-                tag_set = set(inquiry.tags.split(","))
+            if task.tags:
+                tag_set = set(task.tags.split(","))
                 tag_set.add(updated_values['tags'])
-                inquiry.tags = ','.join(tag for tag in tag_set)
+                task.tags = ','.join(tag for tag in tag_set)
             else:
-                inquiry.tags = updated_values['tags'] 
+                task.tags = updated_values['tags'] 
             
-            inquiry.save()
+            task.save()
 
             return JsonResponse({'status': 'Tags updated!'})
 
     return HttpResponseBadRequest('Invalid request')
 
-def remove_tag(request, inquiryId):
+def remove_tag(request, taskId):
 
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
     if is_ajax:
-        inquiry = get_object_or_404(Task, id=inquiryId)
+        task = get_object_or_404(Task, id=taskId)
 
         if request.method == 'PUT':
             data = json.load(request)
             deleted_value = data.get('payload')
-            tags = inquiry.tags.split(",")
+            tags = task.tags.split(",")
             tags.remove(deleted_value['tags'])
             
             if tags:
-                inquiry.tags = ",".join(tags) 
+                task.tags = ",".join(tags) 
             else:
-                inquiry.tags = None
+                task.tags = None
             
-            inquiry.save()
+            task.save()
 
             return JsonResponse({'status': 'Tags remove!'})
 

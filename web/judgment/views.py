@@ -8,7 +8,7 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from response.models import Document, Response
+from document.models import Document, Response
 from judgment.models import Judgment, JudgingChoices, JudgmentConsistency
 from interfaces import pref
 
@@ -48,7 +48,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
             
             if prev_judge.is_tested:
-                print('THIIIIS ISSS TESTTTTTT!!!!!!!!!')
                 (context, left_response, right_response) = \
                     self.get_context_test_judgment_data(context, prev_judge)
             else:
@@ -61,7 +60,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 return context
 
 
-            context['question_content'] = prev_judge.task.question.content
+            context['question_content'] = prev_judge.task.topic.title
 
             if left_response.highlight:
                 context['left_txt'] = self.highlight_document(
@@ -169,10 +168,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def handle_prev_button(self, user, prev_judge):
 
-        if prev_judge.parent: 
-            print('miay?')
-            print(prev_judge)
-            print(prev_judge.parent)   
+        if prev_judge.parent:  
             user.latest_judgment = prev_judge.parent
             user.is_tested = prev_judge.parent.is_tested
             user.save()
@@ -194,10 +190,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         """
         """
         action, after_state = self.evaluate_after_state(requested_action, prev_judge.before_state)
-        # print('ta inja?')
-        # print(prev_judge)
         if prev_judge.is_tested:
-            # print('test k nist?')
             judgment = self.handle_test_judgment(prev_judge, action)
             user.latest_judgment = judgment
             user.is_tested = False
@@ -211,7 +204,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
-            # print('inja chi?')
             logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge = Judgment.objects.create(
                 user=user,
@@ -269,9 +261,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
 
             if len(judgement_list) > 5:
-                print('Testeee!!!')
                 tmp_judge = random.choice(judgement_list)
-                # print(f' ghbel folan {tmp_judge}')
                 tmp_judge.parent = prev_judge
 
                 prev_judge = tmp_judge
@@ -279,8 +269,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 
                 prev_judge.is_tested = True
                 prev_judge.save()
-                # print(f' bade folan {prev_judge}')
-                # user.latest_test_judgment = prev_judge
                 user.is_tested = True
                 user.save()
                 test_flag = True
@@ -296,7 +284,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
 
         if test_flag:
-            # print('haji inja chi akhe?')
             user.latest_judgment = prev_judge
             user.save() 
             return HttpResponseRedirect(

@@ -1,9 +1,8 @@
 from xml.dom.minidom import Document
 from django.db import models
 
-from inquiry.models import Question
+from topic.models import Topic
 from web.settings import AUTH_USER_MODEL as User
-# from core.models import Session 
 
 class Document(models.Model):
 
@@ -11,9 +10,9 @@ class Document(models.Model):
 
     content = models.TextField()
     
-    base_question = models.ForeignKey(
-        Question, null=True, 
-        on_delete=models.SET_NULL, related_name="base_question"
+    topic = models.ForeignKey(
+        Topic, null=True, 
+        on_delete=models.SET_NULL, related_name="topic"
     )
 
     def __str__(self):

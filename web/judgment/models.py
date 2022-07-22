@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.models import Task
-from response.models import Response
+from document.models import Response
 from web.settings import AUTH_USER_MODEL as User
 
 
@@ -75,8 +75,8 @@ class Judgment(models.Model):
         #     return "(USERNAME: {}, QUESTION{}, LEFT RESPONSE: {}, RIGHT RESPONSE: {})".format(
         #         self.user.username, self.task.question, self.left_response.document, self.right_response.docuemnt
             # )            
-        return "(ID: {} USERNAME: {}, QUESTION{}, )".format(self.pk,
-            self.user.username, self.task.question 
+        return "(ID: {} USERNAME: {}, Topic{}, )".format(self.pk,
+            self.user.username, self.task.topic 
         )
 
 
@@ -96,7 +96,7 @@ class JudgmentConsistency(models.Model):
 
     def __str__(self) -> str:
         return f'(User:{self.user.username}, \
-            Question:{self.task.question.content}, \
+            Topic:{self.task.topic.title}, \
             Judgment:{self.judgment.id}, \
             Previous Action: {self.previous_action} \
             Current Action: {self.current_action})'

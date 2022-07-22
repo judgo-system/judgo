@@ -131,7 +131,10 @@ dmypy.json
 .pyre/
 
 #front 
-.json
+*.json
+*.csv
+*.out
+
 #database
 data/
 

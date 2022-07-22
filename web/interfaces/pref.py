@@ -2,8 +2,8 @@
 import pickle
 import random
 import math
-from inquiry.models import Question
-from response.models import Document
+from topic.models import Topic
+from document.models import Document
 
 class lisp(object):
     def __init__(self, ar = None, dr = None):
@@ -220,18 +220,18 @@ class pref(object):
         return 
 
 
-def create_new_pref_obj(question):
-    """ Create a new pref object from list of ducuments for question id
+def create_new_pref_obj(topic):
+    """ Create a new pref object from list of ducuments for topic id
 
     Args:
-        question (obj): an object of question.view.Question model
+        topic (obj): an object of topic.view.Topic model
     
     Returns:
-        bytes of a pref obj created from a list of documents related to question id
+        bytes of a pref obj created from a list of documents related to topic id
     """
-    print(f"Here is pref see the quetion {question}")
+    print(f"Here is pref see the quetion {topic}")
 
-    document_list = Document.objects.filter(base_question_id__question_id = question.question_id)
+    document_list = Document.objects.filter(topic__uuid = topic.uuid)
     docs_list = []
     for d in document_list:
         docs_list.append(d.uuid)

@@ -39,9 +39,9 @@
                 <div id="select-container" class="select-container">
                     <label class="select" for="slct">
                         <select id="slct" required="required" name="selected_question">
-                        <option value="" disabled="disabled" selected="selected">Select a question</option>
+                        <option value="" disabled="disabled" selected="selected">Select a topic</option>
                         {% for task in tasks %}
-                            <option name="option" value=" {{ task.id}}">{{task.question.content}}</option>
+                            <option name="option" value=" {{ task.id}}">{{task.topic.title}}</option>
                         {% endfor %}
                         </select>
                         <svg>
@@ -59,7 +59,7 @@
     
             </form>
            
-            <div class="question">
+            <!-- <div class="question">
                 <p>Which one do you prefer?</p>
                 
                     <div class="answer-box">
@@ -76,7 +76,7 @@
                     <a href="{% url 'account_logout' %}">
                         <button class="button absolute-button btn-logout">Log out</button>
                     </a>
-            </div>
+            </div> -->
         </div>
 
     </div>

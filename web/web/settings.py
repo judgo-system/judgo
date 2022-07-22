@@ -55,8 +55,8 @@ INSTALLED_APPS = [
     'user.apps.UsersConfig',
     'corsheaders',
     'core',
-    'inquiry', 
-    'response',
+    'topic', 
+    'document',
     'judgment',
 ]
 

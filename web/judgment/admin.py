@@ -10,8 +10,8 @@ class JudgmentAdmin(admin.ModelAdmin):
         'action', 'created_at'
     )
 
-    search_fields = ['user__username', 'task__question__content']
-    list_filter = ['is_complete', 'task__question__question_id']
+    search_fields = ['user__username', 'task__question__title']
+    list_filter = ['is_complete', 'task__topic__uuid']
     
     def view_user(self, obj):
         url = reverse("admin:user_user_change", args=(obj.user.id,))
@@ -24,14 +24,14 @@ class JudgmentAdmin(admin.ModelAdmin):
     def view_left_response(self, obj):
         if not obj.left_response:
             return None
-        url = reverse("admin:response_response_change", args=(obj.left_response.id,))
+        url = reverse("admin:document_response_change", args=(obj.left_response.id,))
         return format_html('<a href="{}">({})</a>', url, obj.left_response.document.uuid)
 
 
     def view_right_response(self, obj):
         if not obj.right_response:
             return None
-        url = reverse("admin:response_response_change", args=(obj.right_response.id,))
+        url = reverse("admin:document_response_change", args=(obj.right_response.id,))
         return format_html('<a href="{}">({})</a>', url, obj.right_response.document.uuid)
 
     view_user.short_description = "user"

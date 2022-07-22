@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from datetime import datetime
 from .models import Task
 from judgment.models import Judgment
-from inquiry.models import Question
+from topic.models import Topic
 from user.models import User
 from interfaces import pref
 
@@ -56,7 +56,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
         task = Task.objects\
             .get(id=task_id)
-        question = Question.objects.get(id=task.question.id)
+        topic = Topic.objects.get(id=task.topic.id)
 
         prev_judge = None
         try:
@@ -68,8 +68,8 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             if prev_judge.after_state:
                 state = prev_judge.after_state
         except Exception as e:
-            logger.warning(f"There is no previous judgment for question={question.content} and user={self.request.user.username}")
-            state = pref.create_new_pref_obj(question)
+            logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
+            state = pref.create_new_pref_obj(topic)
                     
         if not prev_judge or prev_judge.is_complete:
 

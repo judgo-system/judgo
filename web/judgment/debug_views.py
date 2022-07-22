@@ -5,7 +5,7 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from response.models import Document, Response
+from document.models import Document, Response
 from judgment.models import Judgment, JudgingChoices
 from interfaces import pref
 
@@ -47,7 +47,7 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.task_id = prev_judge.task.id
             (left, right) = pref.get_documents(prev_judge.before_state)
             
-            context['question_content'] = prev_judge.task.question.content
+            context['question_content'] = prev_judge.task.topic.title
 
             if prev_judge.parent and prev_judge.parent.action:
                 context['previous_action'] = dict(JudgingChoices.choices)[prev_judge.parent.action]
