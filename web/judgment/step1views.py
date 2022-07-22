@@ -160,8 +160,7 @@ class Step1JudgmentView(LoginRequiredMixin, generic.TemplateView):
                task=prev_judge.task,
                previous=prev_judge 
             ).first()
-            print("yeayyyy")
-            print(judgement)
+            
             if not judgement:
                 judgement = Step1Judgment.objects.create(
                     user=user,
