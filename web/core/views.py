@@ -78,10 +78,10 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                     task=task,
                     before_state=state,
                     parent=prev_judge,
+                    best_answers = ""
                 )
         user = User.objects.get(id=self.request.user.id)
         user.latest_judgment = prev_judge
-        # user.is_tested=False
         user.save()
 
         return HttpResponseRedirect(

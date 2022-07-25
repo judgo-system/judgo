@@ -108,6 +108,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         prev_judge.left_response = left_response
         prev_judge.right_response = right_response
+        prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
         prev_judge.save()
 
         self.left_doc_id = left_response.id
@@ -136,9 +137,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request, *args, **kwargs):
 
-        # if request.user.:
-        #     judgment = request.user.latest_test_judgment
-        # else:
         judgment = request.user.latest_judgment
 
         if 'prev' in request.POST: 
@@ -150,21 +148,22 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return HttpResponseRedirect(reverse_lazy('core:home'))
 
 
-    def add_new_answer(self, state, task):
+    def add_new_answer(self, state, judgment):
         best_docs = pref.get_best(state)
-
-        prev_ans = task.best_answers if task.best_answers else "" 
+        
+        print("==================")
+        print(judgment)
+        print(best_docs)
+        print("======================")
+        answers = judgment.best_answers if judgment.best_answers else ""
+        
         new_ans = ""
 
         for doc in best_docs:
             new_ans += doc + "|"
 
-        task.best_answers = prev_ans +"--"+new_ans
-        task.num_ans = len(task.best_answers.split("|")) - 1
-        task.save()
-
-        return best_docs
-
+        return answers +"--"+new_ans
+       
 
     def handle_prev_button(self, user, prev_judge):
 
@@ -222,8 +221,9 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         # check if this round of judgment is finished or not!
         while pref.is_judgment_finished(after_state):
 
-            self.add_new_answer(after_state, prev_judge.task)
-            
+            prev_judge.best_answers = self.add_new_answer(after_state, prev_judge)
+            prev_judge.task.num_ans = len(prev_judge.best_answers.split("|")) - 1
+            prev_judge.task.save()           
             prev_judge.is_round_done = True
             after_state = pref.pop_best(after_state)
             prev_judge.after_state = after_state
@@ -233,7 +233,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
                 prev_judge.is_complete = True
                 prev_judge.task.is_completed = True
-                
+                prev_judge.task.best_answers = prev_judge.best_answers
                 prev_judge.task.save()
                 prev_judge.save()
 
@@ -263,6 +263,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             if len(judgement_list) > 5:
                 tmp_judge = random.choice(judgement_list)
                 tmp_judge.parent = prev_judge
+                tmp_judge.best_answers = prev_judge.best_answers
 
                 prev_judge = tmp_judge
                 prev_judge.pk = None

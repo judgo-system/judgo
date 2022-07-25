@@ -28,7 +28,7 @@ class ResponseAdmin(admin.ModelAdmin):
 
     def view_document(self, obj):
         
-        url = reverse("admin:response_document_change", args=(obj.document.id,))
+        url = reverse("admin:document_document_change", args=(obj.document.id,))
         return format_html('<a href="{}">({})</a>', url, obj.document.uuid)
 
     view_user.short_description = "user"

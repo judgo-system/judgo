@@ -30,7 +30,7 @@ class TaskAdmin(admin.ModelAdmin):
         for i, ans in enumerate(best_answer):
             temp = ans.split("|")[:-1]
             if temp:
-                admin_best_ans += f'\n\Grade {i+1}:\n\n'
+                admin_best_ans += f'\n\n Grade {i+1}:\n\n'
             for doc in temp:
                 d = Document.objects.get(uuid=doc)
                 url = reverse("admin:document_document_change", args=(d.id,))

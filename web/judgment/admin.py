@@ -6,11 +6,13 @@ from .models import Judgment, JudgmentConsistency
 @admin.register(Judgment)
 class JudgmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'view_user', 'parent_id', 'view_task', 'view_left_response', 'view_right_response',
-        'is_initialized', 'is_round_done', 'is_complete', 'has_changed', 'is_tested',
+        # 'is_initialized',
+        'best_answers',
+         'is_round_done', 'is_complete', 'has_changed', 'is_tested',
         'action', 'created_at'
     )
 
-    search_fields = ['user__username', 'task__question__title']
+    search_fields = ['user__username', 'task__topic__title']
     list_filter = ['is_complete', 'task__topic__uuid']
     
     def view_user(self, obj):
@@ -19,7 +21,7 @@ class JudgmentAdmin(admin.ModelAdmin):
 
     def view_task(self, obj):
         url = reverse("admin:core_task_change", args=(obj.task.id,))
-        return format_html('<a href="{}">Task ({})</a>', url, obj.task.question.content)
+        return format_html('<a href="{}">Task ({})</a>', url, obj.task.topic.title)
 
     def view_left_response(self, obj):
         if not obj.left_response:
@@ -56,7 +58,7 @@ class JudgmentConsistencyAdmin(admin.ModelAdmin):
 
     def view_task(self, obj):
         url = reverse("admin:core_task_change", args=(obj.task.id,))
-        return format_html('<a href="{}">Task ({})</a>', url, obj.task.question.content)
+        return format_html('<a href="{}">Task ({})</a>', url, obj.task.topic.title)
 
 
     def view_judgment(self, obj):
