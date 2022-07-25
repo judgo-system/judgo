@@ -73,6 +73,14 @@
 
         </div>
 
+        <div id="debug-div"class="tree-container">
+            <div class="previous-action">
+            <b>Previous action</b>: {{previous_action}}
+            </div>
+            <div class="tree-content">
+                {{ tree_content}}
+            </div>
+        </div>
 
         <div class="container">
             
@@ -171,6 +179,12 @@
 
             $(document).ready(function () {
                 
+                const debug = "{{debug}}"
+                console.log(debug)
+                if(debug=="false"){
+                    $("#debug-div").hide();
+                }
+
                 const task_status = "{{task_status}}"
                 if(task_status=="complete"){
                     $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
@@ -348,15 +362,13 @@
 
         // color list
         const colorGlobalList = [
-            "#ff4040", "#e78d0b", "#a7d503", "#58fc2a", "#18f472",
-            "#00bfbf", "#1872f4", "#582afc", "#a703d5", "#e70b8d",
-            "#ff4040", "#4e79a7", "#f28e2c", "#e15759", "#76b7b2",
-            "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f",
-            "#bab0ab",
+            "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00",
+            "#ffff33", "#a65628", "#f781bf", "#999999", "#6e40aa",
+            "#bf3caf", "#fe4b83", "#e2b72f", "#aff05b", "#7fc97f",
+            "#52f667", "#1ddfa3", "#23abd8", "#4c6edb", "#6e40aa",
+            "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f",
+            "#bf5b17"
         ]
-        // const colorGlobalList = ["#E6E6FA","#D8BFD8","#DDA0DD","#EE82EE","#DA70D6",
-        // "#FF00FF","#FF00FF","#BA55D3","#9370DB","#663399","#8A2BE2","#9400D3",
-        // "#9932CC","#8B008B","#800080","#4B0082","#6A5ACD","#483D8B","#7B68EE"]
 
         function highlight_tags(search_area, tag){
             

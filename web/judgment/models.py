@@ -71,12 +71,12 @@ class Judgment(models.Model):
 
 
     def __str__(self):
-        # if self.left_response and self.right_response:
-        #     return "(USERNAME: {}, QUESTION{}, LEFT RESPONSE: {}, RIGHT RESPONSE: {})".format(
-        #         self.user.username, self.task.question, self.left_response.document, self.right_response.docuemnt
-            # )            
-        return "(ID: {} USERNAME: {}, Topic{}, best answers {})".format(self.pk,
-            self.user.username, self.task.topic, self.best_answers
+        if self.left_response and self.right_response:
+            return "(USERNAME: {}, QUESTION{}, LEFT RESPONSE: {}, RIGHT RESPONSE: {})".format(
+                self.user.username, self.task.topic, self.left_response.document, self.right_response.document
+            )            
+        return "(ID: {} USERNAME: {}, Topic{})".format(self.pk,
+            self.user.username, self.task.topic
         )
 
 

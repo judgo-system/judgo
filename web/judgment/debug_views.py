@@ -12,7 +12,7 @@ from interfaces import pref
 logger = logging.getLogger(__name__)
 
 class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
-    template_name = 'judgment_debug.html'
+    template_name = 'judgment.html'
     
     task_id = None
     left_doc_id = None

@@ -1,7 +1,5 @@
-from ast import arg
 import logging
 import random
-from urllib import request
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
@@ -20,11 +18,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     left_doc_id = None
     right_doc_id = None
     TOP_DOC_THRESHOULD = 10
-    Hello = ''
 
-    def get(self, request, *args, **kwargs):
-        self.Hello = 'CSS'
-        return super().get(request, *args, **kwargs)
 
     def render_to_response(self, context, **response_kwargs):
 
@@ -46,7 +40,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-            
+            context["debug"] = "false"
+
             if prev_judge.is_tested:
                 (context, left_response, right_response) = \
                     self.get_context_test_judgment_data(context, prev_judge)
@@ -63,7 +58,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             context['question_content'] = prev_judge.task.topic.title
 
             if left_response.highlight:
-                context['left_txt'] = self.highlight_document(
+                context['left_txt'] = JudgmentView.highlight_document(
                     left_response.document.content,
                     left_response.highlight
                 ) 
@@ -71,7 +66,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['left_txt'] = left_response.document.content
                 
             if right_response.highlight:
-                context['right_txt'] = self.highlight_document(
+                context['right_txt'] = JudgmentView.highlight_document(
                     right_response.document.content,
                     right_response.highlight
                 ) 
@@ -95,7 +90,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
 
         context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
-        
         context['state_object'] = pref.get_str(prev_judge.before_state)
         
         context['left_id'] = left
@@ -147,22 +141,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
         return HttpResponseRedirect(reverse_lazy('core:home'))
 
-
-    def add_new_answer(self, state, judgment):
-        best_docs = pref.get_best(state)
-        
-        print("==================")
-        print(judgment)
-        print(best_docs)
-        print("======================")
-        answers = judgment.best_answers if judgment.best_answers else ""
-        
-        new_ans = ""
-
-        for doc in best_docs:
-            new_ans += doc + "|"
-
-        return answers +"--"+new_ans
        
 
     def handle_prev_button(self, user, prev_judge):
@@ -188,7 +166,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     def handle_judgment_actions(self, user, prev_judge, requested_action):
         """
         """
-        action, after_state = self.evaluate_after_state(requested_action, prev_judge.before_state)
+        action, after_state = JudgmentView.evaluate_after_state(requested_action, prev_judge.before_state)
         if prev_judge.is_tested:
             judgment = self.handle_test_judgment(prev_judge, action)
             user.latest_judgment = judgment
@@ -221,7 +199,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         # check if this round of judgment is finished or not!
         while pref.is_judgment_finished(after_state):
 
-            prev_judge.best_answers = self.add_new_answer(after_state, prev_judge)
+            prev_judge.best_answers = JudgmentView.append_answer(after_state, prev_judge)
             prev_judge.task.num_ans = len(prev_judge.best_answers.split("|")) - 1
             prev_judge.task.save()           
             prev_judge.is_round_done = True
@@ -251,6 +229,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         if (random.random() < 0.1):
 
             judgement_list = Judgment.objects.filter(
+                task=prev_judge.task,
                 has_changed=False,
                 is_tested=False, 
             ).exclude(
@@ -304,7 +283,22 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             )
 
 
-    def evaluate_after_state(self, requested_action, before_state):
+    def handle_test_judgment(self, prev_judge, action):
+        
+        JudgmentConsistency.objects.create(
+            user=prev_judge.user,
+            task=prev_judge.task,
+            judgment = prev_judge,
+            previous_action=prev_judge.action,
+            current_action=action,
+
+        )
+
+        judgment = Judgment.objects.filter(parent=prev_judge).first()
+        return judgment 
+
+    @staticmethod   
+    def evaluate_after_state(requested_action, before_state):
         """
         """
         action, after_state = None, None
@@ -324,8 +318,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return action, after_state
 
 
-    
-    def highlight_document(self, text, highlight):
+    @staticmethod 
+    def highlight_document(text, highlight):
         """
         """
         if not highlight:
@@ -337,18 +331,15 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
         return text
 
+    @staticmethod
+    def append_answer(state, judgment):
+        best_docs = pref.get_best(state)
+        answers = judgment.best_answers if judgment.best_answers else ""
+        new_ans = ""
+        for doc in best_docs:
+            new_ans += doc + "|"
+        return answers +"--"+new_ans
 
 
-    def handle_test_judgment(self, prev_judge, action):
-        
-        JudgmentConsistency.objects.create(
-            user=prev_judge.user,
-            task=prev_judge.task,
-            judgment = prev_judge,
-            previous_action=prev_judge.action,
-            current_action=action,
 
-        )
-
-        judgment = Judgment.objects.filter(parent=prev_judge).first()
-        return judgment 
+    

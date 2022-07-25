@@ -11,7 +11,6 @@ for topic, documents in data.items():
     for doc, value in documents.items():
         if value !="0" and value !="1":
             topic_mappping[doc] = topic
-print(topic_mappping)
 
 
 # 2= ingest topic
@@ -21,7 +20,6 @@ with open('fixtures/data/nist_data/topics.json', 'r') as f:
         try:
             if key in topic_mappping.values():
                 Topic.objects.create(uuid=key, title=value['title'])
-                print(f'{key}')
         except:
             continue
 
