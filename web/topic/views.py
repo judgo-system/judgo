@@ -19,7 +19,7 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
 
         prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
         context['question_content'] = prev_judge.task.topic.title
-        answer_list = prev_judge.task.best_answers.split('--')[-1].split('|')[:-1]
+        answer_list = prev_judge.best_answers.split('--')[-1].split('|')[:-1]
         documets = []
         for answer in answer_list:
             documets.append(Document.objects.get(uuid=answer))
