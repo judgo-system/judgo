@@ -20,7 +20,7 @@ class TaskAdmin(admin.ModelAdmin):
 
     def view_topic(self, obj):
         url = reverse("admin:topic_topic_change", args=(obj.topic.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.topic.uuid)
+        return format_html('<a href="{}">{}</a>', url, obj.topic.title)
 
     def view_best_answer(self, obj):
         if not obj.best_answers:
