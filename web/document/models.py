@@ -10,6 +10,8 @@ class Document(models.Model):
 
     content = models.TextField()
     
+    # title = models.TextField()
+    
     topic = models.ForeignKey(
         Topic, null=True, 
         on_delete=models.SET_NULL, related_name="topic"
