@@ -4,9 +4,11 @@ from django.urls import reverse
 from django.utils.html import format_html
 from .models import Task
 from document.models import Document
+from .actions import export_task_as_csv_action
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
+    actions = [export_task_as_csv_action("CSV Export", fields=['id', 'user__username'])]
     list_display = ('id', 'view_user', 'view_topic', 'is_completed', 'num_ans',
         'view_best_answer', 'tags', 'created_at')
 
