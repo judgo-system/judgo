@@ -17,13 +17,13 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from inquiry.api import add_tag, remove_tag
-from response.api import add_highlight, remove_highlight
+from topic.api import add_tag, remove_tag
+from document.api import add_highlight, remove_highlight
 
 urlpatterns = [
     # path('', include('core.urls', namespace='core')),
     path('', include('core.urls', namespace='core')),
-    path('inquiry/', include('inquiry.urls', namespace='inquiry')),
+    path('topic/', include('topic.urls', namespace='topic')),
     path('judgment/', include('judgment.urls', namespace='judgment')),
     path('admin/', admin.site.urls),
 
@@ -31,8 +31,8 @@ urlpatterns = [
     path('user/', include('user.urls', namespace='user')),
     path('accounts/', include('allauth.urls')),
 
-    path('add_tag/<int:inquiryId>/', add_tag, name='add_tag'),
-    path('remove_tag/<int:inquiryId>/', remove_tag, name='remove_tag'),
+    path('add_tag/<int:taskId>/', add_tag, name='add_tag'),
+    path('remove_tag/<int:taskId>/', remove_tag, name='remove_tag'),
     path('add_highlight/<int:responseId>/', add_highlight, name='add_highlight'),
     path('remove_highlight/<int:responseId>/', remove_highlight, name='remove_highlight'),
 

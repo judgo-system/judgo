@@ -56,8 +56,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'import_export',
     'core',
-    'inquiry', 
-    'response',
+    'topic', 
+    'document',
     'judgment',
 ]
 

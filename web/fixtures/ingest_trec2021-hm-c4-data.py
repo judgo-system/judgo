@@ -1,7 +1,7 @@
 import pandas as pd
 import html
-from inquiry.models import Question
-from response.models import Document
+from topic.models import Topic
+from document.models import Document
 
 
 # 1= ingest question
@@ -9,9 +9,9 @@ from response.models import Document
 ans = pd.read_csv('fixtures/trec2021-hm-c4-questions.csv')
 for i, t in ans.iterrows():
     try:
-        Question.objects.create(question_id=t[0], content=t[1])
-    except:
-        continue
+        Topic.objects.create(uuid=t[0], title=t[1])
+    except Exception as e:
+        print(f"{t[0]} ==> {e}")
 
 
 # 2- Ingest Document
@@ -25,10 +25,10 @@ p = pd.read_csv('fixtures/trec2021-hm-c4-passages.csv')
 for i, t in p.iterrows():
     if t[0] in d:
 
-        q = Question.objects.get(question_id=d[t[0]])
+        q = Topic.objects.get(uuid=d[t[0]])
         try:
             content = html.escape(t[1])
-            Document.objects.create(uuid=t[0], content=" "+ content, base_question=q)
+            Document.objects.create(uuid=t[0], content=" "+ content, topic=q)
         except Exception as e:
             print(e)
             continue

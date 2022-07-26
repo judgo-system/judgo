@@ -1,7 +1,7 @@
 import json
 import os
-from inquiry.models import Question
-from response.models import Document
+from topic.models import Topic
+from document.models import Document
 
 # 1- prepare qrel file
 topic_mappping = {}
@@ -11,7 +11,6 @@ for topic, documents in data.items():
     for doc, value in documents.items():
         if value !="0" and value !="1":
             topic_mappping[doc] = topic
-print(topic_mappping)
 
 
 # 2= ingest topic
@@ -20,8 +19,7 @@ with open('fixtures/data/nist_data/topics.json', 'r') as f:
     for key, value in data.items():
         try:
             if key in topic_mappping.values():
-                Question.objects.create(question_id=key, content=value['title'])
-                print(f'{key}')
+                Topic.objects.create(uuid=key, title=value['title'])
         except:
             continue
 
@@ -39,8 +37,8 @@ for file in os.listdir(path):
 for doc, content in doc_mappping.items():
     if doc in topic_mappping:
         try:
-            q = Question.objects.get(question_id=topic_mappping[doc])
+            topic = Topic.objects.get(uuid=topic_mappping[doc])
 
-            Document.objects.create(uuid=doc, content=" "+content, base_question=q)
+            Document.objects.create(uuid=doc, content=" "+content, topic=topic)
         except:
             continue

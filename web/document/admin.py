@@ -6,14 +6,14 @@ from .models import Document, Response
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'content', 'view_question')
-    search_fields = ['uuid', "base_question__question_id", 'content']
+    list_display = ('uuid', 'content', 'view_topic')
+    search_fields = ['uuid', "topic__uuid", 'content']
 
-    def view_question(self, obj):
-        url = reverse("admin:inquiry_question_change", args=(obj.base_question.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.base_question.question_id)
+    def view_topic(self, obj):
+        url = reverse("admin:topic_topic_change", args=(obj.topic.id,))
+        return format_html('<a href="{}">{}</a>', url, obj.topic.uuid)
 
-    view_question.short_description = "question"
+    view_topic.short_description = "topic"
 
 @admin.register(Response)
 class ResponseAdmin(admin.ModelAdmin):
@@ -28,7 +28,7 @@ class ResponseAdmin(admin.ModelAdmin):
 
     def view_document(self, obj):
         
-        url = reverse("admin:response_document_change", args=(obj.document.id,))
+        url = reverse("admin:document_document_change", args=(obj.document.id,))
         return format_html('<a href="{}">({})</a>', url, obj.document.uuid)
 
     view_user.short_description = "user"

@@ -6,7 +6,7 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
-from response.models import Document, Response
+from document.models import Document, Response
 from judgment.models import Judgment, JudgingChoices
 from interfaces import pref
 
@@ -41,7 +41,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-            
+            context["debug"] = "false"
+
             if prev_judge.is_complete:
                 context["task_status"] = "complete"
                 return context
@@ -49,7 +50,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.task_id = prev_judge.task.id
             (left, right) = pref.get_documents(prev_judge.before_state)
             
-            context['question_content'] = prev_judge.task.question.content
+            context['question_content'] = prev_judge.task.topic.title
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             

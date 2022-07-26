@@ -1,11 +1,12 @@
+from statistics import mode
 from django.db import models
 from web.settings import AUTH_USER_MODEL as User
-from inquiry.models import Question
+from topic.models import Topic
 
 
 class Task(models.Model):
 
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
@@ -25,4 +26,5 @@ class Task(models.Model):
 
 
     def __str__(self) -> str:
-        return f'(User:{self.user.username}, Question:{self.question.content})'
+        return f'(User:{self.user.username}, Topic:{self.topic.title})'
+

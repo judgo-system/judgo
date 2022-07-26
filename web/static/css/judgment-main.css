@@ -266,7 +266,9 @@ body {
 
 
 .highlight {
-    background-color: yellow;
+  line-height: 2;
+  background-color: yellow;
+  white-space: pre-line;
 }
 #left-doc::-moz-selection { /* Code for Firefox */
     background: yellow;
@@ -417,4 +419,9 @@ mark {
   margin-left: 50px;
   width: 100%;
   text-align: center;
+}
+
+.modal-sentence{
+  margin-top: 10px;
+  line-height: normal;
 }

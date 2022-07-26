@@ -1,6 +1,6 @@
 import pandas as pd
-from inquiry.models import Question
-from response.models import Document
+from topic.models import Topic
+from document.models import Document
 
 
 # 1= ingest question
@@ -8,7 +8,7 @@ from response.models import Document
 ans = pd.read_csv('fixtures/question.csv')
 for i, t in ans.iterrows():
     try:
-        Question.objects.create(question_id=t[0], content=t[1])
+        Topic.objects.create(uuid=t[0], title=t[1])
     except:
         continue
 
@@ -25,8 +25,8 @@ p = pd.read_csv('fixtures/passages.csv')
 for i, t in p.iterrows():
     if t[0] in d:
 
-        q = Question.objects.get(question_id=d[t[0]])
+        q = Topic.objects.get(uuid=d[t[0]])
         try:
-            Document.objects.create(uuid=t[0], content=" "+t[1], base_question=q)
+            Document.objects.create(uuid=t[0], content=" "+t[1], topic=q)
         except:
             continue

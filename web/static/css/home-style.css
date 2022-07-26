@@ -158,3 +158,11 @@ body {
   user-select: none;
 }
 
+.modal-sentence{
+  margin-top: 10px;
+  line-height: normal;
+}
+
+.modal-bold{
+  font-weight: bold;
+}

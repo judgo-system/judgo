@@ -1,25 +1,24 @@
-import sys
 import logging
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-
+from datetime import datetime
 from .models import Task
 from judgment.models import Judgment
-from inquiry.models import Question
+from topic.models import Topic
 from user.models import User
 from interfaces import pref
 
 logger = logging.getLogger(__name__)
-sys.setrecursionlimit(10000)
 
 class Home(LoginRequiredMixin, generic.TemplateView):
     template_name = 'home.html'
 
     def get_context_data(self, **kwargs):
         context = super(Home, self).get_context_data(**kwargs)
+
 
         tasks = Task.objects\
             .filter(user_id=self.request.user, is_completed=False)\
@@ -38,7 +37,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        # if user is an admin it should reroute to admin page 
         if request.user.is_superuser:
             return HttpResponseRedirect(reverse_lazy('admin:index'))
 
@@ -54,10 +52,9 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
         task = Task.objects\
             .get(id=task_id)
-        question = Question.objects.get(id=task.question.id)
+        topic = Topic.objects.get(id=task.topic.id)
 
         prev_judge = None
-
         try:
             prev_judge = Judgment.objects.filter(
                     user = self.request.user.id,
@@ -67,10 +64,9 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             if prev_judge.after_state:
                 state = prev_judge.after_state
         except Exception as e:
-            logger.warning(f"There is no previous judgment for question={question.content} and user={self.request.user.username}")
-            state = pref.create_new_pref_obj(question)
-
-
+            logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
+            state = pref.create_new_pref_obj(topic)
+                    
         if not prev_judge or prev_judge.is_complete:
 
             prev_judge = Judgment.objects.create(
@@ -78,6 +74,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                     task=task,
                     before_state=state,
                     parent=prev_judge,
+                    best_answers = ""
                 )
         user = User.objects.get(id=self.request.user.id)
         user.latest_judgment = prev_judge
