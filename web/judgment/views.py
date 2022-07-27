@@ -50,19 +50,21 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.task_id = prev_judge.task.id
             (left, right) = pref.get_documents(prev_judge.before_state)
             
-            context['question_content'] = prev_judge.task.topic.title
+            context['topic'] = prev_judge.task.topic
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
             context['state_object'] = pref.get_str(prev_judge.before_state)
             
-            context['left_id'] = left
-            context['right_id'] = right
 
             left_doc = Document.objects.get(uuid=left)
             right_doc = Document.objects.get(uuid=right)
             left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
             right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
+
+
+            context['doc_left'] = left_response.document
+            context['doc_right'] = right_response.document
 
             prev_judge.left_response = left_response
             prev_judge.right_response = right_response

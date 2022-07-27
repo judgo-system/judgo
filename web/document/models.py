@@ -10,15 +10,18 @@ class Document(models.Model):
 
     content = models.TextField()
     
-    # title = models.TextField()
+    title = models.TextField()
+
+    url = models.TextField()
     
+
     topic = models.ForeignKey(
         Topic, null=True, 
         on_delete=models.SET_NULL, related_name="topic"
     )
 
     def __str__(self):
-        return f"{self.uuid} : {self.content}"
+        return f"{self.uuid} : ({self.title}, {self.url})"
 
 
 # A table representing many-to-many relation between documents and session

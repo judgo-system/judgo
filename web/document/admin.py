@@ -6,7 +6,7 @@ from .models import Document, Response
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'content', 'view_topic')
+    list_display = ('uuid', 'title', 'url', 'content', 'view_topic')
     search_fields = ['uuid', "topic__uuid", 'content']
 
     def view_topic(self, obj):

@@ -33,22 +33,17 @@
     
     <div class="main">
         <div class="header">
-        <form method='post' action="{% url 'judgment:judgment'%}">
-            {% csrf_token %}
-                    
-        <button class="button prev-document" type="submit" value="prev" name="prev">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
-            </svg>
-            Undo
-        </button>
-
-        
-        </form> 
-            <div class="question-header">
-                <h2 class="q-indicator">Question:</h2>
-                <h2>{{ question_content }}</h2>
-            </div>
-
+            <form method='post' action="{% url 'judgment:judgment'%}">
+                {% csrf_token %}            
+                <button class="button prev-document" type="submit" value="prev" name="prev">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
+                    </svg>
+                    Undo
+                </button>
+            </form> 
+            
+            <img class="logo" src="{% static 'image/logo_transparent.png' %}">
+            
 
             <a href="{% url 'account_logout' %}">
                 <button class="button absolute-button btn-logout">Log out</button>
@@ -56,10 +51,25 @@
 
         </div>
 
-
-        <div class="form-group">
-            <input type="text" class="form-control" name="question_highlight" value="{{ highlights }}"/>
+        <div class="question-container">
+            
+            <div class="question-body">
+                <div class="question-header">
+                    {{ topic.title }}
+                </div>
+                <div class="question-description">
+                    {{ topic.description }}
+                </div>
+            </div>
+            
+            <!-- <div class="question-tag"> -->
+                <div class="question-tag">
+                    <input type="text"  name="question_highlight" />
+                </div>
+            <!-- </div> -->
         </div>
+        
+
         <!-- "width: 35%" -->
         <div class="progress-container">
             <div class="progress">
@@ -67,10 +77,8 @@
 
                 <span></span>
             </div>
-
             <div class="arrow-up" style="left: {{ progress_bar_width }}%"></div>
             <h3 style="left: {{ progress_bar_width }}%">{{ progress_bar_width }}%</h3>
-
         </div>
 
         <div id="debug-div"class="tree-container">
@@ -87,8 +95,15 @@
             <div class="documents">
                 <div class="document">
                     <h2 class="document-id">
-                        {{left_id}}
+                        {{doc_left.uuid}}
                     </h2>
+                    <h2 class="document-title">
+                        {{doc_left.title}}
+                    </h2>
+                    <h2 class="document-url">
+                        <a href="{{doc_left.url}}">{{doc_left.url}}</a>
+                    </h2>
+                    
                     <div class="document-content" >
                         <p id="left-doc" class="editable-doc">
                             {% autoescape off %}{{ left_txt }}{% endautoescape %} 
@@ -98,7 +113,13 @@
     
                 <div class="document">
                     <h2 class="document-id">
-                        {{right_id}} 
+                        {{doc_right.uuid}}
+                    </h2>
+                    <h2 class="document-title">
+                        {{doc_right.title}}
+                    </h2>
+                    <h2 class="document-url">
+                        <a href="{{right_left.url}}">{{doc_right.url}}</a>
                     </h2>
                     <div class="document-content" >
                         <p id="right-doc" class="editable-doc">
@@ -479,7 +500,19 @@
 
 
 	    $('input[name="question_highlight"]').amsifySuggestags({
-            type : 'amsify',
+            // suggestions: ['India', 'Pakistan', 'Nepal', 'UAE', 'Iran', 'Bangladesh'],
+            // whiteList: true,
+            // backgrounds: ['blue', 'green', 'red', 'orange', '#424242'],
+            // colors: ['white', 'black', 'white', 'black', 'white'],
+            // showAllSuggestions: true,
+        //     backgrounds: [
+        //     "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00",
+        //     "#ffff33", "#a65628", "#f781bf", "#999999", "#6e40aa",
+        //     "#bf3caf", "#fe4b83", "#e2b72f", "#aff05b", "#7fc97f",
+        //     "#52f667", "#1ddfa3", "#23abd8", "#4c6edb", "#6e40aa",
+        //     "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f",
+        //     "#bf5b17"
+        // ],
             afterAdd: function(value) {
                 const data ={
                     tags:value
@@ -498,6 +531,7 @@
                     response.json()
                 )
                 .then(data => {
+                    console.log(data)
                     highlight_tags("#left-doc", value)
                     highlight_tags("#right-doc", value)
 

@@ -27,7 +27,7 @@ body {
 .progress .progress-bar {
   display: block;
   height: 100%;
-  background: #94b49f;
+  background: #ADC2A9;
   background-size: 300% 100%;
 }
 
@@ -37,7 +37,7 @@ body {
   font-size: 14px;
   display: inline-block;
   position: absolute;
-  color: #94b49f;
+  color: #ADC2A9;
   width: 50px;
   margin-left: -5px;
   margin-top: -12px;
@@ -74,12 +74,11 @@ body {
 }
 
 .document-id {
-  background: #789395;
+  background: #99A799;
   padding: 5px 10px;
   color: white;
   text-align: center;
 }
-
 .document:nth-child(2n) .document-id {
   border-left: 2px solid white;
 }
@@ -113,7 +112,7 @@ body {
   background: white;
   padding: 20px 20px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px -4px 12px;
-  border-radius: 10px 10px 0 0;
+  /* border-radius: 10px 10px 0 0; */
   overflow: hidden;
 }
 
@@ -166,7 +165,6 @@ body {
   justify-content: space-between;
   align-items: center;
   height: 70px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   text-align: center;
 }
 
@@ -182,11 +180,27 @@ body {
 }
 
 .question-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.1rem;
+  /* display: flex; */
+  justify-content: left;
+  align-items: left;
+  margin-top: 15px;
+  margin-left: 20px;
+  font-size: 1.3rem;
   line-height: 1.1rem;
+  font-weight: bold;
+
+}
+
+.question-description {
+  /* display: flex; */
+  height: 100%;
+  justify-content: left;
+  align-items: left;
+  margin: 10px;
+  margin-left: 20px;
+  line-height: normal;
+  font-size: small;
+  overflow: scroll;
 }
 
 .question-header .q-indicator {
@@ -240,11 +254,12 @@ body {
 
 .form-group {
   width: 100%;
-  margin-left: 150px;
+  height: 100%;
+  /* margin-left: 150px; */
   /* margin-right: 50px; */
   align-items: center;
-  margin-bottom: 10px;
-  margin-top:10px;
+  /* margin-bottom: 10px; */
+  /* margin-top:10px; */
 }
 
 .form-group .form-field {
@@ -284,17 +299,21 @@ mark {
 }
 
 .amsify-suggestags-area {
-
-  width: calc(100% - 350px);
+  width: 100%;
+  height: 100%;
 }
 
 .amsify-suggestags-area .amsify-suggestags-input-area {
-  height: 60px;
+  height: 100%;
+  padding: 5px;
   overflow: scroll;
+  font-size: small;
 }
 
 .amsify-suggestags-area .amsify-suggestags-input-area .amsify-suggestags-input {
   width: 100%;
+  background-color: #f6f4f2;
+  padding: 5px;
 }
 
 
@@ -425,3 +444,61 @@ mark {
   margin-top: 10px;
   line-height: normal;
 }
+
+
+.question-container {
+  display: flex;
+  margin: 5px;
+  margin-bottom: 20px;
+  height: 120px;
+}
+
+.question-body{
+  width: 80%;
+  height: 100%;
+  margin: 5px;
+  border-radius: 1ch;
+  text-align: left;
+  background-color: #f6f4f2;
+}
+.question-tag{
+  
+  width: 20%;
+  height: 100%;
+  background-color: #f6f4f2;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 1ch;
+}
+.logo{
+  width: 150px;
+  height: 150px;
+}
+
+
+.document-title {
+  height: 35px;
+  background: #b3bab3;
+  padding: 10px;
+  color: black;
+  text-align: center;
+  align-items: center;
+  font-size: small;
+}
+
+.document:nth-child(2n) .document-title {
+  border-left: 2px solid white;
+}
+.document-url {
+  height: 25px;
+  background: #c8cdc8;
+  padding: 10px;
+  color: black;
+  text-align: center;
+  font-size: x-small;
+}
+
+.document:nth-child(2n) .document-url {
+  border-left: 2px solid white;
+}
+/* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

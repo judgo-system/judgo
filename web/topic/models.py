@@ -7,5 +7,6 @@ class Topic(models.Model):
 
     title = models.TextField(null=False)
 
+    description = models.TextField(null=False)
     def __str__(self):
         return f"({self.uuid}, {self.title})"
