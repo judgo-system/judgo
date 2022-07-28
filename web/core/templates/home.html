@@ -1,42 +1,3 @@
-<!-- {% load i18n static has_group crispy_forms_tags  %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
-    <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
-
-
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <title>Preference Judgment Home</title>
-</head>
-<body>
-
-    <div class="main-page">
-        <h1 class="header">
-            There is no task to review!
-        </h1>
-    </div>
-
-    <div class="container">
-        <div class="question">
-            <p>You can log out!</p>
-
-                <div class="answer-box">
-                <form method='post' action="{% url 'account_logout' %}">
-                    {% csrf_token %}
-                    <button class="button" type="submit" value="right" name="right">Logout</button>
-                </form>  
-                </div>
-
-        </div>
-    </div>            
-</body> -->
 {% load i18n static has_group crispy_forms_tags  %}
 <!DOCTYPE html>
 <html lang="en">
@@ -52,7 +13,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <title>Preference Judgment Home</title>
+   
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <title>Preference Judgment System</title>
+
 </head>
 <body>
     <div class="main">
@@ -65,11 +29,12 @@
                 <button class="button">Log out</button>
             </a>
         </div>
+        
         <form method="post">
             {% csrf_token %}
             <div id='container' class="container">
+                <!-- <img class="logo" src="{% static 'images/logo.png' %}"> -->
 
-                
                 <div id="select-container" class="select-container">
                     <label class="select" for="slct">
                         <select id="slct" required="required" name="selected_question">
@@ -93,7 +58,7 @@
     
             </form>
            
-            <div class="question">
+            <!-- <div class="question">
                 <p>Which one do you prefer?</p>
                 
                     <div class="answer-box">
@@ -110,7 +75,7 @@
                     <a href="{% url 'account_logout' %}">
                         <button class="button absolute-button btn-logout">Log out</button>
                     </a>
-            </div>
+            </div> -->
         </div>
 
     </div>

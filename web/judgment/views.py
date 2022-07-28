@@ -1,3 +1,4 @@
+from email import contentmanager
 import logging
 from urllib import request
 from braces.views import LoginRequiredMixin
@@ -51,6 +52,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             (left, right) = pref.get_documents(prev_judge.before_state)
             
             context['topic'] = prev_judge.task.topic
+            context['support'] = prev_judge.task.topic.uuid.split("_")[1].upper()
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             

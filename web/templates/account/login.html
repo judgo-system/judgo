@@ -5,6 +5,10 @@
 
 {% block inner %}
 
+  <div class="col-md-6 align-self-center center-text">
+    <img src="{% static 'images/logo.png' %}" width="200%">
+    <!-- <p >A System for Preference Judgment</p> -->
+  </div>
   <form class="login mb-3" method="POST" action="{% url 'account_login' %}" autocomplete="off">
       {% csrf_token %}
       {{ form|crispy }}
