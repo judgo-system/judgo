@@ -59,10 +59,39 @@ body {
   margin: 0 auto;
 }
 
+.container-home {
+  width: 992px;
+  height: calc(100vh - 70px);
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+}
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-logo {
+  width: 300px;
+  height: 300px;
+}
+
+.question-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
 .documents {
   display: flex;
   width: 100%;
-  height: calc(100vh - 260px);
+  height: calc(100vh - 420px);
   justify-content: center;
   align-items: center;
 }
@@ -501,4 +530,10 @@ mark {
 .document:nth-child(2n) .document-url {
   border-left: 2px solid white;
 }
+
+
+/* .home-logo {
+  position: relative;
+} */
+
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */
