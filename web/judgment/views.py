@@ -42,6 +42,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
+            print(prev_judge)
             context["debug"] = "false"
 
             if prev_judge.is_complete:

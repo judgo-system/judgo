@@ -64,7 +64,7 @@
             
             <!-- <div class="question-tag"> -->
                 <div class="question-tag">
-                    <input type="text"  name="question_highlight" />
+                    <input type="text"  name="question_highlight" value="{{ highlights }}"/>
                 </div>
             <!-- </div> -->
         </div>
@@ -101,7 +101,7 @@
                         {{doc_left.title}}
                     </h2>
                     <h2 class="document-url">
-                        <a href="{{doc_left.url}}">{{doc_left.url}}</a>
+                        <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
                     </h2>
                     
                     <div class="document-content" >
@@ -119,7 +119,7 @@
                         {{doc_right.title}}
                     </h2>
                     <h2 class="document-url">
-                        <a href="{{right_left.url}}">{{doc_right.url}}</a>
+                        <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                     </h2>
                     <div class="document-content" >
                         <p id="right-doc" class="editable-doc">
@@ -500,19 +500,7 @@
 
 
 	    $('input[name="question_highlight"]').amsifySuggestags({
-            // suggestions: ['India', 'Pakistan', 'Nepal', 'UAE', 'Iran', 'Bangladesh'],
-            // whiteList: true,
-            // backgrounds: ['blue', 'green', 'red', 'orange', '#424242'],
-            // colors: ['white', 'black', 'white', 'black', 'white'],
-            // showAllSuggestions: true,
-        //     backgrounds: [
-        //     "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00",
-        //     "#ffff33", "#a65628", "#f781bf", "#999999", "#6e40aa",
-        //     "#bf3caf", "#fe4b83", "#e2b72f", "#aff05b", "#7fc97f",
-        //     "#52f667", "#1ddfa3", "#23abd8", "#4c6edb", "#6e40aa",
-        //     "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f",
-        //     "#bf5b17"
-        // ],
+            
             afterAdd: function(value) {
                 const data ={
                     tags:value

@@ -8,5 +8,8 @@ class Topic(models.Model):
     title = models.TextField(null=False)
 
     description = models.TextField(null=False)
+
+    num_related_document = models.IntegerField(default=0)
+
     def __str__(self):
-        return f"({self.uuid}, {self.title})"
+        return f"({self.uuid}, {self.num_related_document}, {self.title})"
