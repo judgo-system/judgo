@@ -3,7 +3,8 @@ html {
 }
 
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  /* font-family: "Open Sans", sans-serif; */
   height: 100%;
 }
 
@@ -12,14 +13,14 @@ body {
 }
 
 .progress-container {
-  height: 50px;
+  height: 40px;
   margin-left: 15px;
   margin-right: 15px;
 }
 
 .progress {
   width: 100%;
-  height: 10px;
+  height: 7px;
   background: #e1e4e8;
   border-radius: 0;
   overflow: hidden;
@@ -34,7 +35,7 @@ body {
 .progress-container h3 {
   text-align: center;
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 12px;
   display: inline-block;
   position: absolute;
   color: #ADC2A9;
@@ -91,7 +92,7 @@ body {
 .documents {
   display: flex;
   width: 100%;
-  height: calc(100vh - 420px);
+  height: calc(100vh - 330px);
   justify-content: center;
   align-items: center;
 }
@@ -103,21 +104,23 @@ body {
 }
 
 .document-id {
-  background: #99A799;
+  background: #c8cdc8;
   padding: 5px 10px;
   color: white;
   text-align: center;
+  font: x-small;
 }
 .document:nth-child(2n) .document-id {
   border-left: 2px solid white;
 }
 
 .document-content {
-  /* border: 2px solid #789395; */
-  padding: 20px 50px;
+  /* border: 1px solid #789395; */
+  padding-left: 20px;
   height: 100%;
   overflow: auto;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
+  
 }
 
 .document:nth-child(2n) .document-content {
@@ -125,9 +128,15 @@ body {
 }
 
 .document-content p {
-  line-height: 2;
-  text-align: justify;
-  white-space: pre-line;
+  /* width: 50%; */
+  /* height: 100%; */
+  line-height:1.2;
+  /* display: block; */
+  white-space: pre;
+  /* text-align: justify; */
+
+  /* line-height: 1.7;
+  white-space: pre-line; */
 }
 
 .question {
@@ -161,6 +170,7 @@ body {
   box-sizing: border-box;
   color: #111827;
   font-size: 1rem;
+  font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
   font-weight: 400;
   line-height: 1.25rem;
   padding: 0.4rem 1rem;
@@ -193,7 +203,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
+  height: 40px;
   text-align: center;
 }
 
@@ -202,6 +212,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 0.86rem; 
 }
 
 .prev-document svg {
@@ -222,7 +233,7 @@ body {
 
 .question-description {
   /* display: flex; */
-  height: 55px;
+  height: 40px;
   justify-content: left;
   align-items: left;
   margin: 10px;
@@ -310,9 +321,10 @@ body {
 
 
 .highlight {
-  line-height: 2;
+  line-height:1.2;
   background-color: yellow;
-  white-space: pre-line;
+  white-space: pre;
+
 }
 #left-doc::-moz-selection { /* Code for Firefox */
     background: yellow;
@@ -478,8 +490,9 @@ mark {
 .question-container {
   display: flex;
   margin: 5px;
-  margin-bottom: 20px;
-  height: 120px;
+  margin-top: 2px;
+  margin-bottom: 15px;
+  height: 90px;
 }
 
 .question-body{
@@ -489,6 +502,7 @@ mark {
   border-radius: 1ch;
   text-align: left;
   background-color: #f6f4f2;
+
 }
 .question-tag{
   
@@ -498,42 +512,41 @@ mark {
   margin: 5px;
   padding: 10px;
   border-radius: 1ch;
+
 }
 .logo{
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
 }
 
 
 .document-title {
-  height: 35px;
-  background: #b3bab3;
+  height: 50px;
+  background: #99A799;
   padding: 10px;
+  /* font-weight: bold; */
   color: black;
-  text-align: center;
-  align-items: center;
-  font-size: small;
+  text-align: left;
+  align-items: left;
+  font-size: medium;
+  overflow: auto;
 }
 
 .document:nth-child(2n) .document-title {
   border-left: 2px solid white;
 }
 .document-url {
-  height: 25px;
-  background: #c8cdc8;
+  height: 45px;
+  background: #b3bab3;  
   padding: 10px;
   color: black;
-  text-align: center;
-  font-size: x-small;
+  text-align: left;
+  font-size: small;
+  overflow: auto;
 }
 
 .document:nth-child(2n) .document-url {
   border-left: 2px solid white;
 }
-
-
-/* .home-logo {
-  position: relative;
-} */
 
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

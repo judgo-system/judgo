@@ -1,12 +1,10 @@
-from logging import RootLogger
 import os
-from pydoc import doc
 import pandas as pd
 import html
+from django.utils.html import strip_tags
 from topic.models import Topic
-from core.models import Task
 from document.models import Document
-from user.models import User
+
 
 ROOT_PATH =  "fixtures/data/trec_2021"
 # 1= ingest question
@@ -34,11 +32,11 @@ for i, t in p.iterrows():
         try:
             
             Document.objects.create(
-                uuid=t[0], 
-                title=html.escape(t[1]),
-                url=html.escape(t[2]),
-                content=" "+ html.escape(t[3]).replace("\n\n", "\n"), 
-                topic=q)
+                uuid = t[0],
+                title = strip_tags(t[1]),
+                url = strip_tags(t[2]),
+                content = strip_tags(t[3]) + "\n\n",
+                topic=q )
         except Exception as e:
             print(e)
             continue

@@ -42,12 +42,12 @@
                 </button>
             </form> 
             
-            <img class="logo" src="{% static 'images/logo.png' %}">
+            <!-- <img class="logo" src="{% static 'images/logo.png' %}"> -->
             
-
-            <a href="{% url 'account_logout' %}">
-                <button class="button absolute-button btn-logout">Log out</button>
-            </a>
+            <form method='post' action="{% url 'judgment:judgment'%}">
+                {% csrf_token %}                         
+                <button class="button prev-document">Log out</button>
+            </form> 
 
         </div>
 
@@ -94,36 +94,43 @@
             
             <div class="documents">
                 <div class="document">
-                    <h2 class="document-id">
-                        {{doc_left.uuid}}
-                    </h2>
+                    
                     <h2 class="document-title">
                         {{doc_left.title}}
                     </h2>
                     <h2 class="document-url">
                         <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
                     </h2>
-                    
+                    <!-- <h2 class="document-id">
+                        {{doc_left.uuid}}
+                    </h2> -->
                     <div class="document-content" >
                         <p id="left-doc" class="editable-doc">
-                            {% autoescape off %}{{ left_txt }}{% endautoescape %} 
+                            {% autoescape off %}
+                                {{ left_txt }}
+                            
+Document ID : {{doc_left.uuid}}
+                            {% endautoescape %} 
                         </p>
                     </div>
                 </div>
     
                 <div class="document">
-                    <h2 class="document-id">
-                        {{doc_right.uuid}}
-                    </h2>
                     <h2 class="document-title">
                         {{doc_right.title}}
                     </h2>
                     <h2 class="document-url">
                         <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                     </h2>
+                    <!-- <h2 class="document-id">
+                        {{doc_right.uuid}}
+                    </h2> -->
                     <div class="document-content" >
                         <p id="right-doc" class="editable-doc">
-                            {% autoescape off %}{{ right_txt }}{% endautoescape %} 
+                            {% autoescape off %}
+                                {{ right_txt }}
+Document ID : {{doc_right.uuid}}
+                            {% endautoescape %} 
                         </p>
                     </div>
                 </div>
