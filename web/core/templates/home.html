@@ -17,6 +17,11 @@
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
     <title>Preference Judgment System</title>
 
+    <script type = "text/javascript">  
+        functionmyfunction() {   
+            alert("how are you");  
+            }  
+    </script>  
 </head>
 <body>
     <div class="main">
@@ -39,10 +44,10 @@
                         <div id="select-container" class="select-container">
                             <label class="select" for="slct">
                                 <select id="slct" required="required" name="selected_question">
-                                <option value="" disabled="disabled" selected="selected">Select a question</option>
-                                {% for task in tasks %}
-                                    <option name="option" value=" {{ task.id}}">{{task.topic.title}}</option>
-                                {% endfor %}
+                                    <option value="" disabled="disabled" selected="selected">Select a question</option>
+                                    {% for task in tasks %}
+                                        <option name="option" value=" {{task.id}}">{{task.topic.represent}} </option>
+                                    {% endfor %}
                                 </select>
                                 <svg>
                                 <use xlink:href="#select-arrow-down"></use>

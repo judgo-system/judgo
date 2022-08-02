@@ -43,11 +43,20 @@
             </form> 
             
             <!-- <img class="logo" src="{% static 'images/logo.png' %}"> -->
-            
-            <form method='post' action="{% url 'judgment:judgment'%}">
+            <div class="header">
+                
+                <a href="{% url 'core:home' %}">
+                    <button class="button prev-document">Home</button>
+                </a>
+                <a href="{% url 'account_logout' %}">
+                    <button class="button prev-document">Log out</button>
+                </a>
+                
+            </div>
+            <!-- <form method='post' action="{% url 'judgment:judgment'%}">
                 {% csrf_token %}                         
                 <button class="button prev-document">Log out</button>
-            </form> 
+            </form>  -->
 
         </div>
 
@@ -101,9 +110,6 @@
                     <h2 class="document-url">
                         <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
                     </h2>
-                    <!-- <h2 class="document-id">
-                        {{doc_left.uuid}}
-                    </h2> -->
                     <div class="document-content" >
                         <p id="left-doc" class="editable-doc">
                             {% autoescape off %}
@@ -122,9 +128,6 @@ Document ID : {{doc_left.uuid}}
                     <h2 class="document-url">
                         <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                     </h2>
-                    <!-- <h2 class="document-id">
-                        {{doc_right.uuid}}
-                    </h2> -->
                     <div class="document-content" >
                         <p id="right-doc" class="editable-doc">
                             {% autoescape off %}
@@ -137,7 +140,6 @@ Document ID : {{doc_right.uuid}}
             </div>
             <div class="question">
                 <p>Which one do you prefer?</p>
-                <!-- action="{% url 'judgment:judgment'%}" -->
                     <div class="answer-box">
                         <form method='post'>
                                 {% csrf_token %}

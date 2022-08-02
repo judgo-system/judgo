@@ -230,7 +230,6 @@ def create_new_pref_obj(topic):
     Returns:
         bytes of a pref obj created from a list of documents related to topic id
     """
-    print(f"Here is pref see the quetion {topic}")
 
     document_list = Document.objects.filter(topic__uuid = topic.uuid)
     docs_list = []

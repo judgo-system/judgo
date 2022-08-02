@@ -28,3 +28,8 @@ class Task(models.Model):
     def __str__(self) -> str:
         return f'(User:{self.user.username}, Topic:{self.topic.title})'
 
+    
+    # def represent_topic(self):
+    #     return f'{self.topic.title} ({self.topic.uuid.split("_")[1].upper()})'
+
+
