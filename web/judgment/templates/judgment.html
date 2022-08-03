@@ -12,10 +12,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     <!-- Amsify Plugin -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
     
+    <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
-    <link rel="stylesheet" type="text/css" href="{% static 'css/amsify.suggestags.css' %} ">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/amsify.suggestags.css' %} "> -->
 
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
@@ -24,7 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <script type="text/javascript" src="{% static 'js/jquery.amsify.suggestags.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/jquery.amsify.suggestags.js' %}"></script> -->
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
     <title>Document</title>
 </head>
@@ -53,10 +56,6 @@
                 </a>
                 
             </div>
-            <!-- <form method='post' action="{% url 'judgment:judgment'%}">
-                {% csrf_token %}                         
-                <button class="button prev-document">Log out</button>
-            </form>  -->
 
         </div>
 
@@ -71,11 +70,10 @@
                 </div>
             </div>
             
-            <!-- <div class="question-tag"> -->
                 <div class="question-tag">
-                    <input type="text"  name="question_highlight" value="{{ highlights }}"/>
+                    <input name='tags3' value="{{ highlights }}">
+                    <!-- <input type="text"  name="question_highlight" value="{{ highlights }}"/> -->
                 </div>
-            <!-- </div> -->
         </div>
         
 
@@ -390,21 +388,16 @@ Document ID : {{doc_right.uuid}}
                 }
             }
 
-        // color list
-        const colorGlobalList = [
-            "#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00",
-            "#ffff33", "#a65628", "#f781bf", "#999999", "#6e40aa",
-            "#bf3caf", "#fe4b83", "#e2b72f", "#aff05b", "#7fc97f",
-            "#52f667", "#1ddfa3", "#23abd8", "#4c6edb", "#6e40aa",
-            "#beaed4", "#fdc086", "#ffff99", "#386cb0", "#f0027f",
-            "#bf5b17"
-        ]
 
         function highlight_tags(search_area, tag){
             
             if (tag.length <2) return
             
             // in the case there is more than one word in tag
+            tags = tag.split("|")
+            tag = tags[0]
+            color = tags[1]
+
             splited = tag.split(" ")
             if (splited.length > 1){
                 temp = ""
@@ -419,44 +412,22 @@ Document ID : {{doc_right.uuid}}
             }
 
             var textarea = $(search_area);    
-            var enew = '';
             var query = new RegExp("("+tag+")", "gim"); 
             
-            tagLower = tag.toLowerCase()
-            var randomColor;
-            var tagColorDic = localStorage['colorDic']
-            var colorList = localStorage['colorList']
-            
-            
-            if (tagColorDic==null){
-                tagColorDic = {}
-            }else{
-                tagColorDic = JSON.parse(tagColorDic);
-            }
-            if(colorList==null){
-                colorList = colorGlobalList
-            }else{
-                colorList = JSON.parse(colorList);
-            }
-
-            if (tagLower in tagColorDic){
-                randomColor = tagColorDic[tagLower]
-            }else{
-                randomColor = colorList.shift()
-                tagColorDic[tagLower] = randomColor
-
-                localStorage['colorList'] = JSON.stringify(colorList);
-                localStorage['colorDic'] = JSON.stringify(tagColorDic);
-            }
-            
-            const markTag = "<mark style='background: "+ randomColor +"!important'>"
-            
+            const markTag = "<mark style='background: "+ color +"!important'>"
             newtext= textarea.html().replace(query, markTag+"$1</mark>");    
             textarea.html(newtext);
         }
 
         
         function dehighlight_tags(search_area, tag, second){
+
+
+            tags = tag.split("|")
+            tag = tags[0]
+            color = tags[1]
+           
+            
             var textarea = $(search_area);    
             var enew = ''; 
 
@@ -474,32 +445,14 @@ Document ID : {{doc_right.uuid}}
                 tag = temp
             }
 
-            var tagColorDic = localStorage['colorDic']
-            var colorList = localStorage['colorList']
             
+            const markTag = "<mark style=\"background: " +color.replace("(", "\\(").replace(")", "\\)") +"!important\">"
             
-            tagColorDic = JSON.parse(tagColorDic);
-            colorList = JSON.parse(colorList);
-
-            randomColor = tagColorDic[tag.toLowerCase()]
-
-            if (second == true){
-
-                colorList.push(randomColor)
-                delete tagColorDic[tag.toLowerCase()]
-
-                localStorage['colorList'] = JSON.stringify(colorList);
-                localStorage['colorDic'] = JSON.stringify(tagColorDic);
-
-            }
-            const markTag = "<mark style=\"background: " + randomColor + "!important\">"
-            var query = new RegExp("("+markTag+tag+"</mark>)", "gim");   
-            
+            var query = new RegExp("("+markTag+tag+")", "gim");   
             cases = textarea.html().match(query)
-            
             if (cases !=null){
                 for (let i = 0; i < cases.length; i++) { 
-                    t = cases[i].replace(markTag,"");
+                    t = cases[i].replace(markTag.replace("\\(", "(").replace("\\)",")"),"");
                     t = t.replace("</mark>","");
                     newtext= textarea.html().replace(cases[i], t);    
                     textarea.html(newtext); 
@@ -508,54 +461,105 @@ Document ID : {{doc_right.uuid}}
         }
 
 
-	    $('input[name="question_highlight"]').amsifySuggestags({
+
+        // TAGIFY
+        var input = document.querySelector('input[name=tags3]'),
+        tagify = new Tagify(input, {
+            transformTag        : transformTag,
+            placeholder         : "Enter a word or phrase.",
             
-            afterAdd: function(value) {
-                const data ={
-                    tags:value
-                } 
-                var put_url = "/../../add_tag/" + getCookie("task_id") + "/" 
-                fetch(put_url, {
-                    method: "PUT",
-                    credentials: "same-origin",
-                    headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    },
-                    body: JSON.stringify({payload: data})
-                })
-                .then(response => 
-                    response.json()
-                )
-                .then(data => {
-                    console.log(data)
-                    highlight_tags("#left-doc", value)
-                    highlight_tags("#right-doc", value)
+            
+        })
 
-                });
-            },
+    // generate a random color (in HSL format, which I like to use)
+    function getRandomColor(){
+        function rand(min, max) {
+            return min + Math.random() * (max - min);
+        }
 
-            afterRemove: function(value) {
-                const data ={
-                    tags:value
-                } 
-                var put_url = "/../../remove_tag/" + getCookie("task_id") + "/" 
-                fetch(put_url, {
-                    method: "PUT",
-                    credentials: "same-origin",
-                    headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "X-CSRFToken": getCookie("csrftoken"),
-                    },
-                    body: JSON.stringify({payload: data})
-                })
-                .then(response => response.json())
-                .then(data => {
-                    dehighlight_tags("#left-doc", value, false)
-                    dehighlight_tags("#right-doc", value, true)
-                });
+        var h = rand(1, 360)|0,
+            s = rand(30, 80)|0,
+            l = rand(30, 80)|0;
+        // var h = rand(1, 360)|0,
+        //     s = rand(40, 70)|0,
+        //     l = rand(65, 72)|0;
+
+        return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+    }
+
+    function transformTag( tagData ){
+        var tags = tagData["value"].split("|")
+
+        if (tags.length > 1) {
+            tagData.color = tags[1].replaceAll(".",",");
+            tagData.value = tags[0];
+            const value = tagData.value +"|"+tagData.color
+            highlight_tags("#left-doc", value)
+            highlight_tags("#right-doc", value)
+        } else{
+            tagData.color = getRandomColor();
+        }
+        
+        tagData.style = "--tag-bg:" + tagData.color;
+
+    }
+
+    tagify.on('add', function(e, tagData){
+
+        const value = e.detail["data"]["value"] + "|" + e.detail["data"]["color"]
+
+        const data ={
+            tags:value
+        } 
+        var put_url = "/../../add_tag/" + getCookie("task_id") + "/" 
+        fetch(put_url, {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
             },
+            body: JSON.stringify({payload: data})
+        })
+        .then(response => 
+            response.json()
+        )
+        .then(data => {
+            highlight_tags("#left-doc", value)
+            highlight_tags("#right-doc", value)
+
         });
+    })
+
+
+    tagify.on('remove', function(e){
+
+        
+        const value = e.detail["data"]["value"] + "|" + e.detail["data"]["color"]
+        
+        const data ={
+            tags:value
+        }
+
+        var put_url = "/../../remove_tag/" + getCookie("task_id") + "/" 
+        fetch(put_url, {
+            method: "PUT",
+            credentials: "same-origin",
+            headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": getCookie("csrftoken"),
+            },
+            body: JSON.stringify({payload: data})
+        })
+        .then(response => response.json())
+        .then(data => {
+            dehighlight_tags("#left-doc", value, false)
+            dehighlight_tags("#right-doc", value, true)
+        });
+    })
+
+
+
     </script>
 </body>
 </html>

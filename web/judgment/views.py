@@ -96,7 +96,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 
             # if there is no tag is we don't need to fill it out.
             if prev_judge.task.tags:
-                context['highlights'] = prev_judge.task.tags
+                # modifyed tag inorder to work according Tagify information
+                context['highlights'] = prev_judge.task.tags.replace(",", ".").replace("-", ",")
         
         return context
 

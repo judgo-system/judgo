@@ -549,4 +549,14 @@ mark {
   border-left: 2px solid white;
 }
 
+.advance .tagify__tag{
+  --tag-hover: var(--tag-bg);
+}
+
+.tagify{
+  height: 100% !important; 
+  width: 100% !important;
+  overflow: auto !important;
+  font-size: small !important;
+}
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */
