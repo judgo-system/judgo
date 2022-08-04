@@ -22,7 +22,7 @@ class BestAnswersView(LoginRequiredMixin, generic.TemplateView):
         answer_list = prev_judge.best_answers.split('--')[-1].split('|')[:-1]
         documets = []
         for answer in answer_list:
-            documets.append(Document.objects.get(uuid=answer))
+            documets.append(Document.objects.get(uuid=answer, topics=prev_judge.task.topic))
             
         context['documents'] = documets
         return context
@@ -77,7 +77,7 @@ class InquiryCompleteView(LoginRequiredMixin, generic.TemplateView):
             documets = []
 
             for doc in v.split('|')[:-1]:    
-               documets.append(Document.objects.get(uuid=doc))
+               documets.append(Document.objects.get(uuid=doc, topics=task.topic))
 
             answer_list[k] = documets        
         

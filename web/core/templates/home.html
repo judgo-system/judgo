@@ -28,7 +28,7 @@
         <div class="header">
             
             <div class="home-header">
-                <h2 class="home-message"> {{ message }}</h2>
+                <h2 class="home-message"> </h2>
             </div>
             <a href="{% url 'account_logout' %}">
                 <button class="button prev-document">Log out</button>
@@ -44,9 +44,9 @@
                         <div id="select-container" class="select-container">
                             <label class="select" for="slct">
                                 <select id="slct" required="required" name="selected_question">
-                                    <option value="" disabled="disabled" selected="selected">Select a question</option>
+                                    <option value="" disabled="disabled" selected="selected"> {{ message }}</option>
                                     {% for task in tasks %}
-                                        <option name="option" value=" {{task.id}}">{{task.topic.represent}} </option>
+                                        <option name="option" value=" {{task.id}}">{{task.topic.title}} </option>
                                     {% endfor %}
                                 </select>
                                 <svg>
@@ -64,42 +64,13 @@
                     </div>
                     
                 </div>
-                
-                
-                
-    
             </form>
-           
-            <!-- <div class="question">
-                <p>Which one do you prefer?</p>
-                
-                    <div class="answer-box">
-                        <form method='post' action="{% url 'judgment:judgment'%}">
-                                {% csrf_token %}
-                            <button class="button" type="submit" value="left" name="left">Left</button>
-                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
-                            <button class="button" type="submit" value="right" name="right">Right</button>
-                        
-                        </form>  
-
-                    </div>
-                    
-                    <a href="{% url 'account_logout' %}">
-                        <button class="button absolute-button btn-logout">Log out</button>
-                    </a>
-            </div> -->
         </div>
-
     </div>
     
     <!-- JavaScript -->
     <script>
         localStorage.clear()
-        var task_exist = "{{task_exist}}"
-        console.log(task_exist)
-        if(task_exist=="false"){
-            document.getElementById('container').style.display = 'none';
-        }
     </script>
 </body>
 </html>

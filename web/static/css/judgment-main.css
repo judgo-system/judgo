@@ -451,6 +451,7 @@ mark {
 
 .tree-container {
   height: 100px;
+  display: none;
 }
 .previous-action {
   margin: 10px;

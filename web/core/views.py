@@ -27,10 +27,9 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
         if tasks:
             context["tasks"] = tasks
-            context["message"] = 'Please pick one of the following quesions to review.'      
+            context["message"] = 'Select a topic to review.'      
         else:
-            context["task_exist"] = 'false'
-            context["message"] = 'There is no quesiton to review right now.'      
+            context["message"] = 'There is no topic to review right now.'      
 
 
         return context

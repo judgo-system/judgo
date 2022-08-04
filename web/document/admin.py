@@ -1,19 +1,28 @@
 from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
+
+from topic.models import Topic
 from .models import Document, Response
 
 
 @admin.register(Document)
 class DocumentAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'title', 'url', 'content', 'view_topic')
-    search_fields = ['uuid', "topic__uuid", 'content']
+    list_display = ('uuid', 'title', 'url',  'view_topics')
+    search_fields = ['uuid', 'title', 'url']
 
-    def view_topic(self, obj):
-        url = reverse("admin:topic_topic_change", args=(obj.topic.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.topic.uuid)
+    def view_topics(self, obj):
+        if not obj.topics.all:
+            return None
+        admin_topics = ""
+        for i, t in enumerate(obj.topics.all()):
+            topic = Topic.objects.get(uuid=t.uuid)
+            url = reverse("admin:topic_topic_change", args=(topic.id,))
+            admin_topics += f"(<a href={url}>{topic.uuid}</a>)"
+        
+        return format_html(admin_topics)
 
-    view_topic.short_description = "topic"
+    view_topics.short_description = "topics"
 
 @admin.register(Response)
 class ResponseAdmin(admin.ModelAdmin):

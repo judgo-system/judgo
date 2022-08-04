@@ -63,7 +63,7 @@
             
             <div class="question-body">
                 <div class="question-header">
-                    {{ topic.title }} (document says {{support}})
+                    {{ topic.title }}
                 </div>
                 <div class="question-description">
                     {{ topic.description }}
@@ -209,8 +209,8 @@ Document ID : {{doc_right.uuid}}
                 
                 const debug = "{{debug}}"
                 console.log(debug)
-                if(debug=="false"){
-                    $("#debug-div").hide();
+                if(debug=="true"){
+                    $("#debug-div").show();
                 }
 
                 const task_status = "{{task_status}}"

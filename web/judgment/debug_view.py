@@ -1,3 +1,4 @@
+import html
 import logging
 from braces.views import LoginRequiredMixin
 
@@ -46,6 +47,8 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context["task_status"] = "complete"
                 return context
 
+            context["debug"] = "true"
+
             self.task_id = prev_judge.task.id
             (left, right) = pref.get_documents(prev_judge.before_state)
             
@@ -62,9 +65,8 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             context['topic'] = prev_judge.task.topic    
             context['support'] = prev_judge.task.topic.uuid.split("_")[1].upper()
 
-
-            left_doc = Document.objects.get(uuid=left)
-            right_doc = Document.objects.get(uuid=right)
+            left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
+            right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
             left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
             right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
             
@@ -98,9 +100,14 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['right_txt'] = right_response.document.content
 
                 
+            context['right_txt'] = html.escape(context['right_txt'])
+            context['left_txt'] = html.escape(context['left_txt'])
+
+
             # if there is no tag is we don't need to fill it out.
             if prev_judge.task.tags:
-                context['highlights'] = prev_judge.task.tags
+                # modifyed tag inorder to work according Tagify information
+                context['highlights'] = prev_judge.task.tags.replace(",", ".").replace("-", ",")
 
         return context
 

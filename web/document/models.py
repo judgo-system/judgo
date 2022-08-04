@@ -15,9 +15,9 @@ class Document(models.Model):
     url = models.TextField()
     
 
-    topic = models.ForeignKey(
-        Topic, null=True, 
-        on_delete=models.SET_NULL, related_name="topic"
+    topics = models.ManyToManyField(
+        Topic, 
+        related_name="topics"
     )
 
     def __str__(self):

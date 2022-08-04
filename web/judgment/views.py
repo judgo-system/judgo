@@ -1,6 +1,5 @@
-from email import contentmanager
+import html
 import logging
-from urllib import request
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
@@ -42,7 +41,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-            context["debug"] = "false"
 
             if prev_judge.is_complete:
                 context["task_status"] = "complete"
@@ -59,8 +57,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             context['state_object'] = pref.get_str(prev_judge.before_state)
             
 
-            left_doc = Document.objects.get(uuid=left)
-            right_doc = Document.objects.get(uuid=right)
+            left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
+            right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
             left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
             right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
 
@@ -94,6 +92,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['right_txt'] = right_response.document.content
 
                 
+            context['right_txt'] = html.escape(context['right_txt'])
+            context['left_txt'] = html.escape(context['left_txt'])
+
+
             # if there is no tag is we don't need to fill it out.
             if prev_judge.task.tags:
                 # modifyed tag inorder to work according Tagify information

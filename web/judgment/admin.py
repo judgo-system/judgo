@@ -45,7 +45,7 @@ class JudgmentAdmin(admin.ModelAdmin):
             if temp:
                 admin_best_ans += f'\n\n Grade {i+1}:\n\n'
             for doc in temp:
-                d = Document.objects.get(uuid=doc)
+                d = Document.objects.get(uuid=doc, topics=obj.task.topic)
                 url = reverse("admin:document_document_change", args=(d.id,))
                 admin_best_ans += f"(<a href={url}>{doc}</a>)"
         

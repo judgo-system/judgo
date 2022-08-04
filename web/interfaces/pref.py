@@ -231,7 +231,7 @@ def create_new_pref_obj(topic):
         bytes of a pref obj created from a list of documents related to topic id
     """
 
-    document_list = Document.objects.filter(topic__uuid = topic.uuid)
+    document_list = Document.objects.filter(topics = topic)
     docs_list = []
     for d in document_list:
         docs_list.append(d.uuid)
