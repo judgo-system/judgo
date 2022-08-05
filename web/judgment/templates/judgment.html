@@ -202,7 +202,6 @@ Document ID : {{doc_right.uuid}}
 
             $(document).ready(function () {
                 
-                
                 const debug = "{{debug}}"
                 if(debug=="true"){
                     $("#debug-div").show();
@@ -212,92 +211,6 @@ Document ID : {{doc_right.uuid}}
                 if(task_status=="complete"){
                     $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
                 }
-
-                $(".editable-doc").mousedown(function (e1) {
-                    mouseXPosition = e1.pageX; //register the mouse down position
-                });
-
-                $(".editable-doc").mouseup(function (e2) {
-                    var highlighted = false;
-                    var selection = window.getSelection();
-                    var selectedText = selection.toString();
-                    var startPoint = window.getSelection().getRangeAt(0).startOffset;
-                    var endPoint = window.getSelection().getRangeAt(0).endOffset;
-                    var anchorTag = selection.anchorNode.parentNode;
-                    var focusTag = selection.focusNode.parentNode;
-
-                    if ((e2.pageX - mouseXPosition) < 0) {
-                        focusTag = selection.anchorNode.parentNode;
-                        anchorTag = selection.focusNode.parentNode;
-                    }
-                    if (selectedText.length === (endPoint - startPoint)) {
-                        highlighted = true;
-
-                        if (anchorTag.className !== "highlight") {
-                            highlightSelection();
-                        } else {
-                            var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
-                            anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
-                            anchorTag.insertAdjacentHTML('afterend', afterText);
-                        }
-
-                    }else{
-                        if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
-                            highlightSelection();  
-                            highlighted = true;
-                        } 
-                    }
-
-                    if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
-                        highlighted = true;
-
-                        var afterHtml = anchorTag.innerHTML.substr(startPoint);
-                        var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
-                        var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
-                        var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
-                        var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
-                        selection.deleteFromDocument();
-                        anchorTag.innerHTML = anchorInnerhtml;
-                        focusTag.innerHTml = focusInnerHtml;
-                        var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
-                        anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
-                    }
-
-                    if (anchorTag.className === "highlight" && !highlighted) {
-                        highlighted = true;
-						var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
-                        var afterHtml = anchorTag.innerHTML.substr(startPoint);
-                        var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
-                        selection.deleteFromDocument();
-                        anchorTag.innerHTML = Innerhtml;
-                        anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
-                     }
-                    
-                    if (focusTag.className === 'highlight' && !highlighted) {
-                        highlighted = true;
-						var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
-                        var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
-                        selection.deleteFromDocument();
-                        focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
-                        outerHtml += beforeHtml;
-                        focusTag.insertAdjacentHTML('beforebegin', outerHtml );
-
-
-                    }
-                    if (!highlighted) {
-                        highlightSelection();
-                    }
-                    var doc_highlights = "";
-
-                    $('.highlight').each(function(e4){
-                        if($(this).html() == ''){  
-                            $(this).remove();
-                        }
-                    });
-
-                    selection.removeAllRanges();
-                   
-                });
             });
             
 
@@ -305,11 +218,13 @@ Document ID : {{doc_right.uuid}}
                 var right_doc_highlights = "";
                 var left_doc_highlights = "";
 
-                $('.highlight').each(function(e4){
+                $('.highlighter').each(function(e4){
                     if ($(this).parent().attr("id")=='left-doc'){
                         left_doc_highlights +=  $(this).html() + "|||"
+                        
                     }else{
                         right_doc_highlights +=  $(this).html() + "|||"
+                        console.log()
                     }
                 });
                 
@@ -354,34 +269,6 @@ Document ID : {{doc_right.uuid}}
                     },
                 });
             })
-
-
-            function highlightSelection() {
-                var selection;
-
-                //Get the selected stuff
-                if (window.getSelection)
-                    selection = window.getSelection();
-                else if (typeof document.selection != "undefined")
-                    selection = document.selection;
-
-                //Get a the selected content, in a range object
-                var range = selection.getRangeAt(0);
-
-                //If the range spans some text, and inside a tag, set its css class.
-                if (range && !selection.isCollapsed) {
-                    if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
-                        var span = document.createElement('span');
-                        span.className = 'highlight';
-                        console.log(selection)
-                        span.textContent = selection.toString();
-
-                        selection.deleteFromDocument();
-                        range.insertNode(span);
-                    }
-                }
-            }
-
 
         function highlight_tags(search_area, tag){
             
@@ -475,13 +362,6 @@ Document ID : {{doc_right.uuid}}
             s = rand(40, 70)|0,
             l = rand(65, 72)|0;
 
-        // var h = rand(1, 360)|0,
-        //     s = rand(30, 80)|0,
-        //     l = rand(30, 80)|0;
-        // var h = rand(1, 360)|0,
-        //     s = rand(40, 70)|0,
-        //     l = rand(65, 72)|0;
-
         return 'hsl(' + h + ',' + s + '%,' + l + '%)';
     }
 
@@ -556,6 +436,44 @@ Document ID : {{doc_right.uuid}}
         });
     })
 
+
+
+
+    // New Highlighting Method!
+    var flag = 0;
+    var element = document;
+    element.addEventListener("mousedown", function() {
+        flag = 0;
+        }, false);
+    
+    element.addEventListener("mousemove", function() {
+        flag = 1;
+        }, false);
+
+    element.addEventListener("mouseup", function() {
+        if (flag === 0) {
+            console.log("click");
+        } else if (flag === 1) {
+            getSelText();
+        }
+        }, false);
+
+    function getSelText() {
+        var sel = window.getSelection ? window.getSelection() : document.selection.createRange(); // FF : IE
+        if (sel.getRangeAt) { 
+            var range = sel.getRangeAt(0);
+            
+            var newNode = document.createElement("span");
+            newNode.setAttribute('class', 'highlighter');
+            newNode.textContent = sel.toString();
+
+            sel.deleteFromDocument();
+            range.insertNode(newNode);
+        } else { 
+            sel.pasteHTML('<span class="highlighter">' + sel.htmlText + '</span>');
+
+        }
+    }
 
 
     </script>
