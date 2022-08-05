@@ -99,10 +99,8 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             else:
                 context['right_txt'] = right_response.document.content
 
-                
             context['right_txt'] = html.escape(context['right_txt'])
             context['left_txt'] = html.escape(context['left_txt'])
-
 
             # if there is no tag is we don't need to fill it out.
             if prev_judge.task.tags:

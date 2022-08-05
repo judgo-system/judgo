@@ -1,21 +1,21 @@
-{% load i18n static has_group crispy_forms_tags  %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html lang="en" {% block extra_html_tag %}{% endblock %}>
   <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <meta name="description" content="Judgo">
-      <meta name="author" content="University of Waterloo - Information Retrieval Lab">
+      <meta name="author" content="University of Waterloo">
       <title>Judgo - {% block pagetitle %}home{% endblock %}</title>
+      <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+
       <!-- Bootstrap core CSS -->
       <link href="{% static 'css/hical-bootstrap.min.css' %}" rel="stylesheet">
-      <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
 
       <!-- Custom styles for Judgo -->
       <link href="{% static 'css/project.css' %}" rel="stylesheet">
       <!-- Other -->
       <link href="{% static 'css/pace.css' %}" rel="stylesheet">
-      <link href="{% static 'css/font-awesome-all.css' %}" rel="stylesheet">
       <link href="{% static 'css/loadawesome.css' %}" rel="stylesheet">
       <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.js" type="application/javascript"></script>
       <script>
@@ -60,9 +60,5 @@
 
       </div>
     </div>
-
-   
-
-    <script src="{% static 'js/pace.min.js' %}"></script>
   </body>
 </html>

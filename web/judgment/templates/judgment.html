@@ -11,14 +11,10 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-    <!-- Amsify Plugin -->
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous"> -->
     
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.polyfills.min.js"></script> -->
     <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
-    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/amsify.suggestags.css' %} "> -->
 
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
@@ -27,7 +23,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- <script type="text/javascript" src="{% static 'js/jquery.amsify.suggestags.js' %}"></script> -->
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
     <title>Document</title>
 </head>
@@ -207,8 +202,8 @@ Document ID : {{doc_right.uuid}}
 
             $(document).ready(function () {
                 
+                
                 const debug = "{{debug}}"
-                console.log(debug)
                 if(debug=="true"){
                     $("#debug-div").show();
                 }
@@ -230,7 +225,6 @@ Document ID : {{doc_right.uuid}}
                     var endPoint = window.getSelection().getRangeAt(0).endOffset;
                     var anchorTag = selection.anchorNode.parentNode;
                     var focusTag = selection.focusNode.parentNode;
-                    
 
                     if ((e2.pageX - mouseXPosition) < 0) {
                         focusTag = selection.anchorNode.parentNode;
@@ -267,8 +261,6 @@ Document ID : {{doc_right.uuid}}
                         focusTag.innerHTml = focusInnerHtml;
                         var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
                         anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
-
-
                     }
 
                     if (anchorTag.className === "highlight" && !highlighted) {
@@ -381,7 +373,9 @@ Document ID : {{doc_right.uuid}}
                     if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
                         var span = document.createElement('span');
                         span.className = 'highlight';
+                        console.log(selection)
                         span.textContent = selection.toString();
+
                         selection.deleteFromDocument();
                         range.insertNode(span);
                     }
@@ -478,8 +472,12 @@ Document ID : {{doc_right.uuid}}
         }
 
         var h = rand(1, 360)|0,
-            s = rand(30, 80)|0,
-            l = rand(30, 80)|0;
+            s = rand(40, 70)|0,
+            l = rand(65, 72)|0;
+
+        // var h = rand(1, 360)|0,
+        //     s = rand(30, 80)|0,
+        //     l = rand(30, 80)|0;
         // var h = rand(1, 360)|0,
         //     s = rand(40, 70)|0,
         //     l = rand(65, 72)|0;
