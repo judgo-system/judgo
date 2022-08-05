@@ -339,23 +339,6 @@ mark {
   color: black !important;
 }
 
-.amsify-suggestags-area {
-  width: 100%;
-  height: 100%;
-}
-
-.amsify-suggestags-area .amsify-suggestags-input-area {
-  height: 100%;
-  padding: 5px;
-  overflow: scroll;
-  font-size: small;
-}
-
-.amsify-suggestags-area .amsify-suggestags-input-area .amsify-suggestags-input {
-  width: 100%;
-  background-color: #f6f4f2;
-  padding: 5px;
-}
 
 
 .session-name {
@@ -559,5 +542,9 @@ mark {
   width: 100% !important;
   overflow: auto !important;
   font-size: small !important;
+}
+
+.highlighter {
+  background:yellow;
 }
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

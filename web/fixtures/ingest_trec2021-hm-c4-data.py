@@ -7,8 +7,7 @@ from document.models import Document
 
 
 ROOT_PATH =  "fixtures/data/trec_2021"
-# 1= ingest question
-
+print("1- Ingest topic")
 ans = pd.read_csv(os.path.join(ROOT_PATH, 'questions.csv'), sep=" ", header=None)
 for i, t in ans.iterrows():
     try:
@@ -17,8 +16,7 @@ for i, t in ans.iterrows():
         print(f"{t[0]} ==> {e}")
 
 
-# 2- Ingest Document
-print("Ingest Document")
+print("2- Ingest Document")
 passages = pd.read_csv(os.path.join(ROOT_PATH, 'trec2021_subset_c4_passages.csv'))
 for i, t in passages.iterrows():
     try: 
@@ -26,13 +24,13 @@ for i, t in passages.iterrows():
             uuid = t[0],
             title = strip_tags(t[1]),
             url = strip_tags(t[2]),
-            content = strip_tags(t[3]) + "\n\n",
+            content = html.escape(strip_tags(t[3])) + "\n\n",
         )
     except Exception as e:
         print(e)
 
 
-print("Map document to topics")
+print("3- Map document to topics")
 a_file = open(os.path.join(ROOT_PATH, "pool.out"))
 for line in a_file:
     topic_id, doc_id = line.split()
@@ -41,16 +39,12 @@ for line in a_file:
         topic = Topic.objects.get(uuid=topic_id)
         document.topics.add(topic)
         document.save()
-
     except Exception as e:
         print(e)
- 
 
 
-## check if a topic has just one document!
+print("4- Check if a topic has just one document!")
 for topic in Topic.objects.all():
     document_list = Document.objects.filter(topics__uuid = topic.uuid)
     topic.num_related_document = len(document_list)
     topic.save()
-
-
