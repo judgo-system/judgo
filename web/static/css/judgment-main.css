@@ -10,6 +10,7 @@ body {
 
 .main {
   height: 100%;
+  overflow: hidden;
 }
 
 .progress-container {
@@ -92,16 +93,31 @@ body {
 .documents {
   display: flex;
   width: 100%;
-  height: calc(100vh - 330px);
+  height: calc(100vh - 150px);
   justify-content: center;
   align-items: center;
 }
 
-.document {
+.document-right{
   width: 50%;
   height: 100%;
   flex: 1;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 100px;
+  min-width: 30px;
 }
+
+.document-left{
+  padding-left: 15px;
+  padding-right: 15px;
+  width: 50%;
+  height: 100%;
+  min-width: 30px;
+  padding-bottom: 100px;
+
+}
+
 
 .document-id {
   background: #c8cdc8;
@@ -118,9 +134,7 @@ body {
   /* border: 1px solid #789395; */
   padding-left: 20px;
   height: 100%;
-  overflow: auto;
-  /* overflow-x: hidden; */
-  
+  overflow: auto;  
 }
 
 .document:nth-child(2n) .document-content {
@@ -128,15 +142,8 @@ body {
 }
 
 .document-content p {
-  /* width: 50%; */
-  /* height: 100%; */
   line-height:1.2;
-  /* display: block; */
   white-space: pre;
-  /* text-align: justify; */
-
-  /* line-height: 1.7;
-  white-space: pre-line; */
 }
 
 .question {
@@ -144,19 +151,16 @@ body {
   justify-content: center;
   align-self: center;
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 20px 20px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px -4px 12px;
-  /* border-radius: 10px 10px 0 0; */
-  overflow: hidden;
+  left: 35%; 
+  background: #d4dbd4;
+  padding: 10px 10px;
+  margin-top: 5px;
+  border-radius: 1ch;
 }
 
 .question p {
-  font-size: 1.2rem;
-  line-height: 1.2rem;
+  font-size: 1.12rem;
+  line-height: 1.12rem;
   padding: 0.4rem 1rem;
   margin-right: 20px;
 }
@@ -203,7 +207,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 40px;
+  margin-top: 5px;
+  height: 55px;
   text-align: center;
 }
 
@@ -220,20 +225,19 @@ body {
 }
 
 .question-header {
-  /* display: flex; */
+  width: 100%;
   justify-content: left;
   align-items: left;
   margin-top: 15px;
   margin-left: 20px;
   font-size: 1.3rem;
-  line-height: 1.1rem;
+  line-height: 1.3rem;
   font-weight: bold;
 
 }
 
 .question-description {
-  /* display: flex; */
-  height: 40px;
+  height: 100%;
   justify-content: left;
   align-items: left;
   margin: 10px;
@@ -317,23 +321,26 @@ body {
   width: 1%;
   margin-top: 0;
   margin-bottom: 0;
-}
+} 
 
 
-.highlight {
+/* .highlight {
   line-height:1.2;
   background-color: yellow;
   white-space: pre;
 
 }
 #left-doc::-moz-selection { /* Code for Firefox */
-    background: yellow;
-}
+    /* background: yellow;
+} */
 
-#left-doc::selection {
+/* #left-doc::selection {
     background: yellow;
+}  */
+      
+* {
+  box-sizing: border-box;
 }
-         
 mark { 
   background-color: rgb(239, 132, 223) !important; 
   color: black !important;
@@ -341,10 +348,10 @@ mark {
 
 
 
-.session-name {
+/* .session-name {
   margin-bottom: 10px;
   font-size: 30px;
-}
+} */
 
 
 /* List of answer */
@@ -473,24 +480,46 @@ mark {
 
 .question-container {
   display: flex;
-  margin: 5px;
-  margin-top: 2px;
+  margin: 10px;
+  margin-top: 15px;
   margin-bottom: 15px;
-  height: 90px;
+  height: 70px;
 }
 
 .question-body{
-  width: 80%;
+  /* width: 25%;
   height: 100%;
   margin: 5px;
   border-radius: 1ch;
   text-align: left;
-  background-color: #f6f4f2;
+  background-color: #f6f4f2; */
 
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  position: absolute;
+  left: 80%; 
+  /* background: #d4dbd4; */
+  /* padding: 15px; */
+  /* margin-top: 5px; */
+  /*border-radius: 3ch;
+  font-size: 1.15rem; */
+  background: #d4dbd4;
+  padding: 10px 10px;
+  margin-top: 5px;
+  border-radius: 1ch;
 }
+
+.question-body h3{
+  
+  font-size: 1.12rem;
+  line-height: 1.12rem;
+  padding: 0.4rem 1rem;
+}
+
 .question-tag{
   
-  width: 20%;
+  width: 100%;
   height: 100%;
   background-color: #f6f4f2;
   margin: 5px;
@@ -541,10 +570,46 @@ mark {
   height: 100% !important; 
   width: 100% !important;
   overflow: auto !important;
-  font-size: small !important;
+  font-size: medium !important;
 }
 
 .highlighter {
   background:yellow;
 }
+
+.dragbar {
+  
+  width:  15px;
+  padding: 2px;
+  height: 100%;
+
+  cursor: ew-resize;
+  flex: 0 0 auto;
+  background: #99A799;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.dragbar-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: white;
+  margin-bottom: 10px;
+}
+
+
+.dropdown-toggle {
+  margin-right: 10px !important;
+  background-color: white !important;
+}
+
+.dropdown-menu-right{
+  margin-right: 10px !important;
+
+}
+
+
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

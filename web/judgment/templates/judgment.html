@@ -9,6 +9,7 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     
@@ -40,48 +41,54 @@
                 </button>
             </form> 
             
-            <!-- <img class="logo" src="{% static 'images/logo.png' %}"> -->
-            <div class="header">
                 
-                <a href="{% url 'core:home' %}">
-                    <button class="button prev-document">Home</button>
-                </a>
-                <a href="{% url 'account_logout' %}">
-                    <button class="button prev-document">Log out</button>
-                </a>
+
+            <div class="question">
+                <p>Which one do you prefer?</p>
+                    <div class="answer-box">
+                        <form method='post'>
+                            {% csrf_token %}
+                            <button class="button" type="submit" value="left" name="left">Left</button>
+                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
+                            <button class="button" type="submit" value="right" name="right">Right</button>
+                        </form>  
+                    </div>
+            </div>  
+            
+            <div class="question-body">
+
+                <!-- <p>Your Progress   </p> -->
+                <h3>Progress: {{ progress_bar_width }}%</h3>
                 
             </div>
+             
+            <div>
+              <div class="btn-group">
+                <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <!-- Menu -->
+                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M2 11H22V13H2zM2 5H22V7H2zM2 17H22V19H2z"/></svg>
+                </button>
 
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="dropdown-item" id="topic_info_li"><a href="#">Topic Info</a></li>
+                    <li class="dropdown-item"><a href="{% url 'core:home' %}">Home</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-item"><a href="{% url 'account_logout' %}">Log out</a></li>
+                  </ul>
+              </div>
+            </div>
+  
+            
         </div>
 
         <div class="question-container">
             
-            <div class="question-body">
-                <div class="question-header">
-                    {{ topic.title }}
-                </div>
-                <div class="question-description">
-                    {{ topic.description }}
-                </div>
+            <div class="question-tag">
+                <input name='tags3' value="{{ highlights }}">
             </div>
-            
-                <div class="question-tag">
-                    <input name='tags3' value="{{ highlights }}">
-                    <!-- <input type="text"  name="question_highlight" value="{{ highlights }}"/> -->
-                </div>
+                 
         </div>
-        
 
-        <!-- "width: 35%" -->
-        <div class="progress-container">
-            <div class="progress">
-                <span class="progress-bar" style="width: {{ progress_bar_width }}%"></span>
-
-                <span></span>
-            </div>
-            <div class="arrow-up" style="left: {{ progress_bar_width }}%"></div>
-            <h3 style="left: {{ progress_bar_width }}%">{{ progress_bar_width }}%</h3>
-        </div>
 
         <div id="debug-div"class="tree-container">
             <div class="previous-action">
@@ -92,19 +99,19 @@
             </div>
         </div>
 
-        <div class="container">
+        <!-- <div class="container"> -->
             
-            <div class="documents">
-                <div class="document">
+            <div class="documents" id="wrapper">
+                <div class="document-left" id="drag-left">
                     
                     <h2 class="document-title">
                         {{doc_left.title}}
                     </h2>
-                    <h2 class="document-url">
+                    <h2 class="document-url"> class="editable-doc"
                         <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
                     </h2>
                     <div class="document-content" >
-                        <p id="left-doc" class="editable-doc">
+                        <p id="left-doc" >
                             {% autoescape off %}
                                 {{ left_txt }}
                             
@@ -113,16 +120,23 @@ Document ID : {{doc_left.uuid}}
                         </p>
                     </div>
                 </div>
+
+                <div class="dragbar" id="dragbar">
+                    <span class="dragbar-dot"></span>
+                    <span class="dragbar-dot"></span>
+                    <span class="dragbar-dot"></span>
+                </div>
+
     
-                <div class="document">
+                <div class="document-right" id="drag-right">
                     <h2 class="document-title">
                         {{doc_right.title}}
                     </h2>
-                    <h2 class="document-url">
+                    <h2 class="document-url"> class="editable-doc"
                         <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                     </h2>
                     <div class="document-content" >
-                        <p id="right-doc" class="editable-doc">
+                        <p id="right-doc" >
                             {% autoescape off %}
                                 {{ right_txt }}
 Document ID : {{doc_right.uuid}}
@@ -131,21 +145,7 @@ Document ID : {{doc_right.uuid}}
                     </div>
                 </div>
             </div>
-            <div class="question">
-                <p>Which one do you prefer?</p>
-                    <div class="answer-box">
-                        <form method='post'>
-                                {% csrf_token %}
-                            <button class="button" type="submit" value="left" name="left">Left</button>
-                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
-                            <button class="button" type="submit" value="right" name="right">Right</button>
-                        
-                        </form>  
-
-                    </div>
-                    
-            </div>
-        </div>
+            
 
     </div>
     
@@ -170,10 +170,48 @@ Document ID : {{doc_right.uuid}}
         </div>
     </div>
     
-
+    <!-- TOPIC INFO MODAL -->
+    <div class="modal fade" id="topic-info-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding:35px 50px;">
+                    <div class="question-header">
+                        {{ topic.title }}
+                    </div>
+                    <div class="question-description">
+                        {{ topic.description }}
+                    </div>
+                </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                        <button type="submit" class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+        </div>
+    </div>
 
     <!-- JavaScript Block -->
     <script>
+
+    // Menu
+        $(function (){
+
+        // hide main menu
+        $('.nav').hide(); 
+
+        // select menu-button
+        $('.menu-btn').click(function (){ 
+            $('.nav').toggle(300); // expands menu
+        });
+
+        // hides sub-menu
+        $('.sub-menu').hide(); 
+
+        // selects button to expand menu
+        $('.nav li.expand').click(function(){ 
+            $('.sub-menu').toggle(300); // shows sub-menu
+        });
+
+        });
 
       function disableBack() { window.history.forward(); }
         setTimeout("disableBack()", 0);
@@ -211,6 +249,11 @@ Document ID : {{doc_right.uuid}}
                 if(task_status=="complete"){
                     $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
                 }
+
+
+                $('#topic_info_li').on('click', function() {
+                    $('#topic-info-modal').modal();
+                });
             });
             
 
@@ -347,7 +390,7 @@ Document ID : {{doc_right.uuid}}
         var input = document.querySelector('input[name=tags3]'),
         tagify = new Tagify(input, {
             transformTag        : transformTag,
-            placeholder         : "Enter a word or phrase.",
+            placeholder         : "Search keywords",
             
             
         })
@@ -439,18 +482,35 @@ Document ID : {{doc_right.uuid}}
 
 
 
+    // DragBar
+    var left = document.getElementById('drag-left');
+    var right = document.getElementById('drag-right');
+    var bar = document.getElementById('dragbar');
+    var isHandlerDragging = false;
+
+    var handler = document.querySelector('.dragbar');
     // New Highlighting Method!
+    
     var flag = 0;
     var element = document;
     element.addEventListener("mousedown", function() {
+        if (isHandlerDragging) {
+                return false;
+        }
         flag = 0;
         }, false);
     
     element.addEventListener("mousemove", function() {
+        if (isHandlerDragging) {
+                return false;
+        }
         flag = 1;
         }, false);
 
     element.addEventListener("mouseup", function() {
+        if (isHandlerDragging) {
+            return false;
+        }
         if (flag === 0) {
             console.log("click");
         } else if (flag === 1) {
@@ -475,6 +535,34 @@ Document ID : {{doc_right.uuid}}
         }
     }
 
+
+
+    // // DragBar
+        var left = document.getElementById('drag-left');
+        var right = document.getElementById('drag-right');
+        var bar = document.getElementById('dragbar');
+        var isHandlerDragging = false;
+
+        var handler = document.querySelector('.dragbar');
+
+        document.addEventListener('mousedown', function(e) {
+            if (e.target === handler) {
+                isHandlerDragging = true;
+            }
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isHandlerDragging) {
+                return false;
+            }
+
+            left.style.width = (e.pageX - bar.offsetWidth / 2)+ 'px';
+
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            isHandlerDragging = false;
+        });
 
     </script>
 </body>
