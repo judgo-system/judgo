@@ -10,49 +10,7 @@ body {
 
 .main {
   height: 100%;
-}
-
-.progress-container {
-  height: 40px;
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-.progress {
-  width: 100%;
-  height: 7px;
-  background: #e1e4e8;
-  border-radius: 0;
   overflow: hidden;
-}
-.progress .progress-bar {
-  display: block;
-  height: 100%;
-  background: #ADC2A9;
-  background-size: 300% 100%;
-}
-
-.progress-container h3 {
-  text-align: center;
-  margin-top: 10px;
-  font-size: 12px;
-  display: inline-block;
-  position: absolute;
-  color: #ADC2A9;
-  width: 50px;
-  margin-left: -5px;
-  margin-top: -12px;
-}
-
-.arrow-up {
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid #94b49f;
-  position: absolute;
-  margin-left: 10px;
-  margin-top: -18px;
 }
 
 .container {
@@ -92,16 +50,31 @@ body {
 .documents {
   display: flex;
   width: 100%;
-  height: calc(100vh - 330px);
+  height: calc(100vh - 150px);
   justify-content: center;
   align-items: center;
 }
 
-.document {
+.document-right{
   width: 50%;
   height: 100%;
   flex: 1;
+  padding-right: 15px;
+  /* padding-left: 15px; */
+  padding-bottom: 100px;
+  min-width: 30px;
 }
+
+.document-left{
+  padding-left: 15px;
+  /* padding-right: 15px; */
+  width: 50%;
+  height: 100%;
+  min-width: 30px;
+  padding-bottom: 100px;
+
+}
+
 
 .document-id {
   background: #c8cdc8;
@@ -118,9 +91,7 @@ body {
   /* border: 1px solid #789395; */
   padding-left: 20px;
   height: 100%;
-  overflow: auto;
-  /* overflow-x: hidden; */
-  
+  overflow: auto;  
 }
 
 .document:nth-child(2n) .document-content {
@@ -128,41 +99,30 @@ body {
 }
 
 .document-content p {
-  /* width: 50%; */
-  /* height: 100%; */
   line-height:1.2;
-  /* display: block; */
   white-space: pre;
-  /* text-align: justify; */
-
-  /* line-height: 1.7;
-  white-space: pre-line; */
 }
 
 .question {
   display: flex;
   justify-content: center;
   align-self: center;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: white;
-  padding: 20px 20px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px -4px 12px;
-  /* border-radius: 10px 10px 0 0; */
-  overflow: hidden;
+  position:relative;
+  left: 5%; 
+  background: #d4dbd4;
+  padding: 10px 10px;
+  margin-top: 5px;
+  margin-left: 30dp;
+  border-radius: 1ch;
 }
 
 .question p {
-  font-size: 1.2rem;
-  line-height: 1.2rem;
+  font-size: 1.12rem;
+  line-height: 1.12rem;
   padding: 0.4rem 1rem;
   margin-right: 20px;
 }
 
-/* CSS */
-/* CSS */
 .button {
   background-color: #ffffff;
   border: 1px solid rgb(209, 213, 219);
@@ -203,7 +163,8 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 40px;
+  margin-top: 5px;
+  height: 55px;
   text-align: center;
 }
 
@@ -219,21 +180,29 @@ body {
   margin-right: 5px;
 }
 
+.header-btn-container{
+  display: flex;
+}
+.topic-info-button {
+  justify-content: center;
+  align-items: center;
+  font-size: 0.86rem; 
+}
+
 .question-header {
-  /* display: flex; */
+  width: 100%;
   justify-content: left;
   align-items: left;
   margin-top: 15px;
   margin-left: 20px;
   font-size: 1.3rem;
-  line-height: 1.1rem;
+  line-height: 1.3rem;
   font-weight: bold;
 
 }
 
 .question-description {
-  /* display: flex; */
-  height: 40px;
+  height: 100%;
   justify-content: left;
   align-items: left;
   margin: 10px;
@@ -317,23 +286,26 @@ body {
   width: 1%;
   margin-top: 0;
   margin-bottom: 0;
-}
+} 
 
 
-.highlight {
+/* .highlight {
   line-height:1.2;
   background-color: yellow;
   white-space: pre;
 
 }
 #left-doc::-moz-selection { /* Code for Firefox */
-    background: yellow;
-}
+    /* background: yellow;
+} */
 
-#left-doc::selection {
+/* #left-doc::selection {
     background: yellow;
+}  */
+      
+* {
+  box-sizing: border-box;
 }
-         
 mark { 
   background-color: rgb(239, 132, 223) !important; 
   color: black !important;
@@ -341,10 +313,10 @@ mark {
 
 
 
-.session-name {
+/* .session-name {
   margin-bottom: 10px;
   font-size: 30px;
-}
+} */
 
 
 /* List of answer */
@@ -471,62 +443,53 @@ mark {
 }
 
 
-.question-container {
+.tag-container {
   display: flex;
-  margin: 5px;
-  margin-top: 2px;
-  margin-bottom: 15px;
-  height: 90px;
-}
-
-.question-body{
-  width: 80%;
-  height: 100%;
-  margin: 5px;
-  border-radius: 1ch;
-  text-align: left;
+  margin: 15px;
+  height: 70px;
   background-color: #f6f4f2;
-
-}
-.question-tag{
-  
-  width: 20%;
-  height: 100%;
-  background-color: #f6f4f2;
-  margin: 5px;
   padding: 10px;
   border-radius: 1ch;
-
 }
+
+
+.progress-txt{
+
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  padding: 10px 10px;
+  margin-top: 5px;
+  border-radius: 1ch;
+  font-weight: bold;
+}
+
+.progress-txt h3{
+  
+  font-size: 1.12rem;
+  line-height: 1.12rem;
+  padding: 0.4rem 1rem;
+}
+
 .logo{
   width: 60px;
   height: 60px;
 }
 
 
-.document-title {
-  height: 50px;
-  background: #99A799;
-  padding: 10px;
-  /* font-weight: bold; */
-  color: black;
-  text-align: left;
-  align-items: left;
-  font-size: medium;
-  overflow: auto;
-}
 
 .document:nth-child(2n) .document-title {
   border-left: 2px solid white;
 }
 .document-url {
-  height: 45px;
-  background: #b3bab3;  
+  height: 55px;
+  background: #99A799;  
   padding: 10px;
   color: black;
   text-align: left;
-  font-size: small;
+  font-size: 0.87rem;
   overflow: auto;
+  border-radius: 1ch;
 }
 
 .document:nth-child(2n) .document-url {
@@ -541,10 +504,61 @@ mark {
   height: 100% !important; 
   width: 100% !important;
   overflow: auto !important;
-  font-size: small !important;
+  font-size: medium !important;
 }
 
 .highlighter {
   background:yellow;
 }
+
+.dragbar {
+  width:  15px;
+  height: 100%;
+  cursor: ew-resize;
+  flex: 0 0 auto;
+  background: #c3cbc3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 1ch;
+}
+
+.dragbar-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: white;
+  margin-bottom: 10px;
+}
+
+
+.dropdown-toggle {
+  margin-right: 10px !important;
+  background-color: white !important;
+}
+
+.dropdown-menu-right{
+  margin-right: 10px !important;
+
+}
+
+strong {
+  position: relative;
+}
+
+strong::before {
+  background-color: #d4dbd4;
+
+  content: "";
+  position: absolute;
+  width: calc(100% + 4px);
+  height: 60%;
+  left: -2px;
+  bottom: 0;
+  z-index: -1;
+  transform: rotate(-2deg);
+}
+
+
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

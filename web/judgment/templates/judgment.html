@@ -9,6 +9,7 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     
@@ -31,57 +32,56 @@
     
     <div class="main">
         <div class="header">
-            <form method='post' action="{% url 'judgment:judgment'%}">
-                {% csrf_token %}            
-                <button class="button prev-document" type="submit" value="prev" name="prev">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
-                    </svg>
-                    Undo
+            <div class="header-btn-container">
+                <form method='post' action="{% url 'judgment:judgment'%}">
+                    {% csrf_token %}            
+                    <button class="button prev-document" type="submit" value="prev" name="prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/>
+                        </svg>
+                        Undo
+                    </button>
+                </form> 
+                
+                <button class="button topic-info-button" id="topic_info_li">
+                    <h3>Topic Information</h3>
                 </button>
-            </form> 
-            
-            <!-- <img class="logo" src="{% static 'images/logo.png' %}"> -->
-            <div class="header">
-                
-                <a href="{% url 'core:home' %}">
-                    <button class="button prev-document">Home</button>
-                </a>
-                <a href="{% url 'account_logout' %}">
-                    <button class="button prev-document">Log out</button>
-                </a>
-                
             </div>
 
-        </div>
-
-        <div class="question-container">
+            <div class="question">
+                <p>I prefer</p>
+                    <div class="answer-box">
+                        <form method='post'>
+                            {% csrf_token %}
+                            <button class="button" type="submit" value="left" name="left">Left</button>
+                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
+                            <button class="button" type="submit" value="right" name="right">Right</button>
+                        </form>  
+                    </div>
+            </div>  
             
-            <div class="question-body">
-                <div class="question-header">
-                    {{ topic.title }}
-                </div>
-                <div class="question-description">
-                    {{ topic.description }}
-                </div>
+            <div class="progress-txt">
+                <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
             </div>
-            
-                <div class="question-tag">
-                    <input name='tags3' value="{{ highlights }}">
-                    <!-- <input type="text"  name="question_highlight" value="{{ highlights }}"/> -->
-                </div>
-        </div>
-        
+             
+            <div>
+              <div class="btn-group">
+                <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M2 11H22V13H2zM2 5H22V7H2zM2 17H22V19H2z"/></svg>
+                </button>
 
-        <!-- "width: 35%" -->
-        <div class="progress-container">
-            <div class="progress">
-                <span class="progress-bar" style="width: {{ progress_bar_width }}%"></span>
-
-                <span></span>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="dropdown-item"><a href="{% url 'core:home' %}">Home</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-item"><a href="{% url 'account_logout' %}">Log out</a></li>
+                  </ul>
+              </div>
             </div>
-            <div class="arrow-up" style="left: {{ progress_bar_width }}%"></div>
-            <h3 style="left: {{ progress_bar_width }}%">{{ progress_bar_width }}%</h3>
         </div>
+
+        <div class="tag-container">
+            <input name='tags3' value="{{ highlights }}">
+        </div>
+
 
         <div id="debug-div"class="tree-container">
             <div class="previous-action">
@@ -92,61 +92,47 @@
             </div>
         </div>
 
-        <div class="container">
             
-            <div class="documents">
-                <div class="document">
-                    
-                    <h2 class="document-title">
-                        {{doc_left.title}}
-                    </h2>
-                    <h2 class="document-url">
-                        <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
-                    </h2>
-                    <div class="document-content" >
-                        <p id="left-doc" class="editable-doc">
-                            {% autoescape off %}
-                                {{ left_txt }}
-                            
+        <div class="documents" id="wrapper">
+            <div class="document-left" id="drag-left">
+                <h2 class="document-url"> 
+                    <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
+                </h2>
+                <div class="document-content" >
+                    <p id="left-doc" class="editable-doc" >
+                        {% autoescape off %}
+                            {{ left_txt }}
+Title: {{doc_left.title}}
+
 Document ID : {{doc_left.uuid}}
-                            {% endautoescape %} 
-                        </p>
-                    </div>
-                </div>
-    
-                <div class="document">
-                    <h2 class="document-title">
-                        {{doc_right.title}}
-                    </h2>
-                    <h2 class="document-url">
-                        <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
-                    </h2>
-                    <div class="document-content" >
-                        <p id="right-doc" class="editable-doc">
-                            {% autoescape off %}
-                                {{ right_txt }}
-Document ID : {{doc_right.uuid}}
-                            {% endautoescape %} 
-                        </p>
-                    </div>
+                        {% endautoescape %} 
+                    </p>
                 </div>
             </div>
-            <div class="question">
-                <p>Which one do you prefer?</p>
-                    <div class="answer-box">
-                        <form method='post'>
-                                {% csrf_token %}
-                            <button class="button" type="submit" value="left" name="left">Left</button>
-                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
-                            <button class="button" type="submit" value="right" name="right">Right</button>
-                        
-                        </form>  
 
-                    </div>
-                    
+            <div class="dragbar" id="dragbar">
+                <span class="dragbar-dot"></span>
+                <span class="dragbar-dot"></span>
+                <span class="dragbar-dot"></span>
+            </div>
+
+            <div class="document-right" id="drag-right">
+                <h2 class="document-url">
+                    <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
+                </h2>
+                <div class="document-content" >
+                    <p id="right-doc" class="editable-doc">
+                        {% autoescape off %}
+                            {{ right_txt }}
+                            
+Title: {{doc_right.title}}
+
+Document ID : {{doc_right.uuid}}
+                        {% endautoescape %} 
+                    </p>
+                </div>
             </div>
         </div>
-
     </div>
     
 
@@ -170,10 +156,43 @@ Document ID : {{doc_right.uuid}}
         </div>
     </div>
     
-
+    <!-- TOPIC INFO MODAL -->
+    <div class="modal fade" id="topic-info-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" style="padding:35px 50px;">
+                    <div class="question-header">
+                        {{ topic.title }}
+                    </div>
+                    <div class="question-description">
+                        {{ topic.description }}
+                    </div>
+                </div>
+                <div class="modal-body" style="padding:40px 50px;">
+                        <button type="submit" class="btn btn-success btn-block" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+        </div>
+    </div>
 
     <!-- JavaScript Block -->
     <script>
+
+        $(function (){
+
+            $('.nav').hide(); 
+
+            $('.menu-btn').click(function (){ 
+                $('.nav').toggle(300);
+            });
+
+            $('.sub-menu').hide(); 
+
+            $('.nav li.expand').click(function(){ 
+                $('.sub-menu').toggle(300);
+            });
+
+        });
 
       function disableBack() { window.history.forward(); }
         setTimeout("disableBack()", 0);
@@ -189,7 +208,6 @@ Document ID : {{doc_right.uuid}}
                         const cookies = document.cookie.split(";");
                         for (let i = 0; i < cookies.length; i++) {
                         const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
                         if (cookie.substring(0, name.length + 1) === (name + "=")) {
                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                             break;
@@ -198,77 +216,83 @@ Document ID : {{doc_right.uuid}}
                 }
             return cookieValue;
         }
+
         mouseXPosition = 0;
 
-            $(document).ready(function () {
-                
-                const debug = "{{debug}}"
-                if(debug=="true"){
-                    $("#debug-div").show();
-                }
+        $(document).ready(function () {
+            
+            const debug = "{{debug}}"
+            if(debug=="true"){
+                $("#debug-div").show();
+            }
 
-                const task_status = "{{task_status}}"
-                if(task_status=="complete"){
-                    $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
+            const task_status = "{{task_status}}"
+            if(task_status=="complete"){
+                $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
+            }
+
+
+            $('#topic_info_li').on('click', function() {
+                $('#topic-info-modal').modal();
+            });
+        });
+        
+
+        $("button").click( function(e3){
+            var right_doc_highlights = "";
+            var left_doc_highlights = "";
+
+            $('.highlighter').each(function(e4){
+                if ($(this).parent().attr("id")=='left-doc'){
+                    left_doc_highlights +=  $(this).html() + "|||"
+                    
+                }else{
+                    right_doc_highlights +=  $(this).html() + "|||"
+                    console.log()
                 }
             });
             
+            var data = {"highlight": left_doc_highlights}
+            $.ajax
+            ({ 
+                url: "/../../add_highlight/" + getCookie("left_doc_id") + "/" ,
+                data: JSON.stringify(data),
+                method: 'PUT',
 
-            $("button").click( function(e3){
-                var right_doc_highlights = "";
-                var left_doc_highlights = "";
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: function(result)
+                {
+                    console.log(result)
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+            });
+            var data = {"highlight": right_doc_highlights}
 
-                $('.highlighter').each(function(e4){
-                    if ($(this).parent().attr("id")=='left-doc'){
-                        left_doc_highlights +=  $(this).html() + "|||"
-                        
-                    }else{
-                        right_doc_highlights +=  $(this).html() + "|||"
-                        console.log()
-                    }
-                });
-                
-                var data = {"highlight": left_doc_highlights}
-                $.ajax
-                ({ 
-                    url: "/../../add_highlight/" + getCookie("left_doc_id") + "/" ,
-                    data: JSON.stringify(data),
-                    method: 'PUT',
+            $.ajax
+            ({ 
+                url: "/../../add_highlight/" + getCookie("right_doc_id") + "/" ,
+                data: JSON.stringify(data),
+                method: 'PUT',
 
-                    credentials: "same-origin",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "X-CSRFToken": getCookie("csrftoken"),
-                    },
-                    success: function(result)
-                    {
-                        console.log(result)
-                    },
-                    error: (error) => {
-                        console.log(error)
-                    },
-                });
-                var data = {"highlight": right_doc_highlights}
-
-                $.ajax
-                ({ 
-                    url: "/../../add_highlight/" + getCookie("right_doc_id") + "/" ,
-                    data: JSON.stringify(data),
-                    method: 'PUT',
-
-                    credentials: "same-origin",
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                        "X-CSRFToken": getCookie("csrftoken"),
-                    },
-                    success: function(result){
-                        console.log(result)
-                    },
-                    error: (error) => {
-                        console.log(error)
-                    },
-                });
-            })
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: function(result){
+                    console.log(result)
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+            });
+        })
 
         function highlight_tags(search_area, tag){
             
@@ -341,140 +365,173 @@ Document ID : {{doc_right.uuid}}
             }
         }
 
-
-
         // TAGIFY
         var input = document.querySelector('input[name=tags3]'),
         tagify = new Tagify(input, {
             transformTag        : transformTag,
-            placeholder         : "Enter a word or phrase.",
+            placeholder         : "Search keywords",
             
             
         })
 
-    // generate a random color (in HSL format, which I like to use)
-    function getRandomColor(){
-        function rand(min, max) {
-            return min + Math.random() * (max - min);
+        // generate a random color (in HSL format, which I like to use)
+        function getRandomColor(){
+            function rand(min, max) {
+                return min + Math.random() * (max - min);
+            }
+
+            var h = rand(1, 360)|0,
+                s = rand(40, 70)|0,
+                l = rand(65, 72)|0;
+
+            return 'hsl(' + h + ',' + s + '%,' + l + '%)';
         }
 
-        var h = rand(1, 360)|0,
-            s = rand(40, 70)|0,
-            l = rand(65, 72)|0;
+        function transformTag( tagData ){
+            var tags = tagData["value"].split("|")
 
-        return 'hsl(' + h + ',' + s + '%,' + l + '%)';
-    }
+            if (tags.length > 1) {
+                tagData.color = tags[1].replaceAll(".",",");
+                tagData.value = tags[0];
+                const value = tagData.value +"|"+tagData.color
+                highlight_tags("#left-doc", value)
+                highlight_tags("#right-doc", value)
+            } else{
+                tagData.color = getRandomColor();
+            }
+            
+            tagData.style = "--tag-bg:" + tagData.color;
 
-    function transformTag( tagData ){
-        var tags = tagData["value"].split("|")
-
-        if (tags.length > 1) {
-            tagData.color = tags[1].replaceAll(".",",");
-            tagData.value = tags[0];
-            const value = tagData.value +"|"+tagData.color
-            highlight_tags("#left-doc", value)
-            highlight_tags("#right-doc", value)
-        } else{
-            tagData.color = getRandomColor();
         }
+
+        tagify.on('add', function(e, tagData){
+
+            const value = e.detail["data"]["value"] + "|" + e.detail["data"]["color"]
+
+            const data ={
+                tags:value
+            } 
+            var put_url = "/../../add_tag/" + getCookie("task_id") + "/" 
+            fetch(put_url, {
+                method: "PUT",
+                credentials: "same-origin",
+                headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+                },
+                body: JSON.stringify({payload: data})
+            })
+            .then(response => 
+                response.json()
+            )
+            .then(data => {
+                highlight_tags("#left-doc", value)
+                highlight_tags("#right-doc", value)
+
+            });
+        })
+
+
+        tagify.on('remove', function(e){            
+            const value = e.detail["data"]["value"] + "|" + e.detail["data"]["color"]
+            
+            const data ={
+                tags:value
+            }
+
+            var put_url = "/../../remove_tag/" + getCookie("task_id") + "/" 
+            fetch(put_url, {
+                method: "PUT",
+                credentials: "same-origin",
+                headers: {
+                "X-Requested-With": "XMLHttpRequest",
+                "X-CSRFToken": getCookie("csrftoken"),
+                },
+                body: JSON.stringify({payload: data})
+            })
+            .then(response => response.json())
+            .then(data => {
+                dehighlight_tags("#left-doc", value, false)
+                dehighlight_tags("#right-doc", value, true)
+            });
+        })
+
         
-        tagData.style = "--tag-bg:" + tagData.color;
-
-    }
-
-    tagify.on('add', function(e, tagData){
-
-        const value = e.detail["data"]["value"] + "|" + e.detail["data"]["color"]
-
-        const data ={
-            tags:value
-        } 
-        var put_url = "/../../add_tag/" + getCookie("task_id") + "/" 
-        fetch(put_url, {
-            method: "PUT",
-            credentials: "same-origin",
-            headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCookie("csrftoken"),
-            },
-            body: JSON.stringify({payload: data})
-        })
-        .then(response => 
-            response.json()
-        )
-        .then(data => {
-            highlight_tags("#left-doc", value)
-            highlight_tags("#right-doc", value)
+        // New Highlighting Method!
+        var flag = 0;
+        var target;
+        $(".editable-doc").mousedown(function (e1) {
+            flag = 0;
+            target = e1.target;
 
         });
-    })
 
-
-    tagify.on('remove', function(e){
-
-        
-        const value = e.detail["data"]["value"] + "|" + e.detail["data"]["color"]
-        
-        const data ={
-            tags:value
-        }
-
-        var put_url = "/../../remove_tag/" + getCookie("task_id") + "/" 
-        fetch(put_url, {
-            method: "PUT",
-            credentials: "same-origin",
-            headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCookie("csrftoken"),
-            },
-            body: JSON.stringify({payload: data})
-        })
-        .then(response => response.json())
-        .then(data => {
-            dehighlight_tags("#left-doc", value, false)
-            dehighlight_tags("#right-doc", value, true)
+        $(".editable-doc").mousemove(function (e1) {
+            console.log("here as well")
+            console.log(target)
+            flag = 1;
         });
-    })
 
+        $(".editable-doc").mouseup(function (e1) {
+            if (e1.target != target){
+                console.log(target);
+                console.log(e1.target);
+                return;
+            }
+            if (flag === 0) {
+                console.log("click");
+            } else if (flag === 1) {
+                getSelText();
+            }
+        });
 
+        function getSelText() {
+            var sel = window.getSelection ? window.getSelection() : document.selection.createRange(); // FF : IE
+            if (sel.getRangeAt) { 
+                var range = sel.getRangeAt(0);
+                
+                var newNode = document.createElement("span");
+                newNode.setAttribute('class', 'highlighter');
+                newNode.textContent = sel.toString();
 
+                sel.deleteFromDocument();
+                range.insertNode(newNode);
+            } else { 
+                sel.pasteHTML('<span class="highlighter">' + sel.htmlText + '</span>');
 
-    // New Highlighting Method!
-    var flag = 0;
-    var element = document;
-    element.addEventListener("mousedown", function() {
-        flag = 0;
-        }, false);
-    
-    element.addEventListener("mousemove", function() {
-        flag = 1;
-        }, false);
-
-    element.addEventListener("mouseup", function() {
-        if (flag === 0) {
-            console.log("click");
-        } else if (flag === 1) {
-            getSelText();
+            }
         }
-        }, false);
 
-    function getSelText() {
-        var sel = window.getSelection ? window.getSelection() : document.selection.createRange(); // FF : IE
-        if (sel.getRangeAt) { 
-            var range = sel.getRangeAt(0);
-            
-            var newNode = document.createElement("span");
-            newNode.setAttribute('class', 'highlighter');
-            newNode.textContent = sel.toString();
 
-            sel.deleteFromDocument();
-            range.insertNode(newNode);
-        } else { 
-            sel.pasteHTML('<span class="highlighter">' + sel.htmlText + '</span>');
 
-        }
-    }
+    // // DragBar
+        var left = document.getElementById('drag-left');
+        var right = document.getElementById('drag-right');
+        var bar = document.getElementById('dragbar');
+        var isHandlerDragging = false;
 
+        var handler = document.querySelector('.dragbar');
+
+       
+        document.addEventListener('mousedown', function(e) {
+            if (e.target === handler) {
+                isHandlerDragging = true;
+                return;
+            }
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isHandlerDragging) {
+                return false;
+            }
+            document.selection ? document.selection.empty() : window.getSelection().removeAllRanges();
+            left.style.width = (e.pageX - bar.offsetWidth / 2)+ 'px';
+
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            isHandlerDragging = false;
+        });
 
     </script>
 </body>
