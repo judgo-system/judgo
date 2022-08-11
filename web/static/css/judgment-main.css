@@ -13,49 +13,6 @@ body {
   overflow: hidden;
 }
 
-.progress-container {
-  height: 40px;
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-.progress {
-  width: 100%;
-  height: 7px;
-  background: #e1e4e8;
-  border-radius: 0;
-  overflow: hidden;
-}
-.progress .progress-bar {
-  display: block;
-  height: 100%;
-  background: #ADC2A9;
-  background-size: 300% 100%;
-}
-
-.progress-container h3 {
-  text-align: center;
-  margin-top: 10px;
-  font-size: 12px;
-  display: inline-block;
-  position: absolute;
-  color: #ADC2A9;
-  width: 50px;
-  margin-left: -5px;
-  margin-top: -12px;
-}
-
-.arrow-up {
-  width: 0;
-  height: 0;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-bottom: 5px solid #94b49f;
-  position: absolute;
-  margin-left: 10px;
-  margin-top: -18px;
-}
-
 .container {
   width: 100%;
   margin: 0 auto;
@@ -103,14 +60,14 @@ body {
   height: 100%;
   flex: 1;
   padding-right: 15px;
-  padding-left: 15px;
+  /* padding-left: 15px; */
   padding-bottom: 100px;
   min-width: 30px;
 }
 
 .document-left{
   padding-left: 15px;
-  padding-right: 15px;
+  /* padding-right: 15px; */
   width: 50%;
   height: 100%;
   min-width: 30px;
@@ -150,11 +107,12 @@ body {
   display: flex;
   justify-content: center;
   align-self: center;
-  position: absolute;
-  left: 35%; 
+  position:relative;
+  left: 5%; 
   background: #d4dbd4;
   padding: 10px 10px;
   margin-top: 5px;
+  margin-left: 30dp;
   border-radius: 1ch;
 }
 
@@ -165,8 +123,6 @@ body {
   margin-right: 20px;
 }
 
-/* CSS */
-/* CSS */
 .button {
   background-color: #ffffff;
   border: 1px solid rgb(209, 213, 219);
@@ -222,6 +178,15 @@ body {
 
 .prev-document svg {
   margin-right: 5px;
+}
+
+.header-btn-container{
+  display: flex;
+}
+.topic-info-button {
+  justify-content: center;
+  align-items: center;
+  font-size: 0.86rem; 
 }
 
 .question-header {
@@ -478,84 +443,53 @@ mark {
 }
 
 
-.question-container {
+.tag-container {
   display: flex;
-  margin: 10px;
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin: 15px;
   height: 70px;
+  background-color: #f6f4f2;
+  padding: 10px;
+  border-radius: 1ch;
 }
 
-.question-body{
-  /* width: 25%;
-  height: 100%;
-  margin: 5px;
-  border-radius: 1ch;
-  text-align: left;
-  background-color: #f6f4f2; */
+
+.progress-txt{
 
   display: flex;
   justify-content: center;
   align-self: center;
-  position: absolute;
-  left: 80%; 
-  /* background: #d4dbd4; */
-  /* padding: 15px; */
-  /* margin-top: 5px; */
-  /*border-radius: 3ch;
-  font-size: 1.15rem; */
-  background: #d4dbd4;
   padding: 10px 10px;
   margin-top: 5px;
   border-radius: 1ch;
+  font-weight: bold;
 }
 
-.question-body h3{
+.progress-txt h3{
   
   font-size: 1.12rem;
   line-height: 1.12rem;
   padding: 0.4rem 1rem;
 }
 
-.question-tag{
-  
-  width: 100%;
-  height: 100%;
-  background-color: #f6f4f2;
-  margin: 5px;
-  padding: 10px;
-  border-radius: 1ch;
-
-}
 .logo{
   width: 60px;
   height: 60px;
 }
 
 
-.document-title {
-  height: 50px;
-  background: #99A799;
-  padding: 10px;
-  /* font-weight: bold; */
-  color: black;
-  text-align: left;
-  align-items: left;
-  font-size: medium;
-  overflow: auto;
-}
 
 .document:nth-child(2n) .document-title {
   border-left: 2px solid white;
 }
 .document-url {
-  height: 45px;
-  background: #b3bab3;  
+  height: 55px;
+  background: #99A799;  
   padding: 10px;
   color: black;
   text-align: left;
-  font-size: small;
+  font-size: 0.87rem;
   overflow: auto;
+  border-radius: 1ch;
 }
 
 .document:nth-child(2n) .document-url {
@@ -578,18 +512,16 @@ mark {
 }
 
 .dragbar {
-  
   width:  15px;
-  padding: 2px;
   height: 100%;
-
   cursor: ew-resize;
   flex: 0 0 auto;
-  background: #99A799;
+  background: #c3cbc3;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  border-radius: 1ch;
 }
 
 .dragbar-dot {
@@ -609,6 +541,23 @@ mark {
 .dropdown-menu-right{
   margin-right: 10px !important;
 
+}
+
+strong {
+  position: relative;
+}
+
+strong::before {
+  background-color: #d4dbd4;
+
+  content: "";
+  position: absolute;
+  width: calc(100% + 4px);
+  height: 60%;
+  left: -2px;
+  bottom: 0;
+  z-index: -1;
+  transform: rotate(-2deg);
 }
 
 
