@@ -60,19 +60,16 @@ body {
   height: 100%;
   flex: 1;
   padding-right: 15px;
-  /* padding-left: 15px; */
   padding-bottom: 100px;
-  min-width: 30px;
+  min-width: 1px;
 }
 
 .document-left{
   padding-left: 15px;
-  /* padding-right: 15px; */
   width: 50%;
   height: 100%;
-  min-width: 30px;
+  min-width: 1px;
   padding-bottom: 100px;
-
 }
 
 
@@ -306,10 +303,10 @@ body {
 * {
   box-sizing: border-box;
 }
-mark { 
+/* mark { 
   background-color: rgb(239, 132, 223) !important; 
   color: black !important;
-}
+} */
 
 
 

@@ -79,7 +79,7 @@
         </div>
 
         <div class="tag-container">
-            <input name='tags3' value="{{ highlights }}">
+            <input name='tags_words' value="{{ highlights }}">
         </div>
 
 
@@ -247,8 +247,7 @@ Document ID : {{doc_right.uuid}}
                     left_doc_highlights +=  $(this).html() + "|||"
                     
                 }else{
-                    right_doc_highlights +=  $(this).html() + "|||"
-                    console.log()
+                    right_doc_highlights +=  $(this).html() + "|||";
                 }
             });
             
@@ -316,6 +315,7 @@ Document ID : {{doc_right.uuid}}
                 tag = temp
             }
 
+            
             var textarea = $(search_area);    
             var query = new RegExp("("+tag+")", "gim"); 
             
@@ -350,9 +350,30 @@ Document ID : {{doc_right.uuid}}
                 tag = temp
             }
 
+            var tagColorDic = localStorage['colorDic']
+            var colorList = localStorage['colorList']
+            var isConstColor = false;
             
-            const markTag = "<mark style=\"background: " +color.replace("(", "\\(").replace(")", "\\)") +"!important\">"
-            
+            tagColorDic = JSON.parse(tagColorDic);
+            colorList = JSON.parse(colorList);
+
+            color = tagColorDic[tag.toLowerCase()]
+            if (color == null){
+                // After 20 tags we use a constant color
+                color = "#fa9fb5";
+                isConstColor = true;
+            }
+            if (second == true && !isConstColor){
+
+                colorList.push(color)
+                delete tagColorDic[tag.toLowerCase()]
+
+                localStorage['colorList'] = JSON.stringify(colorList);
+                localStorage['colorDic'] = JSON.stringify(tagColorDic);
+
+            }
+        
+            const markTag = "<mark style=\"background: " +color.replace("(", "\\(").replace(")", "\\)") +"!important\">"    
             var query = new RegExp("("+markTag+tag+")", "gim");   
             cases = textarea.html().match(query)
             if (cases !=null){
@@ -366,25 +387,57 @@ Document ID : {{doc_right.uuid}}
         }
 
         // TAGIFY
-        var input = document.querySelector('input[name=tags3]'),
+        var input = document.querySelector('input[name=tags_words]'),
         tagify = new Tagify(input, {
             transformTag        : transformTag,
             placeholder         : "Search keywords",
             
             
         })
+        
+        const colorGlobalList = [
+            "#d53e4f", "#f46d43", "#fdae61", "#fee08b",
+            "#e6f598", "#abdda4", "#66c2a5", "#3288bd",
+            "#5e4fa2", "#8073ac", "#b2abd2", "#d8daeb", 
+            "#fee0b6", "#fdb863", "#e08214", "#dfc27d",
+            "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f",
+        ]
 
         // generate a random color (in HSL format, which I like to use)
-        function getRandomColor(){
-            function rand(min, max) {
-                return min + Math.random() * (max - min);
+        function getTagColor(tag){
+
+            var randomColor
+            var tagColorDic = localStorage['colorDic']
+            var colorList = localStorage['colorList']
+            tagLower = tag.toLowerCase()
+
+            
+            if (tagColorDic==null){
+                tagColorDic = {}
+            }else{
+                tagColorDic = JSON.parse(tagColorDic);
+            }
+            if(colorList==null){
+                colorList = colorGlobalList
+            }else{
+                colorList = JSON.parse(colorList);
             }
 
-            var h = rand(1, 360)|0,
-                s = rand(40, 70)|0,
-                l = rand(65, 72)|0;
+            if (tagLower in tagColorDic){
+                randomColor = tagColorDic[tagLower]
+            }else{
+                randomColor = colorList.shift()
+                tagColorDic[tagLower] = randomColor
 
-            return 'hsl(' + h + ',' + s + '%,' + l + '%)';
+                localStorage['colorList'] = JSON.stringify(colorList);
+                localStorage['colorDic'] = JSON.stringify(tagColorDic);
+            }
+            if (randomColor == null){
+                // After 20 tags we use a constant color
+                randomColor = "#fa9fb5";
+            }
+            return randomColor
+            
         }
 
         function transformTag( tagData ){
@@ -397,7 +450,7 @@ Document ID : {{doc_right.uuid}}
                 highlight_tags("#left-doc", value)
                 highlight_tags("#right-doc", value)
             } else{
-                tagData.color = getRandomColor();
+                tagData.color = getTagColor(tags[0]);
             }
             
             tagData.style = "--tag-bg:" + tagData.color;
@@ -467,20 +520,14 @@ Document ID : {{doc_right.uuid}}
         });
 
         $(".editable-doc").mousemove(function (e1) {
-            console.log("here as well")
-            console.log(target)
             flag = 1;
         });
 
         $(".editable-doc").mouseup(function (e1) {
             if (e1.target != target){
-                console.log(target);
-                console.log(e1.target);
                 return;
             }
-            if (flag === 0) {
-                console.log("click");
-            } else if (flag === 1) {
+            if (flag === 1) {
                 getSelText();
             }
         });
@@ -506,7 +553,6 @@ Document ID : {{doc_right.uuid}}
 
     // // DragBar
         var left = document.getElementById('drag-left');
-        var right = document.getElementById('drag-right');
         var bar = document.getElementById('dragbar');
         var isHandlerDragging = false;
 
