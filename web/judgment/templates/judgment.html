@@ -99,6 +99,10 @@
                     <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
                 </h2>
                 <div class="document-content" >
+                    <div class="font-size-div">
+                        <button id="left-decrase-btn" class="btn btn-primary btn-circle">-</button>
+                        <button id="left-increase-btn" class="btn btn-primary btn-circle">+</button>
+                    </div>
                     <p id="left-doc" class="editable-doc" >
                         {% autoescape off %}
                             {{ left_txt }}
@@ -120,8 +124,14 @@ Document ID : {{doc_left.uuid}}
                 <h2 class="document-url">
                     <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                 </h2>
-                <div class="document-content" >
+                
+                <div class="document-content">
+                    <div class="font-size-div">
+                        <button id="right-decrase-btn" class="btn btn-primary btn-circle">-</button>
+                        <button id="right-increase-btn" class="btn btn-primary btn-circle">+</button>
+                    </div>
                     <p id="right-doc" class="editable-doc">
+                        
                         {% autoescape off %}
                             {{ right_txt }}
                             
@@ -130,6 +140,7 @@ Title: {{doc_right.title}}
 Document ID : {{doc_right.uuid}}
                         {% endautoescape %} 
                     </p>
+                    
                 </div>
             </div>
         </div>
@@ -167,6 +178,7 @@ Document ID : {{doc_right.uuid}}
                     <div class="question-description">
                         {{ topic.description }}
                     </div>
+                    
                 </div>
                 <div class="modal-body" style="padding:40px 50px;">
                         <button type="submit" class="btn btn-success btn-block" data-dismiss="modal">OK</button>
@@ -579,6 +591,31 @@ Document ID : {{doc_right.uuid}}
             isHandlerDragging = false;
         });
 
+
+
+        // FONT CHANGE
+
+        $("#left-increase-btn").click(function(){
+            changeFontSize(1, "left-doc");
+        })
+
+        $("#left-decrase-btn").click(function(){
+            changeFontSize(-1, "left-doc");
+        })
+        $("#right-increase-btn").click(function(){
+            changeFontSize(1, "right-doc");
+        })
+
+        $("#right-decrase-btn").click(function(){
+            changeFontSize(-1, "right-doc");
+        })
+
+        function changeFontSize(direction, element){
+            var element = document.getElementById(element);
+            style = window.getComputedStyle(element, null).getPropertyValue('font-size');
+            currentSize = parseFloat(style);
+            element.style.fontSize = (currentSize + direction) + 'px';
+        }
     </script>
 </body>
 </html>
