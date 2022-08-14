@@ -9,6 +9,12 @@
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    
+    
+    
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
@@ -19,6 +25,10 @@
 
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+<!-- 
+    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" /> -->
+
+    <script src="{% static 'js/jquery.minimap.min.js' %}"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,13 +105,17 @@
             
         <div class="documents" id="wrapper">
             <div class="document-left" id="drag-left">
-                <h2 class="document-url"> 
-                    <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">{{doc_left.url}}</a>
+                <div> 
+                    <h2 class="document-url">
+                        <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">
+                            {{doc_left.url}}
+                        </a>
+                    </h2>
                     <div class="font-size-div">
                         <button id="left-decrase-btn" class="btn btn-primary btn-circle">-</button>
                         <button id="left-increase-btn" class="btn btn-primary btn-circle">+</button>
                     </div>
-                </h2>
+                </div>
                 <div class="document-content" >
                     <p id="left-doc" class="editable-doc" >
                         {% autoescape off %}
@@ -121,13 +135,15 @@ Document ID : {{doc_left.uuid}}
             </div>
 
             <div class="document-right" id="drag-right">
-                <h2 class="document-url">
-                    <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
+                <div>
+                    <h2 class="document-url">
+                        <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
+                    </h2>
                     <div class="font-size-div">
                         <button id="right-decrase-btn" class="btn btn-primary btn-circle">-</button>
                         <button id="right-increase-btn" class="btn btn-primary btn-circle">+</button>
                     </div>
-                </h2>
+                </div>
                 
                 <div class="document-content">
                     <p id="right-doc" class="editable-doc">
@@ -616,6 +632,9 @@ Document ID : {{doc_right.uuid}}
             currentSize = parseFloat(style);
             element.style.fontSize = (currentSize + direction) + 'px';
         }
+
+    // Minimpa :))))))))))))))))))))
+        
     </script>
 </body>
 </html>

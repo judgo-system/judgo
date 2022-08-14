@@ -61,14 +61,14 @@ body {
   flex: 1;
   padding-right: 15px;
   padding-bottom: 100px;
-  min-width: 150px;
+  min-width: 90px;
 }
 
 .document-left{
   padding-left: 15px;
   width: 50%;
   height: 100%;
-  min-width: 150px;
+  min-width: 90px;
   padding-bottom: 100px;
 }
 
@@ -475,10 +475,7 @@ body {
   text-align: left;
   font-size: 0.87rem;
   border-radius: 1ch;
-  white-space: nowrap;
-  /* overflow: hidden; */
-
-  /* z-index: 100; */
+  overflow: hidden;
 }
 
 .document:nth-child(2n) .document-url {
@@ -554,7 +551,7 @@ strong::before {
   position:relative;
   display: flex;
   justify-content: end;
-  bottom: -35px;
+  bottom: -5px;
   z-index: 100;
 }
 
@@ -574,6 +571,8 @@ strong::before {
 .btn-circle:hover {
   background-color: darkslategrey;
 }
+
+
 
 
 
