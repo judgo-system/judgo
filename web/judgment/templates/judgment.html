@@ -25,10 +25,7 @@
 
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
-<!-- 
-    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" /> -->
 
-    <script src="{% static 'js/jquery.minimap.min.js' %}"></script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,9 +59,9 @@
                     <div class="answer-box">
                         <form method='post'>
                             {% csrf_token %}
-                            <button class="button" type="submit" value="left" name="left">Left</button>
-                            <button class="button" type="submit" value="equal" name="equal">Equal</button>
-                            <button class="button" type="submit" value="right" name="right">Right</button>
+                            <button class="button btn-action" type="submit" value="left" name="left">Left</button>
+                            <button class="button btn-action" type="submit" value="equal" name="equal">Equal</button>
+                            <button class="button btn-action" type="submit" value="right" name="right">Right</button>
                         </form>  
                     </div>
             </div>  
@@ -203,23 +200,16 @@ Document ID : {{doc_right.uuid}}
         </div>
     </div>
 
+
+
     <!-- JavaScript Block -->
     <script>
 
         $(function (){
-
             $('.nav').hide(); 
-
             $('.menu-btn').click(function (){ 
                 $('.nav').toggle(300);
             });
-
-            $('.sub-menu').hide(); 
-
-            $('.nav li.expand').click(function(){ 
-                $('.sub-menu').toggle(300);
-            });
-
         });
 
       function disableBack() { window.history.forward(); }
@@ -231,17 +221,17 @@ Document ID : {{doc_right.uuid}}
 
         
       function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== "") {
-                        const cookies = document.cookie.split(";");
-                        for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + "=")) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                    const cookies = document.cookie.split(";");
+                    for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
                 }
+            }
             return cookieValue;
         }
 
@@ -266,11 +256,11 @@ Document ID : {{doc_right.uuid}}
         });
         
 
-        $("button").click( function(e3){
+        $(".btn-action").click( function(e3){
             var right_doc_highlights = "";
             var left_doc_highlights = "";
 
-            $('.highlighter').each(function(e4){
+            $('.highlight').each(function(e4){
                 if ($(this).parent().attr("id")=='left-doc'){
                     left_doc_highlights +=  $(this).html() + "|||"
                     
@@ -539,43 +529,174 @@ Document ID : {{doc_right.uuid}}
 
         
         // New Highlighting Method!
-        var flag = 0;
+
+
         var target;
+
         $(".editable-doc").mousedown(function (e1) {
-            flag = 0;
-            target = e1.target;
-
+            target = e1.target
+            mouseXPosition = e1.pageX; //register the mouse down position
+            
         });
 
-        $(".editable-doc").mousemove(function (e1) {
-            flag = 1;
-        });
-
-        $(".editable-doc").mouseup(function (e1) {
-            if (e1.target != target){
+        $(".editable-doc").mouseup(function (e2) {
+            
+            if (e2.target != target){
+                if (window.getSelection) {
+                    if (window.getSelection().empty) { 
+                        window.getSelection().empty();
+                    } else if (window.getSelection().removeAllRanges) {  
+                        window.getSelection().removeAllRanges();
+                    }
+                    } else if (document.selection) { 
+                    document.selection.empty();
+                }
                 return;
             }
-            if (flag === 1) {
-                getSelText();
+            var highlighted = false;
+            var selection = window.getSelection();
+            var selectedText = selection.toString();
+            var startPoint = window.getSelection().getRangeAt(0).startOffset;
+            var endPoint = window.getSelection().getRangeAt(0).endOffset;
+            var anchorTag = selection.anchorNode.parentNode;
+            var focusTag = selection.focusNode.parentNode;
+            
+
+            if ((e2.pageX - mouseXPosition) < 0) {
+                focusTag = selection.anchorNode.parentNode;
+                anchorTag = selection.focusNode.parentNode;
             }
+            if (selectedText.length === (endPoint - startPoint)) {
+                highlighted = true;
+                if (anchorTag.className !== "highlight") {
+                    highlightSelection();
+                } else {
+                    var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
+                    anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
+                    anchorTag.insertAdjacentHTML('afterend', afterText);
+                }
+
+            }else{
+                if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
+                    highlightSelection();  
+                    highlighted = true;
+
+                } 
+            }
+
+            if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
+                highlighted = true;
+
+                var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
+                var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
+                var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                selection.deleteFromDocument();
+                anchorTag.innerHTML = anchorInnerhtml;
+                focusTag.innerHTml = focusInnerHtml;
+                var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
+                anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
+
+            }
+
+            if (anchorTag.className === "highlight" && !highlighted) {
+                highlighted = true;
+                var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
+                var afterHtml = anchorTag.innerHTML.substr(startPoint);
+                var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
+                selection.deleteFromDocument();
+                anchorTag.innerHTML = Innerhtml;
+                anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
+                }
+            
+            if (focusTag.className === 'highlight' && !highlighted) {
+                highlighted = true;
+                var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
+                var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
+                selection.deleteFromDocument();
+                focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
+                outerHtml += beforeHtml;
+                focusTag.insertAdjacentHTML('beforebegin', outerHtml );
+
+            }
+            if (!highlighted) {
+                highlightSelection();
+            }
+            var doc_highlights = "";
+
+            $('.highlight').each(function(e4){
+                if($(this).html() == ''){  
+                    $(this).remove();
+                }
+            });
+            
+            selection.removeAllRanges();
+            selection.empty();
+            
         });
 
-        function getSelText() {
-            var sel = window.getSelection ? window.getSelection() : document.selection.createRange(); // FF : IE
-            if (sel.getRangeAt) { 
-                var range = sel.getRangeAt(0);
-                
-                var newNode = document.createElement("span");
-                newNode.setAttribute('class', 'highlighter');
-                newNode.textContent = sel.toString();
+        function highlightSelection() {
+            var selection;
 
-                sel.deleteFromDocument();
-                range.insertNode(newNode);
-            } else { 
-                sel.pasteHTML('<span class="highlighter">' + sel.htmlText + '</span>');
+            //Get the selected stuff
+            if (window.getSelection)
+                selection = window.getSelection();
+            else if (typeof document.selection != "undefined")
+                selection = document.selection;
 
+            //Get a the selected content, in a range object
+            var range = selection.getRangeAt(0);
+
+            //If the range spans some text, and inside a tag, set its css class.
+            if (range && !selection.isCollapsed) {
+                if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
+                    var span = document.createElement('span');
+                    span.className = 'highlight';
+                    span.textContent = selection.toString();
+                    selection.deleteFromDocument();
+                    range.insertNode(span);
+                }
             }
         }
+
+        // var flag = 0;
+        // var target;
+        // $(".editable-doc").mousedown(function (e1) {
+        //     flag = 0;
+        //     target = e1.target;
+
+        // });
+
+        // $(".editable-doc").mousemove(function (e1) {
+        //     flag = 1;
+        // });
+
+        // $(".editable-doc").mouseup(function (e1) {
+        //     if (e1.target != target){
+        //         return;
+        //     }
+        //     if (flag === 1) {
+        //         getSelText();
+        //     }
+        // });
+
+        // function getSelText() {
+        //     var sel = window.getSelection ? window.getSelection() : document.selection.createRange(); // FF : IE
+        //     if (sel.getRangeAt) { 
+        //         var range = sel.getRangeAt(0);
+                
+        //         var newNode = document.createElement("span");
+        //         newNode.setAttribute('class', 'highlighter');
+        //         newNode.textContent = sel.toString();
+
+        //         sel.deleteFromDocument();
+        //         range.insertNode(newNode);
+        //     } else { 
+        //         sel.pasteHTML('<span class="highlighter">' + sel.htmlText + '</span>');
+
+        //     }
+        // }
 
 
 
@@ -634,6 +755,7 @@ Document ID : {{doc_right.uuid}}
         }
 
     // Minimpa :))))))))))))))))))))
+    // https://codepen.io/shshaw/pen/wGPpqL  ==> doesn't work
         
     </script>
 </body>

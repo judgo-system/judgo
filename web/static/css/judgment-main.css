@@ -191,10 +191,9 @@ body {
   width: 100%;
   justify-content: left;
   align-items: left;
-  margin-top: 15px;
-  margin-left: 20px;
+  margin: 15px;
   font-size: 1.3rem;
-  line-height: 1.3rem;
+  line-height: 1.8rem;
   font-weight: bold;
 
 }
@@ -204,9 +203,9 @@ body {
   justify-content: left;
   align-items: left;
   margin: 10px;
-  margin-left: 20px;
+  line-height: 1.4rem;
   line-height: normal;
-  font-size: small;
+  font-size: medium;
   overflow: scroll;
 }
 
@@ -287,13 +286,13 @@ body {
 } 
 
 
-/* .highlight {
+ .highlight {
   line-height:1.2;
   background-color: yellow;
   white-space: pre;
 
 }
-#left-doc::-moz-selection { /* Code for Firefox */
+/* #left-doc::-moz-selection { Code for Firefox */
     /* background: yellow;
 } */
 
@@ -492,10 +491,10 @@ body {
   overflow: auto !important;
   font-size: medium !important;
 }
-
+/* 
 .highlighter {
   background:yellow;
-}
+} */
 
 .dragbar {
   width:  15px;
@@ -573,6 +572,11 @@ strong::before {
 }
 
 
+.btn-success {
+  color: #fff;
+  background-color: #789395 !important;
+  border-color: #889395 !important;
+}
 
 
 
