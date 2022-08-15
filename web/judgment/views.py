@@ -76,6 +76,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
             if left_response.highlight:
+                print("onja")
+                print(left_response.highlight)
                 context['left_txt'] = JudgmentView.highlight_document(
                     left_response.document.content,
                     left_response.highlight
@@ -84,6 +86,9 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['left_txt'] = left_response.document.content
                 
             if right_response.highlight:
+                print("injjjjjja")
+                print(right_response.highlight)
+
                 context['right_txt'] = JudgmentView.highlight_document(
                     right_response.document.content,
                     right_response.highlight

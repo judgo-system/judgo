@@ -69,7 +69,7 @@
             <div class="progress-txt">
                 <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
             </div>
-             
+    
             <div>
               <div class="btn-group">
                 <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -102,7 +102,7 @@
             
         <div class="documents" id="wrapper">
             <div class="document-left" id="drag-left">
-                <div> 
+                <div class="docment-header"> 
                     <h2 class="document-url">
                         <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">
                             {{doc_left.url}}
@@ -113,6 +113,7 @@
                         <button id="left-increase-btn" class="btn btn-primary btn-circle">+</button>
                     </div>
                 </div>
+                
                 <div class="document-content" >
                     <p id="left-doc" class="editable-doc" >
                         {% autoescape off %}
