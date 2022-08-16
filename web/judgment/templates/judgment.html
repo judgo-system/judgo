@@ -250,7 +250,6 @@ Document ID : {{doc_right.uuid}}
                 $("#ccomplete-modal").modal({backdrop: 'static', keyboard: false});
             }
 
-
             $('#topic_info_li').on('click', function() {
                 $('#topic-info-modal').modal();
             });
@@ -557,8 +556,11 @@ Document ID : {{doc_right.uuid}}
             var highlighted = false;
             var selection = window.getSelection();
             var selectedText = selection.toString();
+            var range = window.getSelection().getRangeAt(0)
             var startPoint = window.getSelection().getRangeAt(0).startOffset;
             var endPoint = window.getSelection().getRangeAt(0).endOffset;
+            console.log(selection)
+            console.log("_______________---------------")
             var anchorTag = selection.anchorNode.parentNode;
             var focusTag = selection.focusNode.parentNode;
             
