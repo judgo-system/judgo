@@ -37,11 +37,8 @@ if __name__ == '__main__':
     print('[3] Creating questions file...')
     questions = topics[topics['topic_id'].isin(topic_ids)]
     
-    for i, row in questions.iterrows():
-        if questions['stance'][i] == 'helpful':
-            questions.at[i, 'question'] = questions['question'][i] + ' (Document says "Yes" or "Unclear")'
-        else:
-            questions.at[i, 'question'] = questions['question'][i] + ' (Document says "No" or "Unclear")'
+    for i, row in questions.iterrows():            
+        questions.at[i, 'question'] = questions['question'][i] + ' (Answer is ' + questions['stance'][i] + ')'
     
     final_questions = questions[['topic_id', 'question', 'background']]
     final_questions.to_csv(save_path + '/questions.csv', index=False, header=False, sep=' ')
