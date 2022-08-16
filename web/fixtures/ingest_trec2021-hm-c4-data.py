@@ -19,6 +19,7 @@ for i, t in ans.iterrows():
 print("2- Ingest Document")
 passages = pd.read_csv(os.path.join(ROOT_PATH, 'trec2021_subset_c4_passages.csv'))
 for i, t in passages.iterrows():
+    
     try: 
         Document.objects.create(
             uuid = t[0],
@@ -28,7 +29,6 @@ for i, t in passages.iterrows():
         )
     except Exception as e:
         print(e)
-
 
 print("3- Map document to topics")
 a_file = open(os.path.join(ROOT_PATH, "pool.out"))
