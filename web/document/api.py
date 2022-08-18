@@ -16,8 +16,8 @@ def add_highlight(request, responseId):
         if request.method == 'PUT':
             data = json.load(request)
             highlights = data.get('highlight')
-            
-            response.highlight = '|||'.join(tag for tag in set(highlights.split("|||")))
+            response.highlight = highlights
+            # response.highlight = '|||'.join(tag for tag in set(highlights.split("|||")))
             
             response.save()
 

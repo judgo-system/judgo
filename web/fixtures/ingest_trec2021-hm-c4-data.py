@@ -24,14 +24,14 @@ for i, t in passages.iterrows():
         Document.objects.create(
             uuid = t[0],
             title = strip_tags(t[1]),
-            url = strip_tags(t[2]),
-            content = html.escape(strip_tags(t[3])) + "\n\n",
+            url = strip_tags(t[3]),
+            content = html.escape(strip_tags(t[2])) + "\n\n",
         )
     except Exception as e:
         print(e)
 
 print("3- Map document to topics")
-a_file = open(os.path.join(ROOT_PATH, "pool.out"))
+a_file = open(os.path.join(ROOT_PATH, "pool.csv"))
 for line in a_file:
     topic_id, doc_id = line.split()
     try:

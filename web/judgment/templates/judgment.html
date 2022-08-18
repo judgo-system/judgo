@@ -115,14 +115,16 @@
                 </div>
                 
                 <div class="document-content" >
+                    {% autoescape off %}
+
                     <p id="left-doc" class="editable-doc" >
-                        {% autoescape off %}
-                            {{ left_txt }}
+{{ left_txt }}
 Title: {{doc_left.title}}
 
 Document ID : {{doc_left.uuid}}
-                        {% endautoescape %} 
                     </p>
+                    {% endautoescape %} 
+
                 </div>
             </div>
 
@@ -144,17 +146,16 @@ Document ID : {{doc_left.uuid}}
                 </div>
                 
                 <div class="document-content">
+                    {% autoescape off %}
                     <p id="right-doc" class="editable-doc">
-                        
-                        {% autoescape off %}
-                            {{ right_txt }}
+{{ right_txt }}
                             
 Title: {{doc_right.title}}
 
 Document ID : {{doc_right.uuid}}
-                        {% endautoescape %} 
+                        
                     </p>
-                    
+                    {% endautoescape %} 
                 </div>
             </div>
         </div>
@@ -256,19 +257,24 @@ Document ID : {{doc_right.uuid}}
         });
         
 
-        $(".btn-action").click( function(e3){
+        $(".button").click( function(e3){
             var right_doc_highlights = "";
             var left_doc_highlights = "";
-
-            $('.highlight').each(function(e4){
-                if ($(this).parent().attr("id")=='left-doc'){
-                    left_doc_highlights +=  $(this).html() + "|||"
-                    
-                }else{
-                    right_doc_highlights +=  $(this).html() + "|||";
-                }
-            });
             
+            // $('.highlight').each(function(e4){
+            //     if ($(this).parent().attr("id")=='left-doc'){
+            //         left_doc_highlights +=  $(this).html()+"|"+$(this).attr("value") + "|||"
+                    
+            //     }else{
+            //         right_doc_highlights +=  $(this).html()+"|"+$(this).attr("value") + "|||";
+            //     }
+            // });
+            var element = document.getElementById('left-doc');
+            console.log("=-===========")
+            console.log(element.innerHTML)
+            left_doc_highlights = $('#left-doc').text()
+
+            right_doc_highlights = $('#right-doc').text()
             var data = {"highlight": left_doc_highlights}
             $.ajax
             ({ 
@@ -532,6 +538,7 @@ Document ID : {{doc_right.uuid}}
 
 
         var target;
+        var el = document.getElementById("test");
 
         $(".editable-doc").mousedown(function (e1) {
             target = e1.target
@@ -559,11 +566,24 @@ Document ID : {{doc_right.uuid}}
             var range = window.getSelection().getRangeAt(0)
             var startPoint = window.getSelection().getRangeAt(0).startOffset;
             var endPoint = window.getSelection().getRangeAt(0).endOffset;
-            console.log(selection)
-            console.log("_______________---------------")
             var anchorTag = selection.anchorNode.parentNode;
             var focusTag = selection.focusNode.parentNode;
             
+            console.log("==================================")
+            // var target = e2.target
+            console.log(focusTag)
+            console.log(anchorTag)
+            // console.log(target)
+            // console.log(target.parentNode)
+            var pos = getCaretCharacterOffsetWithin(target);
+            // console.log(selection.anchorOffset)
+            // console.log(selection.extendOffset)
+            
+            
+            // target = taget.parentNode
+            // rangeStr = (pos - selectedText.length) +"-"+pos
+
+            var rangeStr = (pos - selectedText.length) +"-"+pos
 
             if ((e2.pageX - mouseXPosition) < 0) {
                 focusTag = selection.anchorNode.parentNode;
@@ -572,16 +592,29 @@ Document ID : {{doc_right.uuid}}
             if (selectedText.length === (endPoint - startPoint)) {
                 highlighted = true;
                 if (anchorTag.className !== "highlight") {
-                    highlightSelection();
+                    highlightSelection(rangeStr);
+                    console.log(pos - selectedText.length)
+                console.log("pedasag 0")
                 } else {
-                    var afterText = selectedText + "<span class = 'highlight'>" + anchorTag.innerHTML.substr(endPoint) + "</span>";
+                    pos = getCaretCharacterOffsetWithin(target.parentNode);
+                    console.log(pos - selectedText.length)
+                    anch_value = $(anchorTag).attr("value").split("-")
+
+            console.log(pos)
+                    rangeStr = pos +"-"+anch_value[1]
+
+                    var afterText = selectedText + "<span class = 'highlight' value="+rangeStr+ ">" + anchorTag.innerHTML.substr(endPoint) + "</span>";
                     anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
                     anchorTag.insertAdjacentHTML('afterend', afterText);
+                    anchorTag.setAttribute("value", anch_value[0]+"-"+ ((pos - selectedText.length)))
+
+                    console.log(anchorTag)
+                    console.log("miay inja pedasag")
                 }
 
             }else{
                 if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
-                    highlightSelection();  
+                    highlightSelection(rangeStr);  
                     highlighted = true;
 
                 } 
@@ -589,7 +622,10 @@ Document ID : {{doc_right.uuid}}
 
             if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
                 highlighted = true;
-
+                pos = getCaretCharacterOffsetWithin(target.parentNode);
+                rangeStr = (pos - selectedText.length) +"-"+pos
+                console.log(pos - selectedText.length)
+                console.log(pos)    
                 var afterHtml = anchorTag.innerHTML.substr(startPoint);
                 var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
                 var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
@@ -597,34 +633,60 @@ Document ID : {{doc_right.uuid}}
                 var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
                 selection.deleteFromDocument();
                 anchorTag.innerHTML = anchorInnerhtml;
+                console.log("(((((((((((((((((((((((((((((((((")
+                // console.log(anchorTag.getPropertyValue())
                 focusTag.innerHTml = focusInnerHtml;
+                focusTag.setAttribute("value", pos + "-"+  (pos + focusTag.innerHTML.length));
+                // console.log(focusTag)
+                
                 var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
+
                 anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
+                // anchorTag.setAttribute()
+                console.log(anchorTag)
+                console.log(anchorTag.innerHTML)
+                anch_value = $(anchorTag).attr("value").split("-")
+                anchorTag.setAttribute("value", anch_value[0]+"-"+ ((pos - selectedText.length)))
+                // anchorTag.setAttribute("value", anch_value[0]+"-"+ (parseInt(anch_value[0]) + anchorTag.innerHTML.length))
+
+                console.log($(anchorTag).attr("value"))
+                
+                console.log("miay inja pedasag 2")
 
             }
 
             if (anchorTag.className === "highlight" && !highlighted) {
                 highlighted = true;
+                pos = getCaretCharacterOffsetWithin(target.parentNode);
+                rangeStr = (pos - selectedText.length) +"-"+pos
+
                 var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
                 var afterHtml = anchorTag.innerHTML.substr(startPoint);
                 var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
                 selection.deleteFromDocument();
                 anchorTag.innerHTML = Innerhtml;
                 anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
+                console.log("miay inja pedasag 3")
+
                 }
             
             if (focusTag.className === 'highlight' && !highlighted) {
                 highlighted = true;
+                pos = getCaretCharacterOffsetWithin(target.parentNode);
+                rangeStr = (pos - selectedText.length) +"-"+pos
+
                 var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
                 var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
                 selection.deleteFromDocument();
                 focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
                 outerHtml += beforeHtml;
                 focusTag.insertAdjacentHTML('beforebegin', outerHtml );
+                console.log("miay inja pedasag 4")
+
 
             }
             if (!highlighted) {
-                highlightSelection();
+                highlightSelection(rangeStr);
             }
             var doc_highlights = "";
 
@@ -639,7 +701,7 @@ Document ID : {{doc_right.uuid}}
             
         });
 
-        function highlightSelection() {
+        function highlightSelection(rangeStr) {
             var selection;
 
             //Get the selected stuff
@@ -656,6 +718,7 @@ Document ID : {{doc_right.uuid}}
                 if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
                     var span = document.createElement('span');
                     span.className = 'highlight';
+                    span.setAttribute("value", rangeStr); 
                     span.textContent = selection.toString();
                     selection.deleteFromDocument();
                     range.insertNode(span);
@@ -759,7 +822,38 @@ Document ID : {{doc_right.uuid}}
 
     // Minimpa :))))))))))))))))))))
     // https://codepen.io/shshaw/pen/wGPpqL  ==> doesn't work
+
+
+
+
+
+    function getCaretCharacterOffsetWithin(element) {
+        var caretOffset = 0;
+        var doc = element.ownerDocument || element.document;
+        var win = doc.defaultView || doc.parentWindow;
+        var sel;
+        if (typeof win.getSelection != "undefined") {
+            sel = win.getSelection();
+            if (sel.rangeCount > 0) {
+            var range = win.getSelection().getRangeAt(0);
+            var preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(element);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            caretOffset = preCaretRange.toString().length;
+            }
+        } else if ((sel = doc.selection) && sel.type != "Control") {
+            var textRange = sel.createRange();
+            var preCaretTextRange = doc.body.createTextRange();
+            preCaretTextRange.moveToElementText(element);
+            preCaretTextRange.setEndPoint("EndToEnd", textRange);
+            caretOffset = preCaretTextRange.text.length;
+        }
+        return caretOffset;
+        }
         
     </script>
 </body>
 </html>
+
+
+<!-- http://jsfiddle.net/3t8n0s5v/ -->
