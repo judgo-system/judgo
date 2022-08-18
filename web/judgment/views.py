@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'judgment.html'
-    # pref_obj = None
     task_id = None
     left_doc_id = None
     right_doc_id = None
@@ -50,7 +49,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             (left, right) = pref.get_documents(prev_judge.before_state)
             
             context['topic'] = prev_judge.task.topic
-            context['support'] = prev_judge.task.topic.uuid.split("_")[1].upper()
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
