@@ -94,16 +94,18 @@ body {
   height: 100%;
   z-index: -1;
   overflow: auto; 
+  line-height:1.2;
+  white-space: pre-wrap;
 }
 
 .document:nth-child(2n) .document-content {
   background: #f6f6f6;
 }
 
-.document-content p {
+/* .document-content p {
   line-height:1.2;
   white-space: pre-wrap;
-}
+} */
 
 .question {
   display: flex;

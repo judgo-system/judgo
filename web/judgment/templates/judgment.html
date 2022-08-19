@@ -113,15 +113,15 @@
                         <button id="left-increase-btn" class="btn btn-primary btn-circle">+</button>
                     </div>
                 </div>
-                
+                {% autoescape off %}
+
                 <div class="document-content" >
+Title: {{doc_left.title}}
+Document ID : {{doc_left.uuid}}                    
                     <p id="left-doc" class="editable-doc" >
 {{ left_txt }}
-Title: {{doc_left.title}}
-
-Document ID : {{doc_left.uuid}}
-                        {% endautoescape %} 
                     </p>
+                    {% endautoescape %} 
                 </div>
             </div>
 
@@ -141,19 +141,14 @@ Document ID : {{doc_left.uuid}}
                         <button id="right-increase-btn" class="btn btn-primary btn-circle">+</button>
                     </div>
                 </div>
-                
+                {% autoescape off %}
                 <div class="document-content">
-                    <p id="right-doc" class="editable-doc">
-                        
-                        {% autoescape off %}
-                            {{ right_txt }}
-                            
 Title: {{doc_right.title}}
-
-Document ID : {{doc_right.uuid}}
-                        {% endautoescape %} 
+Document ID : {{doc_right.uuid}}                    
+                    <p id="right-doc" class="editable-doc">        
+{{ right_txt }}                        
                     </p>
-                    
+                    {% endautoescape %} 
                 </div>
             </div>
         </div>
