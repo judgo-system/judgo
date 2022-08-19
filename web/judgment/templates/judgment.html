@@ -32,7 +32,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
-    <title>Document</title>
+    <title>{{ topic.title }}</title>
 </head>
 <body>
     
@@ -115,16 +115,13 @@
                 </div>
                 
                 <div class="document-content" >
-                    {% autoescape off %}
-
                     <p id="left-doc" class="editable-doc" >
 {{ left_txt }}
 Title: {{doc_left.title}}
 
 Document ID : {{doc_left.uuid}}
+                        {% endautoescape %} 
                     </p>
-                    {% endautoescape %} 
-
                 </div>
             </div>
 
@@ -146,16 +143,17 @@ Document ID : {{doc_left.uuid}}
                 </div>
                 
                 <div class="document-content">
-                    {% autoescape off %}
                     <p id="right-doc" class="editable-doc">
-{{ right_txt }}
+                        
+                        {% autoescape off %}
+                            {{ right_txt }}
                             
 Title: {{doc_right.title}}
 
 Document ID : {{doc_right.uuid}}
-                        
+                        {% endautoescape %} 
                     </p>
-                    {% endautoescape %} 
+                    
                 </div>
             </div>
         </div>
@@ -419,17 +417,24 @@ Document ID : {{doc_right.uuid}}
         tagify = new Tagify(input, {
             transformTag        : transformTag,
             placeholder         : "Search keywords",
-            
+            blacklist           : ["mark", "span", "style", "background", "class"]
             
         })
         
         const colorGlobalList = [
-            "#d53e4f", "#f46d43", "#fdae61", "#fee08b",
-            "#e6f598", "#abdda4", "#66c2a5", "#3288bd",
-            "#5e4fa2", "#8073ac", "#b2abd2", "#d8daeb", 
-            "#fee0b6", "#fdb863", "#e08214", "#dfc27d",
-            "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f",
+
+            "#fb8072","#80b1d3", "#fdb462", "#b3de69", "#fccde5",
+            "#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6",
+            "#e5d8bd", "#fddaec", "#8dd3c7", "#bebada", "#bc80bd",
+            "#35978f", "#dfc27d", "#d8daeb", "#3288bd", "#fee08b",
         ]
+        // const colorGlobalList = [
+        //     "#d53e4f", "#f46d43", "#fdae61", "#fee08b",
+        //     "#e6f598", "#abdda4", "#66c2a5", "#3288bd",
+        //     "#5e4fa2", "#8073ac", "#b2abd2", "#d8daeb", 
+        //     "#fee0b6", "#fdb863", "#e08214", "#dfc27d",
+        //     "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f",
+        // ]
 
         // generate a random color (in HSL format, which I like to use)
         function getTagColor(tag){
