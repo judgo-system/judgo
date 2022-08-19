@@ -269,12 +269,16 @@ Document ID : {{doc_right.uuid}}
             //         right_doc_highlights +=  $(this).html()+"|"+$(this).attr("value") + "|||";
             //     }
             // });
-            var element = document.getElementById('left-doc');
-            console.log("=-===========")
-            console.log(element.innerHTML)
-            left_doc_highlights = $('#left-doc').text()
+            left_doc_highlights = document.getElementById('left-doc').innerHTML.
+                    replace(/<mark.*?>/ig,'').
+                    replace(/<\/mark>/ig,'');
 
-            right_doc_highlights = $('#right-doc').text()
+
+
+            right_doc_highlights = document.getElementById('right-doc').innerHTML.
+                    replace(/<mark.*?>/ig,'').
+                    replace(/<\/mark>/ig,'');
+
             var data = {"highlight": left_doc_highlights}
             $.ajax
             ({ 
@@ -569,20 +573,10 @@ Document ID : {{doc_right.uuid}}
             var anchorTag = selection.anchorNode.parentNode;
             var focusTag = selection.focusNode.parentNode;
             
-            console.log("==================================")
-            // var target = e2.target
-            console.log(focusTag)
-            console.log(anchorTag)
-            // console.log(target)
-            // console.log(target.parentNode)
             var pos = getCaretCharacterOffsetWithin(target);
-            // console.log(selection.anchorOffset)
-            // console.log(selection.extendOffset)
             
             
-            // target = taget.parentNode
-            // rangeStr = (pos - selectedText.length) +"-"+pos
-
+            
             var rangeStr = (pos - selectedText.length) +"-"+pos
 
             if ((e2.pageX - mouseXPosition) < 0) {
@@ -593,14 +587,10 @@ Document ID : {{doc_right.uuid}}
                 highlighted = true;
                 if (anchorTag.className !== "highlight") {
                     highlightSelection(rangeStr);
-                    console.log(pos - selectedText.length)
-                console.log("pedasag 0")
                 } else {
                     pos = getCaretCharacterOffsetWithin(target.parentNode);
-                    console.log(pos - selectedText.length)
                     anch_value = $(anchorTag).attr("value").split("-")
 
-            console.log(pos)
                     rangeStr = pos +"-"+anch_value[1]
 
                     var afterText = selectedText + "<span class = 'highlight' value="+rangeStr+ ">" + anchorTag.innerHTML.substr(endPoint) + "</span>";
@@ -608,8 +598,6 @@ Document ID : {{doc_right.uuid}}
                     anchorTag.insertAdjacentHTML('afterend', afterText);
                     anchorTag.setAttribute("value", anch_value[0]+"-"+ ((pos - selectedText.length)))
 
-                    console.log(anchorTag)
-                    console.log("miay inja pedasag")
                 }
 
             }else{
@@ -624,8 +612,6 @@ Document ID : {{doc_right.uuid}}
                 highlighted = true;
                 pos = getCaretCharacterOffsetWithin(target.parentNode);
                 rangeStr = (pos - selectedText.length) +"-"+pos
-                console.log(pos - selectedText.length)
-                console.log(pos)    
                 var afterHtml = anchorTag.innerHTML.substr(startPoint);
                 var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
                 var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
@@ -633,26 +619,14 @@ Document ID : {{doc_right.uuid}}
                 var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
                 selection.deleteFromDocument();
                 anchorTag.innerHTML = anchorInnerhtml;
-                console.log("(((((((((((((((((((((((((((((((((")
-                // console.log(anchorTag.getPropertyValue())
                 focusTag.innerHTml = focusInnerHtml;
                 focusTag.setAttribute("value", pos + "-"+  (pos + focusTag.innerHTML.length));
-                // console.log(focusTag)
                 
                 var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
 
                 anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
-                // anchorTag.setAttribute()
-                console.log(anchorTag)
-                console.log(anchorTag.innerHTML)
                 anch_value = $(anchorTag).attr("value").split("-")
                 anchorTag.setAttribute("value", anch_value[0]+"-"+ ((pos - selectedText.length)))
-                // anchorTag.setAttribute("value", anch_value[0]+"-"+ (parseInt(anch_value[0]) + anchorTag.innerHTML.length))
-
-                console.log($(anchorTag).attr("value"))
-                
-                console.log("miay inja pedasag 2")
-
             }
 
             if (anchorTag.className === "highlight" && !highlighted) {
@@ -666,9 +640,8 @@ Document ID : {{doc_right.uuid}}
                 selection.deleteFromDocument();
                 anchorTag.innerHTML = Innerhtml;
                 anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
-                console.log("miay inja pedasag 3")
-
-                }
+                
+            }
             
             if (focusTag.className === 'highlight' && !highlighted) {
                 highlighted = true;
@@ -681,9 +654,6 @@ Document ID : {{doc_right.uuid}}
                 focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
                 outerHtml += beforeHtml;
                 focusTag.insertAdjacentHTML('beforebegin', outerHtml );
-                console.log("miay inja pedasag 4")
-
-
             }
             if (!highlighted) {
                 highlightSelection(rangeStr);

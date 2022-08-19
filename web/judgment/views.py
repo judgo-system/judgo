@@ -80,12 +80,11 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
             if left_response.highlight:
-                print("onja")
-                print(left_response.highlight)
-                context['left_txt'] = JudgmentView.highlight_document(
-                    left_response.document.content,
-                    left_response.highlight
-                ) 
+                context['left_txt'] = left_response.highlight
+                # context['left_txt'] = JudgmentView.highlight_document(
+                #     left_response.document.content,
+                #     left_response.highlight
+                # ) 
             else:
                 context['left_txt'] = left_response.document.content
                 
@@ -228,10 +227,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return action, after_state
 
 
-    @staticmethod 
-    def highlight_document(text, highlight):
-        """
-        """
+    # @staticmethod 
+    # def highlight_document(text, highlight):
+    #     """
+    #     """
         # text = highlight
         # if not highlight:
         #     return text
@@ -249,19 +248,17 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         # highlights = sorted(sorted_list, key=itemgetter(0))
         # offset = 0
-        # print(highlights)
         # for startpoint, endpoint, highlight  in highlights:
             
         #     startpoint = startpoint + offset
         #     endpoint = endpoint + offset
-        #     print(startpoint, endpoint, len(highlight), offset)
-
+        
         #     html_tag = f"<span class = 'highlight' value={startpoint}-{endpoint}>"
         #     offset += len(html_tag) + len("</span>")
         #     text = text[:startpoint-1] + html_tag + highlight + "</span>" + text[endpoint-1:]
         #     # text = text.replace(highlighted_part,
         #     #  "<span class = 'highlight' value={}>{}</span>".format(f"{startpoint}-{endpoint}", highlighted_part))
-        return highlight
+        # return highlight
 
     @staticmethod
     def append_answer(state, judgment):
