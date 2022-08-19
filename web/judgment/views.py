@@ -1,5 +1,9 @@
+from ast import literal_eval
 import html
 import logging
+from tracemalloc import start
+from operator import itemgetter
+
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
@@ -49,6 +53,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             (left, right) = pref.get_documents(prev_judge.before_state)
             
             context['topic'] = prev_judge.task.topic
+            context['support'] = prev_judge.task.topic.uuid.split("_")[1].upper()
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
@@ -74,18 +79,15 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
             if left_response.highlight:
-                print("onja")
-                print(left_response.highlight)
-                context['left_txt'] = JudgmentView.highlight_document(
-                    left_response.document.content,
-                    left_response.highlight
-                ) 
+                context['left_txt'] = left_response.highlight
+                # context['left_txt'] = JudgmentView.highlight_document(
+                #     left_response.document.content,
+                #     left_response.highlight
+                # ) 
             else:
                 context['left_txt'] = left_response.document.content
                 
             if right_response.highlight:
-                print("injjjjjja")
-                print(right_response.highlight)
 
                 context['right_txt'] = JudgmentView.highlight_document(
                     right_response.document.content,
@@ -224,18 +226,38 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return action, after_state
 
 
-    @staticmethod 
-    def highlight_document(text, highlight):
-        """
-        """
-        if not highlight:
-            return text
-        highlights = highlight.split("|||")
+    # @staticmethod 
+    # def highlight_document(text, highlight):
+    #     """
+    #     """
+        # text = highlight
+        # if not highlight:
+        #     return text
 
-        for part in highlights:
-            if part:
-                text = text.replace(part, "<span class = 'highlight'>{}</span>".format(part))
-        return text
+        # highlights = highlight.split("|||")
+        # sorted_list = []
+        # for i, part in enumerate(highlights):
+        #     span = "|".join([i for i in part.split("|")[:-1]])
+        #     if len(span) < 3:
+        #         continue
+        #     startpoint, endpoint = part[len(span)+1:].split("-")
+        #     startpoint, endpoint = int(startpoint), int(endpoint)
+
+        #     sorted_list.append((startpoint, endpoint, span))
+
+        # highlights = sorted(sorted_list, key=itemgetter(0))
+        # offset = 0
+        # for startpoint, endpoint, highlight  in highlights:
+            
+        #     startpoint = startpoint + offset
+        #     endpoint = endpoint + offset
+        
+        #     html_tag = f"<span class = 'highlight' value={startpoint}-{endpoint}>"
+        #     offset += len(html_tag) + len("</span>")
+        #     text = text[:startpoint-1] + html_tag + highlight + "</span>" + text[endpoint-1:]
+        #     # text = text.replace(highlighted_part,
+        #     #  "<span class = 'highlight' value={}>{}</span>".format(f"{startpoint}-{endpoint}", highlighted_part))
+        # return highlight
 
     @staticmethod
     def append_answer(state, judgment):

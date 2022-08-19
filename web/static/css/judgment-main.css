@@ -90,6 +90,7 @@ body {
 .document-content {
   /* border: 1px solid #789395; */
   padding-left: 20px;
+  padding-top: 10px;
   height: 100%;
   z-index: -1;
   overflow: auto; 
@@ -101,7 +102,7 @@ body {
 
 .document-content p {
   line-height:1.2;
-  white-space: pre;
+  white-space: pre-wrap;
 }
 
 .question {
@@ -292,7 +293,7 @@ body {
  .highlight {
   line-height:1.2;
   background-color: yellow;
-  white-space: pre;
+  white-space: pre-wrap;
 
 }
 /* #left-doc::-moz-selection { Code for Firefox */
