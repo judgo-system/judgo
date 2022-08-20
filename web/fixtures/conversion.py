@@ -18,6 +18,9 @@ save_path = '/Users/lnphanmi/Desktop/Thesis/trec2021/trec2021-pref-judge-convers
 topic_ids = [101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 114, 115, 117, 118, 120, 
              121, 122, 127, 128, 129, 131, 132, 133, 134, 136, 137, 139, 140, 143, 144, 145, 146, 149]
 
+#threshold = k
+threshold = 10
+
 if __name__ == '__main__':
     print('[1] Reading from the topics file ...')
     topics_head = ['topic_id', 'query', 'question', 'background', 'disclaimer', 'stance', 'evidence']
@@ -46,27 +49,40 @@ if __name__ == '__main__':
     
     print('[4] Creating pools file...')
     topics_truncated = topics[['topic_id' , 'stance']]
-    filtered_qrel = qrel.loc[qrel['supportiveness'].isin([0,1,2])]
+    filtered_qrel = qrel.loc[qrel['usefulness'].isin([1,2])]
+    filtered_qrel = filtered_qrel.loc[qrel['supportiveness'].isin([0,1,2])]
     filtered_qrel = pd.merge(filtered_qrel, topics_truncated, how='left', on='topic_id')
-    filtered_qrel['category'] = " "
 
-    for i, row in filtered_qrel.iterrows():
-        if (filtered_qrel['supportiveness'][i] == 0 and filtered_qrel['stance'][i] == "helpful"):
-            filtered_qrel.loc[i, 'category'] = 'harmful'
-        elif (filtered_qrel['supportiveness'][i] == 2 and filtered_qrel['stance'][i] == "unhelpful"):
-            filtered_qrel.loc[i, 'category'] = 'harmful'
-        else:
-            filtered_qrel.loc[i, 'category'] = 'harmless'
+    final_df = pd.DataFrame(columns=['topic_id', 'useless', 'doc_no', 'usefulness', 'supportiveness', 'credibility', 'stance'])
+    for topic in topic_ids:
+        df = filtered_qrel.loc[filtered_qrel['topic_id'] == topic]
 
-    pool = filtered_qrel[filtered_qrel['category'] != 'harmful']
-    final_pool = pool[['topic_id', 'doc_no']]
+        # Very-useful and correct documents
+        docs = df.loc[(df['usefulness'] == 2) & (((df['stance'] == 'helpful') & (df['supportiveness'] == 2)) | ((df['stance'] == 'unhelpful') & (df['supportiveness'] == 0)))]
+
+        # Useful and correct documents
+        if docs.shape[0] < threshold:
+            useful_correct_docs = df.loc[(df['usefulness'] == 1) & (((df['stance'] == 'helpful') & (df['supportiveness'] == 2)) | ((df['stance'] == 'unhelpful') & (df['supportiveness'] == 0)))]
+            docs = pd.concat([docs, useful_correct_docs])
+
+        # Very-useful and unclear documents
+        if docs.shape[0] < threshold:
+            very_useful_unclear_docs = df.loc[(df['usefulness'] == 2) & (df['supportiveness'] == 1)]
+            docs = pd.concat([docs, very_useful_unclear_docs])
+
+        # Useful and unclear documents
+        if docs.shape[0] < threshold:
+            useful_unclear_docs = df.loc[(df['usefulness'] == 1) & (df['supportiveness'] == 1)]
+            docs = pd.concat([docs, useful_unclear_docs])
+
+        final_df = pd.concat([final_df, docs])
     
+    final_pool = final_df[['topic_id', 'doc_no']]
     final_pool.to_csv(save_path + '/pool.csv', index=False, header=False, sep=' ')
 
     
     print('[5] Creating file with list of documents to fetch...')
     document_list = final_pool[['doc_no']]
-
     document_list.to_csv(save_path + '/document_list.csv', index=False, header=False)
     
 
