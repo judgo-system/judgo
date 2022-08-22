@@ -1,15 +1,10 @@
-import csv
 import html
-import os
 from pathlib import Path
 
-from django.utils.html import strip_tags
-
-from topic.models import Topic
-from document.models import Document
-
 from core.models import Task
-
+from django.utils.html import strip_tags
+from document.models import Document
+from topic.models import Topic
 from user.models import User
 
 ROOT_PATH = "fixtures/data/test"
@@ -20,27 +15,23 @@ df = pd.read_csv(
     "https://docs.google.com/spreadsheets/d/1siwC0S1vgs_BB9lQC6z7J1smTDFA3P0oJMfcSy7DYME/export?gid=0&format=csv",
 )
 
-questions = df[["scenario"]].apply(lambda row: pd.Series([row.name, row.scenario, row.scenario]), axis=1)
-# question.to_csv(ROOT_PATH + "/question.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
+questions = df[["scenario"]].apply(lambda row: pd.Series([row.name, row.scenario, row.scenario]), axis=1).sample(frac=1)
 passages = (
     df.input.apply(lambda x: x.split())
         .explode().drop_duplicates().apply(lambda x: pd.Series([x, x, x, x], index="uuid title url content".split()))
-)
-# passages.to_csv(ROOT_PATH + "/passages.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
+).sample(frac=1)
 pool = (
     df.input.apply(lambda x: x.split())
         .explode()
         .reset_index()
         .rename(columns=dict(index="topic"))
         .apply(lambda x: pd.Series([x.topic, x.input]), axis=1)
-)
-# pool.to_csv(ROOT_PATH + "/pool.csv", index=False, quoting=csv.QUOTE_NONNUMERIC)
+).sample(frac=1)
 Topic.objects.all().delete()
 Document.objects.all().delete()
 Task.objects.all().delete()
 User.objects.filter(username="test_user").delete()
 user = User.objects.create_user(username="test_user", password="test_user@example.com", email="test_user@example.com")
-
 
 print("1- Ingest topic")
 for i, t in questions.iterrows():
@@ -51,7 +42,6 @@ for i, t in questions.iterrows():
 
 print("2- Ingest Document")
 for i, t in passages.iterrows():
-
     try:
         Document.objects.create(
             uuid=t[0],
@@ -84,5 +74,3 @@ for topic in Topic.objects.all():
         user_id=user.id,
         topic_id=topic.id
     )
-
-
