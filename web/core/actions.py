@@ -24,7 +24,7 @@ def export_task_as_csv_action(description="Export selected objects as CSV file",
         writer = csv.writer(response)
 
         
-        field_names = ['ID', 'Topic', 'Is Completed', 'Grade', 'Document UUID']
+        field_names = ['ID', 'Topic ID', 'Is Completed', 'Grade', 'Document UUID']
         
         writer.writerow(list(field_names))
         
