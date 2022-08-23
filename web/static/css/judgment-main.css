@@ -94,10 +94,12 @@ body {
   height: 100%;
   z-index: -1;
   overflow: auto; 
+}
+
+.document-content p{
   line-height:1.2;
   white-space: pre-wrap;
 }
-
 .document:nth-child(2n) .document-content {
   background: #f6f6f6;
 }
@@ -578,9 +580,16 @@ strong::before {
 
 
 .font-size-div {
+  display: flex;
+  align-items: center;
+  right: 48%;
   position: absolute;
-  right: 15px;
-  top: 45px;
+}
+
+.font-size-div p{
+  font-size: 1.2rem;
+  font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+
 }
 
 .btn-circle {

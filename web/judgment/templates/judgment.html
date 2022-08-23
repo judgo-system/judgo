@@ -62,19 +62,22 @@
                 
             </div>
 
+            <div class="font-size-div">
+                <button id="decrase-btn" class="btn btn-primary btn-circle">-</button>
+                <p> A </p>
+                <button id="increase-btn" class="btn btn-primary btn-circle">+</button>
+            </div>
+
             <div class="header-btn-container">
 
-            <div class="progress-txt">
-                <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
-            </div>
-            
-
-            <button class="button topic-info-button" id="topic_info_li">
-                <h3>Topic Information</h3>
-            </button>
-             
-            
-                <!-- <div> -->
+                <div class="progress-txt">
+                    <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
+                </div>
+                
+                <button class="button topic-info-button" id="topic_info_li">
+                    <h3>Topic Information</h3>
+                </button>
+                
                 <div class="btn-group">
                     <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                         <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M2 11H22V13H2zM2 5H22V7H2zM2 17H22V19H2z"/></svg>
@@ -86,7 +89,6 @@
                         <li class="dropdown-item"><a href="{% url 'account_logout' %}">Log out</a></li>
                     </ul>
                 </div>
-                <!-- </div> -->
             </div>
         </div>
 
@@ -113,19 +115,13 @@
                             {{doc_left.url}}
                         </a>
                     </h2>
-                    <div class="font-size-div">
-                        <button id="left-decrase-btn" class="btn btn-primary btn-circle">-</button>
-                        <button id="left-increase-btn" class="btn btn-primary btn-circle">+</button>
-                    </div>
                 </div>
                 {% autoescape off %}
 
-                <div class="document-content" >
-Title: {{doc_left.title}}
-Document ID : {{doc_left.uuid}}                    
-                    <p id="left-doc" class="editable-doc" >
-{{ left_txt }}
-                    </p>
+                <div class="document-content">
+<!-- Title: {{doc_left.title}}
+Document ID : {{doc_left.uuid}}                     -->
+                    <p id="left-doc" class="editable-doc" >{{ left_txt }}</p>
                     {% endautoescape %} 
                 </div>
             </div>
@@ -141,18 +137,10 @@ Document ID : {{doc_left.uuid}}
                     <h2 class="document-url">
                         <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                     </h2>
-                    <div class="font-size-div">
-                        <button id="right-decrase-btn" class="btn btn-primary btn-circle">-</button>
-                        <button id="right-increase-btn" class="btn btn-primary btn-circle">+</button>
-                    </div>
+                    
                 </div>
                 {% autoescape off %}
-                <div class="document-content">
-Title: {{doc_right.title}}
-Document ID : {{doc_right.uuid}}                    
-                    <p id="right-doc" class="editable-doc">        
-{{ right_txt }}                        
-                    </p>
+                <div class="document-content"><p id="right-doc" class="editable-doc">{{right_txt}}</p>
                     {% endautoescape %} 
                 </div>
             </div>
@@ -252,6 +240,12 @@ Document ID : {{doc_right.uuid}}
             $('#topic_info_li').on('click', function() {
                 $('#topic-info-modal').modal();
             });
+            
+            var font_size = "{{font_size}}"
+            if (font_size !== ""){
+                document.getElementById("left-doc").style.fontSize = font_size;
+                document.getElementById("right-doc").style.fontSize = font_size;
+            }
         });
         
 
@@ -259,14 +253,6 @@ Document ID : {{doc_right.uuid}}
             var right_doc_highlights = "";
             var left_doc_highlights = "";
             
-            // $('.highlight').each(function(e4){
-            //     if ($(this).parent().attr("id")=='left-doc'){
-            //         left_doc_highlights +=  $(this).html()+"|"+$(this).attr("value") + "|||"
-                    
-            //     }else{
-            //         right_doc_highlights +=  $(this).html()+"|"+$(this).attr("value") + "|||";
-            //     }
-            // });
             left_doc_highlights = document.getElementById('left-doc').innerHTML.
                     replace(/<mark.*?>/ig,'').
                     replace(/<\/mark>/ig,'');
@@ -311,6 +297,32 @@ Document ID : {{doc_right.uuid}}
                     "X-CSRFToken": getCookie("csrftoken"),
                 },
                 success: function(result){
+                    console.log(result)
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+            });
+            
+            var element = document.getElementById("left-doc");
+            style = window.getComputedStyle(element, null).getPropertyValue('font-size');
+            currentSize = parseFloat(style);
+            var font_size = (currentSize) + 'px';
+
+            var data = {"font_size": font_size}
+            $.ajax
+            ({ 
+                url: "/../../update_font_size/" + getCookie("task_id") + "/"  ,
+                data: JSON.stringify(data),
+                method: 'PUT',
+
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: function(result)
+                {
                     console.log(result)
                 },
                 error: (error) => {
@@ -428,13 +440,7 @@ Document ID : {{doc_right.uuid}}
             "#e5d8bd", "#fddaec", "#8dd3c7", "#bebada", "#bc80bd",
             "#35978f", "#dfc27d", "#d8daeb", "#3288bd", "#fee08b",
         ]
-        // const colorGlobalList = [
-        //     "#d53e4f", "#f46d43", "#fdae61", "#fee08b",
-        //     "#e6f598", "#abdda4", "#66c2a5", "#3288bd",
-        //     "#5e4fa2", "#8073ac", "#b2abd2", "#d8daeb", 
-        //     "#fee0b6", "#fdb863", "#e08214", "#dfc27d",
-        //     "#f6e8c3", "#c7eae5", "#80cdc1", "#35978f",
-        // ]
+        
 
         // generate a random color (in HSL format, which I like to use)
         function getTagColor(tag){
@@ -772,19 +778,13 @@ Document ID : {{doc_right.uuid}}
 
 
         // FONT CHANGE
-
-        $("#left-increase-btn").click(function(){
+        $("#increase-btn").click(function(){
             changeFontSize(1, "left-doc");
-        })
-
-        $("#left-decrase-btn").click(function(){
-            changeFontSize(-1, "left-doc");
-        })
-        $("#right-increase-btn").click(function(){
             changeFontSize(1, "right-doc");
         })
 
-        $("#right-decrase-btn").click(function(){
+        $("#decrase-btn").click(function(){
+            changeFontSize(-1, "left-doc");
             changeFontSize(-1, "right-doc");
         })
 
@@ -797,9 +797,6 @@ Document ID : {{doc_right.uuid}}
 
     // Minimpa :))))))))))))))))))))
     // https://codepen.io/shshaw/pen/wGPpqL  ==> doesn't work
-
-
-
 
 
     function getCaretCharacterOffsetWithin(element) {

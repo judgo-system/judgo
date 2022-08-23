@@ -9,7 +9,7 @@ from .actions import export_task_as_csv_action
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
     actions = [export_task_as_csv_action("CSV Export", fields=['id', 'user__username'])]
-    list_display = ('id', 'view_user', 'view_topic', 'is_completed', 'num_ans',
+    list_display = ('id', 'view_user', 'view_topic', 'is_completed', 'num_ans', 'font_size',
         'view_best_answer', 'tags', 'created_at')
 
     list_filter = ['is_completed', 'user__username', 'created_at']

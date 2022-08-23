@@ -53,3 +53,22 @@ def remove_tag(request, taskId):
             return JsonResponse({'status': 'Tags remove!'})
 
     return HttpResponseBadRequest('Invalid request')
+
+
+
+
+def update_font_size(request, taskId):
+
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax:
+        task = get_object_or_404(Task, id=taskId)
+
+        if request.method == 'PUT':
+            data = json.load(request)
+            task.font_size = data.get('font_size')
+            task.save()
+
+            return JsonResponse({'status': 'Font Size updated!'})
+
+    return HttpResponseBadRequest('Invalid request')
