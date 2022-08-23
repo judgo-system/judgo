@@ -48,40 +48,45 @@
                         Undo
                     </button>
                 </form> 
+                <div class="question">
+                    <p>Preference:</p>
+                        <div class="answer-box">
+                            <form method='post'>
+                                {% csrf_token %}
+                                <button class="button btn-action" type="submit" value="left" name="left">Left</button>
+                                <button class="button btn-action" type="submit" value="equal" name="equal">Equal</button>
+                                <button class="button btn-action" type="submit" value="right" name="right">Right</button>
+                            </form>  
+                        </div>
+                </div> 
                 
-                <button class="button topic-info-button" id="topic_info_li">
-                    <h3>Topic Information</h3>
-                </button>
             </div>
 
-            <div class="question">
-                <p>Preference:</p>
-                    <div class="answer-box">
-                        <form method='post'>
-                            {% csrf_token %}
-                            <button class="button btn-action" type="submit" value="left" name="left">Left</button>
-                            <button class="button btn-action" type="submit" value="equal" name="equal">Equal</button>
-                            <button class="button btn-action" type="submit" value="right" name="right">Right</button>
-                        </form>  
-                    </div>
-            </div>  
-            
+            <div class="header-btn-container">
+
             <div class="progress-txt">
                 <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
             </div>
-    
-            <div>
-              <div class="btn-group">
-                <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M2 11H22V13H2zM2 5H22V7H2zM2 17H22V19H2z"/></svg>
-                </button>
+            
 
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <li class="dropdown-item"><a href="{% url 'core:home' %}">Home</a></li>
-                    <li class="divider"></li>
-                    <li class="dropdown-item"><a href="{% url 'account_logout' %}">Log out</a></li>
-                  </ul>
-              </div>
+            <button class="button topic-info-button" id="topic_info_li">
+                <h3>Topic Information</h3>
+            </button>
+             
+            
+                <!-- <div> -->
+                <div class="btn-group">
+                    <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M2 11H22V13H2zM2 5H22V7H2zM2 17H22V19H2z"/></svg>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-right">
+                        <li class="dropdown-item"><a href="{% url 'core:home' %}">Home</a></li>
+                        <li class="divider"></li>
+                        <li class="dropdown-item"><a href="{% url 'account_logout' %}">Log out</a></li>
+                    </ul>
+                </div>
+                <!-- </div> -->
             </div>
         </div>
 

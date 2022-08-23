@@ -111,7 +111,6 @@ body {
   left: 5%; 
   background: #d4dbd4;
   padding: 5px 5px;
-  margin-top: 5px;
   margin-left: 30dp;
   border-radius: 1ch;
 }
@@ -197,6 +196,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  vertical-align: center;
   font-size: 0.86rem; 
 }
 
@@ -206,12 +206,17 @@ body {
 
 .header-btn-container{
   display: flex;
+  align-items: center;
 }
-.topic-info-button {
+
+.topic-info-button { 
+  display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.86rem; 
+  font-size: 0.86rem;
 }
+
+
 
 .question-header {
   width: 100%;
@@ -290,8 +295,6 @@ body {
   /* margin-left: 150px; */
   /* margin-right: 50px; */
   align-items: center;
-  /* margin-bottom: 10px; */
-  /* margin-top:10px; */
 }
 
 .form-group .form-field {
@@ -456,9 +459,6 @@ body {
 
 .tag-container {
   display: flex;
-  /* margin-left: 15px;
-  margin-right: 15px;
-  margin-bottom: 10px; */
   margin: 10px 15px;
   height: 50px;
   background-color: #f6f4f2;
@@ -468,13 +468,14 @@ body {
 
 
 .progress-txt{
-
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   align-self: center;
   padding: 10px 10px;
   margin-top: 5px;
   border-radius: 1ch;
+  right: 5%;
+  position: relative;
   font-weight: bold;
 }
 
@@ -580,11 +581,6 @@ strong::before {
   position: absolute;
   right: 15px;
   top: 45px;
-  /* position:relative;
-  display: flex;
-  justify-content: end;
-  bottom: -5px;
-  z-index: -1; */
 }
 
 .btn-circle {
