@@ -117,13 +117,11 @@
                     </h2>
                 </div>
                 {% autoescape off %}
-
                 <div class="document-content">
-<!-- Title: {{doc_left.title}}
-Document ID : {{doc_left.uuid}}                     -->
                     <p id="left-doc" class="editable-doc" >{{ left_txt }}</p>
-                    {% endautoescape %} 
                 </div>
+                {% endautoescape %} 
+                
             </div>
 
             <div class="dragbar" id="dragbar">
@@ -141,8 +139,9 @@ Document ID : {{doc_left.uuid}}                     -->
                 </div>
                 {% autoescape off %}
                 <div class="document-content"><p id="right-doc" class="editable-doc">{{right_txt}}</p>
-                    {% endautoescape %} 
                 </div>
+                {% endautoescape %} 
+
             </div>
         </div>
     </div>
