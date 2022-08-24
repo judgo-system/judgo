@@ -13,6 +13,9 @@ class Task(models.Model):
     # user can have several keyword to highlight in documents
     tags = models.TextField(null=True, blank=True)
 
+    # user can change the fond size of given document 
+    font_size = models.TextField(null=True, blank=True)
+
     # number of best answer so far
     num_ans = models.IntegerField(default=0)
 

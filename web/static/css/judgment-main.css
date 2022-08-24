@@ -60,7 +60,7 @@ body {
   height: 100%;
   flex: 1;
   padding-right: 15px;
-  padding-bottom: 20px;
+  padding-bottom: 35px;
   min-width: 90px;
 
   position: relative;
@@ -71,7 +71,7 @@ body {
   width: 50%;
   height: 100%;
   min-width: 90px;
-  padding-bottom: 20px;
+  padding-bottom: 35px;
   position: relative;
 }
 
@@ -88,24 +88,21 @@ body {
 }
 
 .document-content {
-  /* border: 1px solid #789395; */
   padding-left: 20px;
   padding-top: 10px;
   height: 100%;
   z-index: -1;
   overflow: auto; 
+}
+
+.document-content p{
   line-height:1.2;
   white-space: pre-wrap;
 }
-
 .document:nth-child(2n) .document-content {
   background: #f6f6f6;
 }
 
-/* .document-content p {
-  line-height:1.2;
-  white-space: pre-wrap;
-} */
 
 .question {
   display: flex;
@@ -114,8 +111,7 @@ body {
   position:relative;
   left: 5%; 
   background: #d4dbd4;
-  padding: 10px 10px;
-  margin-top: 5px;
+  padding: 5px 5px;
   margin-left: 30dp;
   border-radius: 1ch;
 }
@@ -124,7 +120,31 @@ body {
   font-size: 0.9rem;
   line-height: 0.9rem;
   padding: 0.4rem 1rem;
-  margin-right: 20px;
+  margin-right: 5px;
+  justify-content: center;
+  align-self: center;
+}
+
+.question button {
+  background-color: #ffffff;
+  border: 1px solid rgb(209, 213, 219);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  color: #111827;
+  font-size: 0.9rem;
+  font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  font-weight: 300;
+  line-height: 1.25rem;
+  padding: 0.3rem 0.9rem;
+  text-align: center;
+  text-decoration: none #d1d5db solid;
+  text-decoration-thickness: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  margin-right: 8px;
 }
 
 .button {
@@ -168,7 +188,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-top: 5px;
-  height: 50px;
+  height: 45px;
   text-align: center;
 }
 
@@ -177,6 +197,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  vertical-align: center;
   font-size: 0.86rem; 
 }
 
@@ -186,12 +207,17 @@ body {
 
 .header-btn-container{
   display: flex;
+  align-items: center;
 }
-.topic-info-button {
+
+.topic-info-button { 
+  display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 0.86rem; 
+  font-size: 0.86rem;
 }
+
+
 
 .question-header {
   width: 100%;
@@ -270,8 +296,6 @@ body {
   /* margin-left: 150px; */
   /* margin-right: 50px; */
   align-items: center;
-  /* margin-bottom: 10px; */
-  /* margin-top:10px; */
 }
 
 .form-group .form-field {
@@ -436,7 +460,7 @@ body {
 
 .tag-container {
   display: flex;
-  margin: 10px;
+  margin: 10px 15px;
   height: 50px;
   background-color: #f6f4f2;
   padding: 10px;
@@ -445,13 +469,14 @@ body {
 
 
 .progress-txt{
-
-  display: flex;
+  /* display: flex; */
   justify-content: center;
   align-self: center;
   padding: 10px 10px;
   margin-top: 5px;
   border-radius: 1ch;
+  right: 5%;
+  position: relative;
   font-weight: bold;
 }
 
@@ -474,7 +499,7 @@ body {
 }
 .document-url {
   height: 40px;
-  background: #99A799;  
+  background: #aab7aa;  
   padding: 10px;
   color: black;
   text-align: left;
@@ -554,14 +579,16 @@ strong::before {
 
 
 .font-size-div {
-  position: absolute;
-  right: 15px;
-  top: 45px;
-  /* position:relative;
   display: flex;
-  justify-content: end;
-  bottom: -5px;
-  z-index: -1; */
+  align-items: center;
+  right: 48%;
+  position: absolute;
+}
+
+.font-size-div p{
+  font-size: 1.2rem;
+  font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+
 }
 
 .btn-circle {
@@ -588,6 +615,8 @@ strong::before {
   border-color: #889395 !important;
 }
 
-
+.editable-doc{
+  height: 100%;
+}
 
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

@@ -53,6 +53,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             (left, right) = pref.get_documents(prev_judge.before_state)
             
             context['topic'] = prev_judge.task.topic
+            context['font_size'] = prev_judge.task.font_size
 
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
@@ -78,23 +79,20 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
             if left_response.highlight:
-                context['left_txt'] = left_response.highlight
-                # context['left_txt'] = JudgmentView.highlight_document(
-                #     left_response.document.content,
-                #     left_response.highlight
-                # ) 
+                context['left_txt'] = left_response.highlight 
             else:
-                context['left_txt'] = left_response.document.content
+                context['left_txt'] = f"Title: {left_response.document.title}"\
+                    f"\nDocument ID: {left_response.document.uuid}\n\n"\
+                    f"{left_response.document.content}"
                 
             if right_response.highlight:
                 context['right_txt'] = right_response.highlight
-            
-                # context['right_txt'] = JudgmentView.highlight_document(
-                #     right_response.document.content,
-                #     right_response.highlight
-                # ) 
             else:
-                context['right_txt'] = right_response.document.content
+                context['right_txt'] = f"Title: {right_response.document.title}"\
+                    f"\nDocument ID: {right_response.document.uuid}\n\n"\
+                    f"{right_response.document.content}"
+
+
 
             # if there is no tag is we don't need to fill it out.
             if prev_judge.task.tags:
