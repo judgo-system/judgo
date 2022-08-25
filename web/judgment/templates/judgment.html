@@ -20,6 +20,9 @@
 
     
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
+
+    <script type="text/javascript" src="{% static 'js/tag.js' %}"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
 
@@ -223,7 +226,6 @@
         }
 
         mouseXPosition = 0;
-
         $(document).ready(function () {
             
             const debug = "{{debug}}"
@@ -245,6 +247,7 @@
                 document.getElementById("left-doc").style.fontSize = font_size;
                 document.getElementById("right-doc").style.fontSize = font_size;
             }
+
         });
         
 
@@ -330,98 +333,39 @@
             });
         })
 
-        function highlight_tags(search_area, tag){
-            
-            if (tag.length <2) return
-            
-            // in the case there is more than one word in tag
-            tags = tag.split("|")
-            tag = tags[0]
-            color = tags[1]
+        
 
-            splited = tag.split(" ")
-            if (splited.length > 1){
-                temp = ""
-                for (let i = 0; i < splited.length; i++) { 
-                   if(i ==splited.length || i ==0){
-                    temp += splited[i]
-                   }else{
-                    temp += "[^a-zA-Z\d]" + splited[i]
-                   }
-                }
-                tag = temp
+
+        var raw_tags = "{{ highlights }}".split(",")
+        var tags_dic = {}
+        for(let i=0; i < raw_tags.length; i++){
+            tags = raw_tags[i].split("|")
+            if (tags[0] !==""){
+                tags_dic[tags[0]] = tags[1]
             }
-
-            
-            var textarea = $(search_area);    
-            var query = new RegExp("("+tag+")", "gim"); 
-            
-            const markTag = "<mark style='background: "+ color +"!important'>"
-            newtext= textarea.html().replace(query, markTag+"$1</mark>");    
-            textarea.html(newtext);
         }
 
-        
-        function dehighlight_tags(search_area, tag, second){
-
-
-            tags = tag.split("|")
-            tag = tags[0]
-            color = tags[1]
-           
+        function manage_tags(search_area, tag, action){
             
             var textarea = $(search_area);    
-            var enew = ''; 
-
-            // in the case there is more than one word in tag
-            splited = tag.split(" ")
-            if (splited.length > 1){
-                temp = ""
-                for (let i = 0; i < splited.length; i++) { 
-                   if(i ==splited.length || i ==0){
-                    temp += splited[i]
-                   }else{
-                    temp += "[^a-zA-Z\d]" + splited[i]
-                   }
-                }
-                tag = temp
-            }
-
-            var tagColorDic = localStorage['colorDic']
-            var colorList = localStorage['colorList']
-            var isConstColor = false;
             
-            tagColorDic = JSON.parse(tagColorDic);
-            colorList = JSON.parse(colorList);
-
-            color = tagColorDic[tag.toLowerCase()]
-            if (color == null){
-                // After 20 tags we use a constant color
-                color = "#fa9fb5";
-                isConstColor = true;
+            if(action=='add'){
+                tags = tag.split("|")
+                tags_dic[tags[0]] = tags[1]
             }
-            if (second == true && !isConstColor){
-
-                colorList.push(color)
-                delete tagColorDic[tag.toLowerCase()]
-
-                localStorage['colorList'] = JSON.stringify(colorList);
-                localStorage['colorDic'] = JSON.stringify(tagColorDic);
-
+            if(action=='del'){
+                tags = tag.split("|")
+                delete tags_dic[tags[0]]
             }
-        
-            const markTag = "<mark style=\"background: " +color.replace("(", "\\(").replace(")", "\\)") +"!important\">"    
-            var query = new RegExp("("+markTag+tag+")", "gim");   
-            cases = textarea.html().match(query)
-            if (cases !=null){
-                for (let i = 0; i < cases.length; i++) { 
-                    t = cases[i].replace(markTag.replace("\\(", "(").replace("\\)",")"),"");
-                    t = t.replace("</mark>","");
-                    newtext= textarea.html().replace(cases[i], t);    
-                    textarea.html(newtext); 
-                }
+            
+            if (Object.keys(tags_dic).length > 0){
+               var cooked_text = get_cooked_text(textarea.text(), tags_dic)
+               textarea.html(cooked_text);
+            }else{
+                textarea.html(textarea.text());
             }
         }
+
 
         // TAGIFY
         var input = document.querySelector('input[name=tags_words]'),
@@ -480,13 +424,13 @@
 
         function transformTag( tagData ){
             var tags = tagData["value"].split("|")
-
             if (tags.length > 1) {
                 tagData.color = tags[1].replaceAll(".",",");
                 tagData.value = tags[0];
                 const value = tagData.value +"|"+tagData.color
-                highlight_tags("#left-doc", value)
-                highlight_tags("#right-doc", value)
+            
+                manage_tags("#left-doc", value, 'add')
+                manage_tags("#right-doc", value, 'add')
             } else{
                 tagData.color = getTagColor(tags[0]);
             }
@@ -516,9 +460,8 @@
                 response.json()
             )
             .then(data => {
-                highlight_tags("#left-doc", value)
-                highlight_tags("#right-doc", value)
-
+                manage_tags("#left-doc", value, 'add')
+                manage_tags("#right-doc", value, 'add')
             });
         })
 
@@ -542,8 +485,8 @@
             })
             .then(response => response.json())
             .then(data => {
-                dehighlight_tags("#left-doc", value, false)
-                dehighlight_tags("#right-doc", value, true)
+                manage_tags("#left-doc", value, 'del')
+                manage_tags("#right-doc", value, 'del')
             });
         })
 

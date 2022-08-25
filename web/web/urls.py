@@ -20,7 +20,6 @@ from topic.api import add_tag, remove_tag, update_font_size
 from document.api import add_highlight, remove_highlight
 
 urlpatterns = [
-    # path('', include('core.urls', namespace='core')),
     path('', include('core.urls', namespace='core')),
     path('topic/', include('topic.urls', namespace='topic')),
     path('judgment/', include('judgment.urls', namespace='judgment')),
