@@ -228,8 +228,8 @@
         
 
         $("#left-doc").html(
-                get_cooked_text($("#left-doc").text(), tags_dic, left_highlight_list)
-            );
+            get_cooked_text($("#left-doc").text(), tags_dic, left_highlight_list)
+        );
             
         $("#right-doc").html(
             get_cooked_text($("#right-doc").text(), tags_dic, right_highlight_list)
@@ -573,6 +573,7 @@
                 if(target2=="#left-doc"){
                     left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
                     cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, left_highlight_list)
+                    console.log(left_highlight_list)
                 }
                 $(target2).html(cooked_text)    
 

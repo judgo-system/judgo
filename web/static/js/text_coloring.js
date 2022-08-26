@@ -36,6 +36,9 @@ function get_tags_range(text, raw_tags){
 }
 
 function get_flat_tags(cooked_tags){
+    if (cooked_tags.length == 0){
+        return []
+    }
     var flat_tags = []
     flat_tags.push(cooked_tags[0])
     
@@ -99,18 +102,23 @@ function update_highlight_list(highlight_list, start, end){
     var index = -1
     var action = ""
     for(let i=0; i< highlight_list.length; i++){
-        if (highlight_list[i][0] < start && highlight_list[i][1] > end){ 
+        if (highlight_list[i][0] < start && highlight_list[i][1] > end){             
             highlight_list.push([highlight_list[i][0], start, color])
             highlight_list.push([end, highlight_list[i][1], color])
-            index = i
             action = "delete"
-            break
+        }
+        if (highlight_list[i][0] == start && highlight_list[i][1] > end){ 
+            
+            highlight_list.push([end, highlight_list[i][1], color])
+            action = "delete"
         }
         if (highlight_list[i][0] == start && highlight_list[i][1] == end){ 
-            index = i;
             action = "delete"
-            break;
-        }        
+        }    
+        if (action =="delete"){
+            index = i
+            break
+        }    
     }
     if (index != -1){
         highlight_list.splice(index, 1)           
@@ -165,12 +173,14 @@ function get_cooked_text(text, raw_tags, flat_highlights){
     var flat_tags = []
     if(Object.keys(raw_tags).length != 0){
         var cooked_tags =  get_tags_range(text, raw_tags)
+        console.log(cooked_tags)
         flat_tags = get_flat_tags(cooked_tags)
     }
 
     if(flat_tags.length ==0 && flat_highlights.length ==0){
         return text
     }
+    console.log(flat_tags)
     var flat_element = get_flat_html_elements(flat_highlights, flat_tags)
     var cooked_text = ingest_tags(text, flat_element)
     return cooked_text
