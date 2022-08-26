@@ -21,7 +21,7 @@
     
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 
-    <script type="text/javascript" src="{% static 'js/tag.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/text_coloring.js' %}"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
@@ -120,8 +120,7 @@
                     </h2>
                 </div>
                 {% autoescape off %}
-                <div class="document-content">
-                    <p id="left-doc" class="editable-doc" >{{ left_txt }}</p>
+                <div class="document-content"><p id="left-doc" class="editable-doc">{{left_txt}}</p>
                 </div>
                 {% endautoescape %} 
                 
@@ -195,7 +194,50 @@
     <!-- JavaScript Block -->
     <script>
 
+
+        var left_highlights = "{{ highlight_left_txt }}".split("||")
+        var right_highlights = "{{ highlight_right_txt }}".split("||")
+        var left_highlight_list = []
+        var right_highlight_list = []
+        
+        for(i=0;i < left_highlights.length;i++){
+            if(left_highlights[i] != "None" && left_highlights[i] != ""){
+                var temp = left_highlights[i].split(",")
+                left_highlight_list.push([Number(temp[0]), Number(temp[1]), temp[2]])
+            }  
+        }
+
+
+        for(i=0;i < right_highlights.length;i++){
+            if(right_highlights[i] != "None"  && right_highlights[i] != ""){
+            
+            var temp = right_highlights[i].split(",")
+            right_highlight_list.push([Number(temp[0]), Number(temp[1]), temp[2]])
+            }
+        }
+        
+        var raw_tags = "{{ highlights }}".split(",")
+        var tags_dic = {}
+
+        for(let i=0; i < raw_tags.length; i++){
+            tags = raw_tags[i].split("|")
+            if (tags[0] !==""){
+                tags_dic[tags[0]] = tags[1]
+            }
+        }
+        
+
+        $("#left-doc").html(
+                get_cooked_text($("#left-doc").text(), tags_dic, left_highlight_list)
+            );
+            
+        $("#right-doc").html(
+            get_cooked_text($("#right-doc").text(), tags_dic, right_highlight_list)
+        );
+
         $(function (){
+
+
             $('.nav').hide(); 
             $('.menu-btn').click(function (){ 
                 $('.nav').toggle(300);
@@ -255,15 +297,15 @@
             var right_doc_highlights = "";
             var left_doc_highlights = "";
             
-            left_doc_highlights = document.getElementById('left-doc').innerHTML.
-                    replace(/<mark.*?>/ig,'').
-                    replace(/<\/mark>/ig,'');
 
-
-
-            right_doc_highlights = document.getElementById('right-doc').innerHTML.
-                    replace(/<mark.*?>/ig,'').
-                    replace(/<\/mark>/ig,'');
+            for (i=0; i< left_highlight_list.length;i++){
+                left_doc_highlights += left_highlight_list[i] +"||"
+            }
+            
+            for (i=0; i< right_highlight_list.length;i++){
+                right_doc_highlights += right_highlight_list[i] +"||"
+            }
+            
 
             var data = {"highlight": left_doc_highlights}
             $.ajax
@@ -306,6 +348,7 @@
                 },
             });
             
+
             var element = document.getElementById("left-doc");
             style = window.getComputedStyle(element, null).getPropertyValue('font-size');
             currentSize = parseFloat(style);
@@ -333,19 +376,8 @@
             });
         })
 
-        
 
-
-        var raw_tags = "{{ highlights }}".split(",")
-        var tags_dic = {}
-        for(let i=0; i < raw_tags.length; i++){
-            tags = raw_tags[i].split("|")
-            if (tags[0] !==""){
-                tags_dic[tags[0]] = tags[1]
-            }
-        }
-
-        function manage_tags(search_area, tag, action){
+        function manage_tags(search_area, tag, action, highlight_list){
             
             var textarea = $(search_area);    
             
@@ -359,7 +391,7 @@
             }
             
             if (Object.keys(tags_dic).length > 0){
-               var cooked_text = get_cooked_text(textarea.text(), tags_dic)
+               var cooked_text = get_cooked_text(textarea.text(), tags_dic, highlight_list)
                textarea.html(cooked_text);
             }else{
                 textarea.html(textarea.text());
@@ -377,7 +409,6 @@
         })
         
         const colorGlobalList = [
-
             "#fb8072","#80b1d3", "#fdb462", "#b3de69", "#fccde5",
             "#fbb4ae", "#b3cde3", "#ccebc5", "#decbe4", "#fed9a6",
             "#e5d8bd", "#fddaec", "#8dd3c7", "#bebada", "#bc80bd",
@@ -423,14 +454,15 @@
         }
 
         function transformTag( tagData ){
+            
             var tags = tagData["value"].split("|")
             if (tags.length > 1) {
                 tagData.color = tags[1].replaceAll(".",",");
                 tagData.value = tags[0];
                 const value = tagData.value +"|"+tagData.color
             
-                manage_tags("#left-doc", value, 'add')
-                manage_tags("#right-doc", value, 'add')
+                manage_tags("#left-doc", value, 'add', left_highlight_list)
+                manage_tags("#right-doc", value, 'add', right_highlight_list)
             } else{
                 tagData.color = getTagColor(tags[0]);
             }
@@ -460,8 +492,8 @@
                 response.json()
             )
             .then(data => {
-                manage_tags("#left-doc", value, 'add')
-                manage_tags("#right-doc", value, 'add')
+                manage_tags("#left-doc", value, 'add', left_highlight_list)
+                manage_tags("#right-doc", value, 'add', right_highlight_list)
             });
         })
 
@@ -485,209 +517,74 @@
             })
             .then(response => response.json())
             .then(data => {
-                manage_tags("#left-doc", value, 'del')
-                manage_tags("#right-doc", value, 'del')
+                manage_tags("#left-doc", value, 'del', left_highlight_list)
+                manage_tags("#right-doc", value, 'del', right_highlight_list)
             });
         })
 
         
         // New Highlighting Method!
 
+        function empty_selection(){
+            if (window.getSelection) {
+                if (window.getSelection().empty) { 
+                    window.getSelection().empty();
+                } else if (window.getSelection().removeAllRanges) {  
+                    window.getSelection().removeAllRanges();
+                }    
+            } else if (document.selection) { 
+                document.selection.empty();
+            }
+        }
 
-        var target;
-        var el = document.getElementById("test");
-
+        var target = ""
         $(".editable-doc").mousedown(function (e1) {
-            target = e1.target
-            mouseXPosition = e1.pageX; //register the mouse down position
-            
+            if (e1.target.id=="left-doc" || e1.target.parentNode.id=="left-doc"){
+                target = "#left-doc"
+            }
+            if (e1.target.id=="right-doc" || e1.target.parentNode.id=="right-doc"){
+                target = "#right-doc"
+            }
         });
 
         $(".editable-doc").mouseup(function (e2) {
             
-            if (e2.target != target){
-                if (window.getSelection) {
-                    if (window.getSelection().empty) { 
-                        window.getSelection().empty();
-                    } else if (window.getSelection().removeAllRanges) {  
-                        window.getSelection().removeAllRanges();
-                    }
-                    } else if (document.selection) { 
-                    document.selection.empty();
-                }
+            var target2 = ""
+            
+            if (e2.target.id=="left-doc" || e2.target.parentNode.id=="left-doc" ){
+                target2 = "#left-doc"
+            }
+            if (e2.target.id=="right-doc" || e2.target.parentNode.id=="right-doc"){
+                target2 = "#right-doc"
+            }
+
+            if (target2 != target){
+                empty_selection()
                 return;
             }
-            var highlighted = false;
+
             var selection = window.getSelection();
             var selectedText = selection.toString();
-            var range = window.getSelection().getRangeAt(0)
-            var startPoint = window.getSelection().getRangeAt(0).startOffset;
-            var endPoint = window.getSelection().getRangeAt(0).endOffset;
-            var anchorTag = selection.anchorNode.parentNode;
-            var focusTag = selection.focusNode.parentNode;
-            
-            var pos = getCaretCharacterOffsetWithin(target);
-            
-            
-            
-            var rangeStr = (pos - selectedText.length) +"-"+pos
 
-            if ((e2.pageX - mouseXPosition) < 0) {
-                focusTag = selection.anchorNode.parentNode;
-                anchorTag = selection.focusNode.parentNode;
-            }
-            if (selectedText.length === (endPoint - startPoint)) {
-                highlighted = true;
-                if (anchorTag.className !== "highlight") {
-                    highlightSelection(rangeStr);
-                } else {
-                    pos = getCaretCharacterOffsetWithin(target.parentNode);
-                    anch_value = $(anchorTag).attr("value").split("-")
-
-                    rangeStr = pos +"-"+anch_value[1]
-
-                    var afterText = selectedText + "<span class = 'highlight' value="+rangeStr+ ">" + anchorTag.innerHTML.substr(endPoint) + "</span>";
-                    anchorTag.innerHTML = anchorTag.innerHTML.substr(0, startPoint);
-                    anchorTag.insertAdjacentHTML('afterend', afterText);
-                    anchorTag.setAttribute("value", anch_value[0]+"-"+ ((pos - selectedText.length)))
-
+            var endpos = getCaretCharacterOffsetWithin(e2.target.parentNode);
+            
+            if (endpos-selectedText.length != endpos){  
+                var cooked_text = ""
+                if(target2=="#right-doc"){
+                    right_highlight_list = update_highlight_list(right_highlight_list, endpos-selectedText.length, endpos)
+                    cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, right_highlight_list)
                 }
-
-            }else{
-                if(anchorTag.className !== "highlight" && focusTag.className !== "highlight"){
-                    highlightSelection(rangeStr);  
-                    highlighted = true;
-
-                } 
-            }
-
-            if (anchorTag.className === "highlight" && focusTag.className === 'highlight' && !highlighted) {
-                highlighted = true;
-                pos = getCaretCharacterOffsetWithin(target.parentNode);
-                rangeStr = (pos - selectedText.length) +"-"+pos
-                var afterHtml = anchorTag.innerHTML.substr(startPoint);
-                var outerHtml = selectedText.substr(afterHtml.length, selectedText.length - endPoint - afterHtml.length);
-                var anchorInnerhtml = anchorTag.innerHTML.substr(0, startPoint);
-                var focusInnerHtml = focusTag.innerHTML.substr(endPoint);
-                var focusBeforeHtml = focusTag.innerHTML.substr(0, endPoint);
-                selection.deleteFromDocument();
-                anchorTag.innerHTML = anchorInnerhtml;
-                focusTag.innerHTml = focusInnerHtml;
-                focusTag.setAttribute("value", pos + "-"+  (pos + focusTag.innerHTML.length));
-                
-                var anchorafterHtml = afterHtml + outerHtml + focusBeforeHtml;
-
-                anchorTag.insertAdjacentHTML('afterend', anchorafterHtml);
-                anch_value = $(anchorTag).attr("value").split("-")
-                anchorTag.setAttribute("value", anch_value[0]+"-"+ ((pos - selectedText.length)))
-            }
-
-            if (anchorTag.className === "highlight" && !highlighted) {
-                highlighted = true;
-                pos = getCaretCharacterOffsetWithin(target.parentNode);
-                rangeStr = (pos - selectedText.length) +"-"+pos
-
-                var Innerhtml = anchorTag.innerHTML.substr(0, startPoint);
-                var afterHtml = anchorTag.innerHTML.substr(startPoint);
-                var outerHtml = selectedText.substr(afterHtml.length, selectedText.length);
-                selection.deleteFromDocument();
-                anchorTag.innerHTML = Innerhtml;
-                anchorTag.insertAdjacentHTML('afterend', afterHtml + outerHtml);
-                
-            }
-            
-            if (focusTag.className === 'highlight' && !highlighted) {
-                highlighted = true;
-                pos = getCaretCharacterOffsetWithin(target.parentNode);
-                rangeStr = (pos - selectedText.length) +"-"+pos
-
-                var beforeHtml = focusTag.innerHTML.substr(0, endPoint);
-                var outerHtml = selectedText.substr(0, selectedText.length - beforeHtml.length);
-                selection.deleteFromDocument();
-                focusTag.innerHTml = focusTag.innerHTML.substr(endPoint);
-                outerHtml += beforeHtml;
-                focusTag.insertAdjacentHTML('beforebegin', outerHtml );
-            }
-            if (!highlighted) {
-                highlightSelection(rangeStr);
-            }
-            var doc_highlights = "";
-
-            $('.highlight').each(function(e4){
-                if($(this).html() == ''){  
-                    $(this).remove();
+                if(target2=="#left-doc"){
+                    left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
+                    cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, left_highlight_list)
                 }
-            });
-            
-            selection.removeAllRanges();
-            selection.empty();
-            
+                $(target2).html(cooked_text)    
+
+            }
+            empty_selection()            
         });
 
-        function highlightSelection(rangeStr) {
-            var selection;
-
-            //Get the selected stuff
-            if (window.getSelection)
-                selection = window.getSelection();
-            else if (typeof document.selection != "undefined")
-                selection = document.selection;
-
-            //Get a the selected content, in a range object
-            var range = selection.getRangeAt(0);
-
-            //If the range spans some text, and inside a tag, set its css class.
-            if (range && !selection.isCollapsed) {
-                if (selection.anchorNode.parentNode == selection.focusNode.parentNode) {
-                    var span = document.createElement('span');
-                    span.className = 'highlight';
-                    span.setAttribute("value", rangeStr); 
-                    span.textContent = selection.toString();
-                    selection.deleteFromDocument();
-                    range.insertNode(span);
-                }
-            }
-        }
-
-        // var flag = 0;
-        // var target;
-        // $(".editable-doc").mousedown(function (e1) {
-        //     flag = 0;
-        //     target = e1.target;
-
-        // });
-
-        // $(".editable-doc").mousemove(function (e1) {
-        //     flag = 1;
-        // });
-
-        // $(".editable-doc").mouseup(function (e1) {
-        //     if (e1.target != target){
-        //         return;
-        //     }
-        //     if (flag === 1) {
-        //         getSelText();
-        //     }
-        // });
-
-        // function getSelText() {
-        //     var sel = window.getSelection ? window.getSelection() : document.selection.createRange(); // FF : IE
-        //     if (sel.getRangeAt) { 
-        //         var range = sel.getRangeAt(0);
-                
-        //         var newNode = document.createElement("span");
-        //         newNode.setAttribute('class', 'highlighter');
-        //         newNode.textContent = sel.toString();
-
-        //         sel.deleteFromDocument();
-        //         range.insertNode(newNode);
-        //     } else { 
-        //         sel.pasteHTML('<span class="highlighter">' + sel.htmlText + '</span>');
-
-        //     }
-        // }
-
-
+        
 
     // // DragBar
         var left = document.getElementById('drag-left');
@@ -716,7 +613,6 @@
         document.addEventListener('mouseup', function(e) {
             isHandlerDragging = false;
         });
-
 
 
         // FONT CHANGE
