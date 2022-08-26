@@ -390,12 +390,8 @@
                 delete tags_dic[tags[0]]
             }
             
-            if (Object.keys(tags_dic).length > 0){
-               var cooked_text = get_cooked_text(textarea.text(), tags_dic, highlight_list)
-               textarea.html(cooked_text);
-            }else{
-                textarea.html(textarea.text());
-            }
+            var cooked_text = get_cooked_text(textarea.text(), tags_dic, highlight_list)
+            textarea.html(cooked_text);
         }
 
 
