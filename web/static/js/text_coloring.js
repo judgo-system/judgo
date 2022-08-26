@@ -106,15 +106,20 @@ function update_highlight_list(highlight_list, start, end){
             highlight_list.push([highlight_list[i][0], start, color])
             highlight_list.push([end, highlight_list[i][1], color])
             action = "delete"
-        }
-        if (highlight_list[i][0] == start && highlight_list[i][1] > end){ 
+        } else if (highlight_list[i][0] == start && highlight_list[i][1] > end){ 
             
             highlight_list.push([end, highlight_list[i][1], color])
             action = "delete"
-        }
-        if (highlight_list[i][0] == start && highlight_list[i][1] == end){ 
+        } else if (highlight_list[i][1] == start && highlight_list[i][1] < end){ 
+            
+            highlight_list.push([highlight_list[i][0], end, color])
             action = "delete"
-        }    
+        } else if (highlight_list[i][0] < start && highlight_list[i][1] == end){ 
+            highlight_list.push([highlight_list[i][0], start, color])
+            action = "delete"
+        } else if (highlight_list[i][0] == start && highlight_list[i][1] == end){ 
+            action = "delete"
+        }     
         if (action =="delete"){
             index = i
             break
@@ -173,14 +178,12 @@ function get_cooked_text(text, raw_tags, flat_highlights){
     var flat_tags = []
     if(Object.keys(raw_tags).length != 0){
         var cooked_tags =  get_tags_range(text, raw_tags)
-        console.log(cooked_tags)
         flat_tags = get_flat_tags(cooked_tags)
     }
 
     if(flat_tags.length ==0 && flat_highlights.length ==0){
         return text
     }
-    console.log(flat_tags)
     var flat_element = get_flat_html_elements(flat_highlights, flat_tags)
     var cooked_text = ingest_tags(text, flat_element)
     return cooked_text

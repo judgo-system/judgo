@@ -546,7 +546,6 @@
         $(".editable-doc").mouseup(function (e2) {
             
             var target2 = ""
-            
             if (e2.target.id=="left-doc" || e2.target.parentNode.id=="left-doc" ){
                 target2 = "#left-doc"
             }
@@ -563,7 +562,8 @@
             var selectedText = selection.toString();
 
             var endpos = getCaretCharacterOffsetWithin(e2.target.parentNode);
-            
+            // console.log(endpos-selectedText.length, endpos)
+
             if (endpos-selectedText.length != endpos){  
                 var cooked_text = ""
                 if(target2=="#right-doc"){
@@ -573,7 +573,6 @@
                 if(target2=="#left-doc"){
                     left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
                     cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, left_highlight_list)
-                    console.log(left_highlight_list)
                 }
                 $(target2).html(cooked_text)    
 
