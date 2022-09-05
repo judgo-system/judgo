@@ -62,8 +62,15 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
             left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
             right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
-            left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
-            right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
+
+            left_response, left_created = Response.objects.get_or_create(user=self.request.user, document=left_doc)
+            right_response, right_created = Response.objects.get_or_create(user=self.request.user, document=right_doc)
+
+            if left_created:
+                context['new_left'] = 'NEW '
+            
+            if right_created:
+                context['new_right'] = 'NEW '
 
 
             context['doc_left'] = left_response.document
@@ -78,16 +85,14 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
 
-            # if left_response.highlight:
+
             context['highlight_left_txt'] = left_response.highlight 
-            # else:
             context['left_txt'] = f"Title: {left_response.document.title}"\
                     f"\nDocument ID: {left_response.document.uuid}\n\n"\
                     f"{left_response.document.content}"
-                
-            # if right_response.highlight:
+
+
             context['highlight_right_txt'] = right_response.highlight
-            # else:
             context['right_txt'] = f"Title: {right_response.document.title}"\
                     f"\nDocument ID: {right_response.document.uuid}\n\n"\
                     f"{right_response.document.content}"

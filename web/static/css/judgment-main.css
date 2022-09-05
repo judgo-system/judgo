@@ -498,6 +498,7 @@ body {
   border-left: 2px solid white;
 }
 .document-url {
+  display: flex;
   height: 40px;
   background: #aab7aa;  
   padding: 10px;
@@ -618,5 +619,12 @@ strong::before {
 .editable-doc{
   height: 100%;
 }
+
+.new-document-label{
+  font-style: italic;
+  text-shadow: 2px 2px 5px grey;
+  margin-right: 5px;
+}
+
 
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */
