@@ -1,4 +1,28 @@
 
+function getCaretCharacterOffsetWithin(element) {
+    var caretOffset = 0;
+    var doc = element.ownerDocument || element.document;
+    var win = doc.defaultView || doc.parentWindow;
+    var sel;
+    if (typeof win.getSelection != "undefined") {
+        sel = win.getSelection();
+        if (sel.rangeCount > 0) {
+        var range = win.getSelection().getRangeAt(0);
+        var preCaretRange = range.cloneRange();
+        preCaretRange.selectNodeContents(element);
+        preCaretRange.setEnd(range.endContainer, range.endOffset);
+        caretOffset = preCaretRange.toString().length;
+        }
+    } else if ((sel = doc.selection) && sel.type != "Control") {
+        var textRange = sel.createRange();
+        var preCaretTextRange = doc.body.createTextRange();
+        preCaretTextRange.moveToElementText(element);
+        preCaretTextRange.setEndPoint("EndToEnd", textRange);
+        caretOffset = preCaretTextRange.text.length;
+    }
+    return caretOffset;
+}
+
 
 function ingest_tags(text, cooked_tags){
 
@@ -63,7 +87,7 @@ function get_flat_tags(cooked_tags){
 
 
 function get_flat_highlight(cooked_highlight){
-    
+    // In this function we merge highlited range
     cooked_highlight = cooked_highlight.sort(function(a, b) {
         if (a[0] == b[0]) {
             return b[1] - a[1];
@@ -139,12 +163,14 @@ function update_highlight_list(highlight_list, start, end){
 
 
 function get_flat_html_elements(highlights, tags){
-    
+    // In this function, tags elements have higher priority over highlighting by mouse
     var cooked_highlight = []
-    cooked_highlight.push(...highlights)
+    cooked_highlight.push(...JSON.parse(JSON.stringify(highlights)))
+ 
     if (tags.length != 0){
         cooked_highlight.push(...tags)
     }
+
     cooked_highlight = cooked_highlight.sort(function(a, b) {
         if (a[0] == b[0]) {
             return b[1] - a[1];
@@ -160,9 +186,23 @@ function get_flat_html_elements(highlights, tags){
         var start = cooked_highlight[i][0]
         var end = cooked_highlight[i][1]
         if (last_element[1] >= end){
-            // next interval is inside or equal to the previous interval so it will be eaten by the larger one.
-            continue
+            if(last_element[2]!='yellow'){
+                // next interval is inside or equal to the previous interval so it will be eaten by the larger one.
+                continue
+            }
+            else{
+                var extended_highlight = [end, last_element[1], last_element[2]] 
+                flat_list[flat_list.length-1][1] = start
+
+                flat_list.push(cooked_highlight[i])
+                if( end < extended_highlight[1]){
+                    flat_list.push(extended_highlight)
+                    
+                }
+                continue
+            }
         }
+        
         if(last_element[1] > start){
             flat_list[flat_list.length-1][1] = start
         }
@@ -187,6 +227,18 @@ function get_cooked_text(text, raw_tags, flat_highlights){
     var flat_element = get_flat_html_elements(flat_highlights, flat_tags)
     var cooked_text = ingest_tags(text, flat_element)
     return cooked_text
+}
+
+
+
+// FONT CHANGE FUNCTION
+function changeFontSize(direction, element){
+    // get an element and change its font according to given direction
+    // direction could be negative or positive for increasing and decreading font respectively.
+    var element = document.getElementById(element);
+    style = window.getComputedStyle(element, null).getPropertyValue('font-size');
+    currentSize = parseFloat(style);
+    element.style.fontSize = (currentSize + direction) + 'px';
 }
 
 // function get_cooked_text(text, raw_tags, raw_highlight){
