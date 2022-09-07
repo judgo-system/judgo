@@ -140,4 +140,5 @@ data/
 # Django Static folders
 web/staticfiles/
 web/fixtures/data
+web/fixtures/trec2022*
 .DS_Store
