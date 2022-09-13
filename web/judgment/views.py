@@ -1,17 +1,13 @@
-from ast import literal_eval
-import html
 import logging
-from tracemalloc import start
-from operator import itemgetter
-
+import random
 from braces.views import LoginRequiredMixin
-
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.conf import settings
 
 from document.models import Document, Response
-from judgment.models import Judgment, JudgingChoices
+from judgment.models import Judgment, JudgingChoices, JudgmentConsistency
 from interfaces import pref
 
 logger = logging.getLogger(__name__)
@@ -50,38 +46,18 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 return context
 
             self.task_id = prev_judge.task.id
-            (left, right) = pref.get_documents(prev_judge.before_state)
-            
+
             context['topic'] = prev_judge.task.topic
             context['font_size'] = prev_judge.task.font_size
-
-            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
-            context['state_object'] = pref.get_str(prev_judge.before_state)
+            # if there is no tag is we don't need to fill it out.
+            if prev_judge.task.tags:
+                # modifyed tag inorder to work according Tagify information
+                context['highlights'] = prev_judge.task.tags
             
 
-            left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
-            right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
-
-            left_response, left_created = Response.objects.get_or_create(user=self.request.user, document=left_doc)
-            right_response, right_created = Response.objects.get_or_create(user=self.request.user, document=right_doc)
-
-            if left_created:
-                context['new_left'] = 'NEW '
+            (context, left_response, right_response) = self.get_documents_related_context(context, self.request.user, prev_judge)
             
-            if right_created:
-                context['new_right'] = 'NEW '
-
-
-            context['doc_left'] = left_response.document
-            context['doc_right'] = right_response.document
-
-            prev_judge.left_response = left_response
-            prev_judge.right_response = right_response
-            prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
-
-            prev_judge.save()
-
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
 
@@ -97,14 +73,49 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                     f"\nDocument ID: {right_response.document.uuid}\n\n"\
                     f"{right_response.document.content}"
 
-
-
-            # if there is no tag is we don't need to fill it out.
-            if prev_judge.task.tags:
-                # modifyed tag inorder to work according Tagify information
-                context['highlights'] = prev_judge.task.tags
-        
         return context
+
+
+    def get_documents_related_context(self, context, user, prev_judge):
+
+        if prev_judge.is_tested:
+            context["progress_bar_width"] = pref.get_progress_count(prev_judge.parent.after_state)
+        
+            left_response = prev_judge.left_response 
+            right_response = prev_judge.right_response 
+
+            context['left_id'] = left_response.document.uuid
+            context['right_id'] = right_response.document.uuid
+
+        else:
+            (left, right) = pref.get_documents(prev_judge.before_state)
+            
+            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
+
+            left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
+            right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
+
+            left_response, left_created = Response.objects.get_or_create(user=user, document=left_doc)
+            right_response, right_created = Response.objects.get_or_create(user=user, document=right_doc)
+
+            if left_created:
+                context['new_left'] = 'NEW '
+            
+            if right_created:
+                context['new_right'] = 'NEW '
+
+
+            prev_judge.left_response = left_response
+            prev_judge.right_response = right_response
+            prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
+
+            prev_judge.save()
+
+
+        context['doc_left'] = left_response.document
+        context['doc_right'] = right_response.document
+
+        return (context, left_response, right_response)
 
 
     def post(self, request, *args, **kwargs):
@@ -144,9 +155,25 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         """
         action, after_state = JudgmentView.evaluate_after_state(requested_action, prev_judge.before_state)
 
+        if prev_judge.is_tested:
+            judgment = self.handle_test_judgment(prev_judge, action)
+            user.latest_judgment = judgment
+            # user.is_tested = False
+            user.save()
+            
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {"user_id" : user.id, "judgment_id": judgment.id}
+                )
+            )
+
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
             logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+            prev_judge.has_changed = True
+            prev_judge.save()
+
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -191,6 +218,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         if prev_judge.is_round_done:
             logger.info(f'One round is finished! you are going to the next step!')
 
+        # for deep learning trec we want a test judgment feature
+        prev_judge, is_test = self.get_fake_test_judgment(user, prev_judge)
+        
+
         judgement = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -198,15 +229,78 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 parent=prev_judge
             )
 
-        user.latest_judgment = judgement
-        user.save()
-        return HttpResponseRedirect(
+        if is_test:
+            user.latest_judgment = prev_judge
+            user.save() 
+            return HttpResponseRedirect(
             reverse_lazy(
                 'judgment:judgment', 
-                kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+                kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
             )
         )
+        else: 
+            user.latest_judgment = judgement
+            user.save()
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+                )
+            )
 
+
+
+    def get_fake_test_judgment(self, user, prev_judge):
+
+        if settings.TREC_NAME != "deep_learning":
+            return prev_judge, False
+
+        is_test = False
+        judgement_list = Judgment.objects.filter(
+                task=prev_judge.task,
+                has_changed=False,
+                is_tested=False, 
+            ).exclude(
+                left_response=None,
+            ).exclude(
+                action=None,
+            )
+
+        
+        # test when there is we meet next interval
+        if len(judgement_list) < settings.JUDGMENT_TEST_INTERVAL or len(judgement_list) % settings.JUDGMENT_TEST_INTERVAL!=0:
+            return prev_judge, is_test
+
+        is_test = True
+        
+        tmp_judge = random.choice(judgement_list)
+        tmp_judge.parent = prev_judge
+        tmp_judge.best_answers = prev_judge.best_answers
+
+        prev_judge = tmp_judge
+        prev_judge.pk = None
+        
+        prev_judge.is_tested = True
+        prev_judge.save()
+        # user.is_tested = True
+        user.save()
+        
+        return prev_judge, is_test 
+    
+
+    def handle_test_judgment(self, prev_judge, action):
+        
+        is_consistent = (prev_judge.action == action)
+        JudgmentConsistency.objects.create(
+            user=prev_judge.user,
+            task=prev_judge.task,
+            judgment = prev_judge,
+            is_consistent=is_consistent,
+        )
+        prev_judge.action = action
+        prev_judge.save()
+        judgment = Judgment.objects.filter(parent=prev_judge).first()
+        return judgment
 
     @staticmethod   
     def evaluate_after_state(requested_action, before_state):
@@ -228,39 +322,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
         return action, after_state
 
-
-    # @staticmethod 
-    # def highlight_document(text, highlight):
-    #     """
-    #     """
-        # text = highlight
-        # if not highlight:
-        #     return text
-
-        # highlights = highlight.split("|||")
-        # sorted_list = []
-        # for i, part in enumerate(highlights):
-        #     span = "|".join([i for i in part.split("|")[:-1]])
-        #     if len(span) < 3:
-        #         continue
-        #     startpoint, endpoint = part[len(span)+1:].split("-")
-        #     startpoint, endpoint = int(startpoint), int(endpoint)
-
-        #     sorted_list.append((startpoint, endpoint, span))
-
-        # highlights = sorted(sorted_list, key=itemgetter(0))
-        # offset = 0
-        # for startpoint, endpoint, highlight  in highlights:
-            
-        #     startpoint = startpoint + offset
-        #     endpoint = endpoint + offset
-        
-        #     html_tag = f"<span class = 'highlight' value={startpoint}-{endpoint}>"
-        #     offset += len(html_tag) + len("</span>")
-        #     text = text[:startpoint-1] + html_tag + highlight + "</span>" + text[endpoint-1:]
-        #     # text = text.replace(highlighted_part,
-        #     #  "<span class = 'highlight' value={}>{}</span>".format(f"{startpoint}-{endpoint}", highlighted_part))
-        # return highlight
 
     @staticmethod
     def append_answer(state, judgment):

@@ -43,6 +43,14 @@ class Judgment(models.Model):
     #  all documents sorted in the best_answers.
     is_complete = models.BooleanField(default=False)
 
+
+    # Indicate if user decided to change this or not!
+    has_changed = models.BooleanField(default=False)
+
+    # Indicate if this judgment is used for test or not!
+    is_tested = models.BooleanField(default=False)  
+
+
     left_response = models.ForeignKey(
         Response, on_delete=models.CASCADE, 
         related_name="left_response", null=True, blank=True
@@ -73,3 +81,24 @@ class Judgment(models.Model):
         return "(ID: {} USERNAME: {}, Topic{})".format(self.pk,
             self.user.username, self.task.topic
         )
+
+
+
+class JudgmentConsistency(models.Model):
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+
+    judgment = models.ForeignKey(Judgment, on_delete=models.CASCADE)
+    
+    # check if the current action is the same with the previous one.
+    is_consistent = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def __str__(self) -> str:
+        return f'(User:{self.user.username}, \
+            Topic:{self.task.topic.title}, \
+            Judgment:{self.judgment.id}, \
+            Is Consistent:  {self.is_consistent})'

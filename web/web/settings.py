@@ -258,7 +258,6 @@ STATICFILES_FINDERS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-# ]
+# Version of Application [deep_learning, health_misinformation]
+TREC_NAME = 'deep_learning'
+JUDGMENT_TEST_INTERVAL = 7
