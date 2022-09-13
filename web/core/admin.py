@@ -10,8 +10,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Task
 from document.models import Document
+from judgment.models import Judgment
 from topic.models import Topic
 from user.models import User
+
 from .actions import export_task_as_csv_action
 
 
@@ -26,8 +28,8 @@ class TaskAdmin(admin.ModelAdmin):
 
     actions = [export_task_as_csv_action("CSV Export", fields=['id', 'user__username'])]
 
-    list_display = ('id', 'view_user', 'view_topic', 'is_completed', 'num_ans', 'font_size',
-        'view_best_answer', 'tags', 'created_at')
+    list_display = ('id', 'view_user', 'view_topic', 'view_judgment_num', 'is_completed', 'num_ans', 
+        'view_best_answer', 'view_tags', 'created_at')
 
     list_filter = ['is_completed', 'user__username', 'created_at']
     search_fields = ['user__username', 'topic__uuid']
@@ -57,10 +59,28 @@ class TaskAdmin(admin.ModelAdmin):
         
         return format_html(admin_best_ans)
 
+
+    def view_tags(self, obj):
+        tags = ""
+        for tag in obj.tags.split(","):
+            tags+=tag.split('|')[0] + ","
+        return tags[:-1]
+    
+    def view_judgment_num(self, obj):
+        judgement_list = Judgment.objects.filter(
+                task=obj.id
+            )
+        test_judgment = judgement_list.exclude(is_tested=False)
+        return f"{len(judgement_list)} - {len(test_judgment)}"
+
+
+    
+
     view_user.short_description = "user"
     view_topic.short_description = "topic"
     view_best_answer.short_description = "Best Answer"
-
+    view_tags.short_description = "tags"
+    view_judgment_num.short_description = "judgment number[all|test]"
 
 
 
