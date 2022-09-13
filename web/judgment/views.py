@@ -1,5 +1,6 @@
 import logging
 import random
+from turtle import left
 from braces.views import LoginRequiredMixin
 from django.views import generic
 from django.http import HttpResponseRedirect
@@ -126,6 +127,26 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         elif 'left' in request.POST or 'right' in request.POST or 'equal' in request.POST:
             return self.handle_judgment_actions(request.user, request.user.latest_judgment, request.POST)
         
+        elif 'done_back' in request.POST:
+            print(':)))))))))')                
+            print(request.user.latest_judgment.id)
+            prev_judge = request.user.latest_judgment
+            prev_judge.is_round_done = False
+            prev_judge.is_complete = False
+            prev_judge.after_state = None
+            prev_judge.task.is_completed = False
+            prev_judge.task.best_answers = None
+            prev_judge.task.save()
+            prev_judge.save()
+
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {"user_id" : request.user.id, "judgment_id": prev_judge.id}
+                )
+            )
+
+
         return HttpResponseRedirect(reverse_lazy('core:home'))
 
 
@@ -178,7 +199,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 user=user,
                 task=prev_judge.task,
                 before_state=prev_judge.before_state,
-                parent=prev_judge.parent
+                parent=prev_judge.parent,
+                left_response=prev_judge.left_response,
+                right_response=prev_judge.right_response,
+                best_answers=prev_judge.parent.best_answers
             )
             
         logger.info(f"This user had action: {prev_judge.action} about judment {prev_judge.id}")

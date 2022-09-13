@@ -162,16 +162,20 @@
             <div class="modal-content">
                 <div class="modal-header" style="padding:35px 50px;">
                     <h3>This task is DONE!</h3>
+                    <p class="modal-sentence">If you want to go back to the previous judgment and change it, click on the back; otherwise, click on home.</p>
                 </div>
                 <div class="modal-body" style="padding:40px 50px;">
                     <form method='post'>
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success btn-block" name="back_home">
-                                Home
-                        </button>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-block" name="back_home">
+                                    Home
+                            </button>
+                            <button type="submit" class="btn btn-success btn-block" name="done_back">
+                                Back
+                            </button>
                     </form>
-                    </div>
                 </div>
+            </div>
         </div>
     </div>
     

@@ -455,7 +455,9 @@ body {
 .modal-sentence{
   margin-top: 10px;
   line-height: normal;
+  font-size: smaller;
 }
+
 
 
 .tag-container {

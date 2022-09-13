@@ -44,7 +44,6 @@ for file in os.listdir(path):
 
 print("3- Map document to topics")
 for doc, topic in topic_mappping.items():
-    print(doc, topic)
     try:
         document = Document.objects.get(uuid=doc)
         topic = Topic.objects.get(uuid=topic)

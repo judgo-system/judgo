@@ -74,8 +74,6 @@ class TaskAdmin(admin.ModelAdmin):
         return f"{len(judgement_list)} - {len(test_judgment)}"
 
 
-    
-
     view_user.short_description = "user"
     view_topic.short_description = "topic"
     view_best_answer.short_description = "Best Answer"

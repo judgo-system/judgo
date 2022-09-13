@@ -30,7 +30,7 @@ class Judgment(models.Model):
     before_state = models.BinaryField(verbose_name='Before State')
 
     # contain a pickle object of pref class after action
-    after_state = models.BinaryField(verbose_name='After State')
+    after_state = models.BinaryField(verbose_name='After State', blank=True, null=True)
 
 
     # # Indicate if it's the first judment by this user in this session for this question
