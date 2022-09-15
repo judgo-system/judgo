@@ -316,7 +316,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
         is_consistent = (prev_judge.action == action)
         JudgmentConsistency.objects.create(
-            user=prev_judge.user,
             task=prev_judge.task,
             judgment = prev_judge,
             is_consistent=is_consistent,

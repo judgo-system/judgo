@@ -1,8 +1,9 @@
+import collections
+from gc import collect
 import json
 import os
 from topic.models import Topic
 from document.models import Document
-
 
 
 # 1- prepare qrel file
@@ -10,12 +11,23 @@ topic_mappping = {}
 with open('fixtures/data/deep_learning/qrels.json', 'r') as f:
     data = json.load(f)
 for topic, documents in data.items():
+    docs_list = [[] for i in range(4)]
     for doc, value in documents.items():
-        if value !="0" and value !="1":
-            topic_mappping[doc] = topic
+        docs_list[int(value)].append(doc)
+    
+    count = 0
+    
+    for i in range(len(docs_list)-1, -1, -1):
+        docs = docs_list[i]
+        if count >= 20:
+            break
+        for d in docs:
+            topic_mappping[d] = topic
+        count += len(docs)
+    print(f"{topic} ==> {count}")
+    
 
-# print(topic_mappping)
-# 1= ingest topic
+# 2= ingest topic
 print("1-Ingest Topics")
 with open('fixtures/data/deep_learning/topics.json', 'r') as f:
     data = json.load(f)
@@ -29,7 +41,7 @@ with open('fixtures/data/deep_learning/topics.json', 'r') as f:
 
 
 
-# # 2- Ingest Document
+# 3- Ingest Document
 path = 'fixtures/data/deep_learning/docs'
 print("2-Ingest Documents")
 for file in os.listdir(path):

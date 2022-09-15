@@ -86,8 +86,6 @@ class Judgment(models.Model):
 
 class JudgmentConsistency(models.Model):
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
 
     judgment = models.ForeignKey(Judgment, on_delete=models.CASCADE)

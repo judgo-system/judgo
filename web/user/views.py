@@ -4,6 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import DetailView, RedirectView, UpdateView
 from django.utils.translation import gettext_lazy as _
+from django.views import generic
+from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+from core.models import Task
+from judgment.models import Judgment
 
 User = get_user_model()
 
@@ -39,3 +44,35 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
     def get_redirect_url(self):
         return reverse("user:detail", kwargs={"username": self.request.user.username})
+
+
+class UserProfile(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'profile.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(UserProfile, self).get_context_data(**kwargs)
+
+        context["username"] = self.request.user.username
+        context["email"] = self.request.user.email
+        
+        tasks = Task.objects\
+            .filter(user_id=self.request.user)
+
+        context["total_task"] = len(tasks)
+        tasks = tasks.exclude(is_completed=False)            
+        context["complete_task"] = len(tasks)
+
+        judgments = Judgment.objects\
+            .filter(user_id=self.request.user)
+
+        context["total_judgment"] = len(judgments)        
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+
+        if request.user.is_superuser:
+            return HttpResponseRedirect(reverse_lazy('admin:index'))
+
+        return super(UserProfile, self).get(self, request, *args, **kwargs)
+

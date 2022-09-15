@@ -64,14 +64,8 @@ class JudgmentAdmin(admin.ModelAdmin):
 
 @admin.register(JudgmentConsistency)
 class JudgmentConsistencyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'view_user', 'view_task', 'view_judgment', 'is_consistent', 'created_at'
-    )
-
-    search_fields = ['user__username']
-    
-    def view_user(self, obj):
-        url = reverse("admin:user_user_change", args=(obj.user.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.user.username)
+    list_display = ('id', 'view_task', 'view_judgment', 'is_consistent', 'created_at'
+    )    
 
     def view_task(self, obj):
         url = reverse("admin:core_task_change", args=(obj.task.id,))
@@ -86,6 +80,5 @@ class JudgmentConsistencyAdmin(admin.ModelAdmin):
         
         return format_html('<a href="{}">{} Judgment</a>', url, id)
 
-    view_user.short_description = "user"
     view_task.short_description = "task"
     view_judgment.short_description = "judgment"

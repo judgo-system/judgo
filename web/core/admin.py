@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import Task
 from document.models import Document
-from judgment.models import Judgment
+from judgment.models import Judgment, JudgmentConsistency
 from topic.models import Topic
 from user.models import User
 
@@ -28,7 +28,7 @@ class TaskAdmin(admin.ModelAdmin):
 
     actions = [export_task_as_csv_action("CSV Export", fields=['id', 'user__username'])]
 
-    list_display = ('id', 'view_user', 'view_topic', 'view_judgment_num', 'is_completed', 'num_ans', 
+    list_display = ('id', 'view_user', 'view_topic', 'view_consistency','view_judgment_num', 'is_completed', 'num_ans', 
         'view_best_answer', 'view_tags', 'created_at')
 
     list_filter = ['is_completed', 'user__username', 'created_at']
@@ -62,6 +62,8 @@ class TaskAdmin(admin.ModelAdmin):
 
     def view_tags(self, obj):
         tags = ""
+        if not obj.tags:
+            return ""
         for tag in obj.tags.split(","):
             tags+=tag.split('|')[0] + ","
         return tags[:-1]
@@ -73,13 +75,22 @@ class TaskAdmin(admin.ModelAdmin):
         test_judgment = judgement_list.exclude(is_tested=False)
         return f"{len(judgement_list)} - {len(test_judgment)}"
 
-
+    def view_consistency(self, obj):
+        judgement_list = JudgmentConsistency.objects.filter(
+                task=obj.id
+            )
+        consistent_judgment = judgement_list.exclude(is_consistent=False)
+        if not len(judgement_list):
+            return ""
+        
+        return f"{(len(consistent_judgment) * 100) // len(judgement_list) } %"
+    
     view_user.short_description = "user"
     view_topic.short_description = "topic"
     view_best_answer.short_description = "Best Answer"
     view_tags.short_description = "tags"
     view_judgment_num.short_description = "judgment number[all|test]"
-
+    view_consistency.short_description = "consistency"
 
 
     def get_urls(self):

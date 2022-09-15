@@ -1,0 +1,128 @@
+{% load i18n static has_group crispy_forms_tags  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="{% static 'css/profile-style.css' %}" />
+ 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <title>{{username}} profile</title>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row profile">
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <!-- SIDEBAR USERPIC -->
+                    <div class="profile-userpic">
+                        <img src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg" class="img-responsive" alt="">
+                    </div>
+                    <!-- END SIDEBAR USERPIC -->
+                    <!-- SIDEBAR USER TITLE -->
+                    <div class="profile-usertitle">
+                        <div class="profile-usertitle-name">
+                            {{username}}
+                        </div>
+                        <div class="profile-usertitle-job">
+                            {{email}}
+                        </div>
+                    </div>
+                    
+                    <!-- END SIDEBAR BUTTONS -->
+                    <!-- SIDEBAR MENU -->
+                    <div class="profile-usermenu">
+                        <ul class="nav">
+                            <li class="active">
+                                <a href="{% url 'core:home' %}">
+                                <i class="glyphicon glyphicon-home"></i>
+                                Home </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'account_logout' %}">
+                                <i class="glyphicon glyphicon-user"></i>
+                                Log out </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <i class="glyphicon glyphicon-flag"></i>
+                                Help </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- END MENU -->
+                   
+               </div>
+            </div>
+            <div class="col-md-9">
+                
+                <div class="profile-content">
+
+                   <div class="portlet light bordered">
+                        <div class="row list-separated profile-stat">
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <div class="uppercase profile-stat-title"> {{total_task}} </div>
+                                <div class="uppercase profile-stat-text"> Total Tasks </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <div class="uppercase profile-stat-title"> {{complete_task}} </div>
+                                <div class="uppercase profile-stat-text"> Completed Tasks </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <div class="uppercase profile-stat-title"> {{total_judgment}} </div>
+                                <div class="uppercase profile-stat-text"> Number of Judgments </div>
+                            </div>
+                        </div>                     
+                    </div>
+                </div>
+                
+
+
+                <!-- <div class="col-lg-4">
+                    <div class="card card-margin">
+                        <div class="card-header no-border">
+                            <h5 class="card-title">MOM</h5>
+                        </div>
+                        <div class="card-body pt-0">
+                            <div class="widget-49">
+                                <div class="widget-49-title-wrapper">
+                                    <div class="widget-49-date-primary">
+                                        <span class="widget-49-date-day">09</span>
+                                        <span class="widget-49-date-month">apr</span>
+                                    </div>
+                                    <div class="widget-49-meeting-info">
+                                        <span class="widget-49-pro-title">PRO-08235 DeskOpe. Website</span>
+                                        <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
+                                    </div>
+                                </div>
+                                <ol class="widget-49-meeting-points">
+                                    <li class="widget-49-meeting-item"><span>Expand module is removed</span></li>
+                                    <li class="widget-49-meeting-item"><span>Data migration is in scope</span></li>
+                                    <li class="widget-49-meeting-item"><span>Session timeout increase to 30 minutes</span></li>
+                                </ol>
+                                <div class="widget-49-meeting-action">
+                                    <a href="#" class="btn btn-sm btn-flash-border-primary">View All</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
