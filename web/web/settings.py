@@ -260,4 +260,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Version of Application [deep_learning, health_misinformation]
 TREC_NAME = 'deep_learning'
-JUDGMENT_TEST_INTERVAL = 7
+JUDGMENT_TEST_INTERVAL = 4

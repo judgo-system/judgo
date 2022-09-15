@@ -63,13 +63,11 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
 
-            context['highlight_left_txt'] = left_response.highlight 
             context['left_txt'] = f"Title: {left_response.document.title}"\
                     f"\nDocument ID: {left_response.document.uuid}\n\n"\
                     f"{left_response.document.content}"
 
 
-            context['highlight_right_txt'] = right_response.highlight
             context['right_txt'] = f"Title: {right_response.document.title}"\
                     f"\nDocument ID: {right_response.document.uuid}\n\n"\
                     f"{right_response.document.content}"
@@ -79,6 +77,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def get_documents_related_context(self, context, user, prev_judge):
 
+        
+   
         if prev_judge.is_tested:
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.parent.after_state)
         
@@ -87,14 +87,32 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
             context['left_id'] = left_response.document.uuid
             context['right_id'] = right_response.document.uuid
-
-        else:
-            (left, right) = pref.get_documents(prev_judge.before_state)
             
-            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
+            # check if the following judgment documents are new or not 
 
+            (left, right) = pref.get_documents(prev_judge.parent.after_state)
             left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
             right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
+            left_new = Response.objects.filter(user=user, document=left_doc)
+            right_new = Response.objects.filter(user=user, document=right_doc)
+            
+            if not len(left_new) or not len(right_new):
+                context['new_left'] = 'NEW test'
+                context['new_right'] = 'NEW test'
+            else:           
+                context['highlight_left_txt'] = right_response.highlight
+                context['highlight_right_txt'] = left_response.highlight
+            
+
+            context['doc_right'] = left_response.document
+            context['doc_left'] = right_response.document
+ 
+
+        else:  
+            (left, right) = pref.get_documents(prev_judge.before_state)
+            left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
+            right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)         
+            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
 
             left_response, left_created = Response.objects.get_or_create(user=user, document=left_doc)
             right_response, right_created = Response.objects.get_or_create(user=user, document=right_doc)
@@ -109,12 +127,11 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge.left_response = left_response
             prev_judge.right_response = right_response
             prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
-
             prev_judge.save()
-
-
-        context['doc_left'] = left_response.document
-        context['doc_right'] = right_response.document
+            context['highlight_left_txt'] = left_response.highlight
+            context['highlight_right_txt'] = right_response.highlight
+            context['doc_left'] = left_response.document
+            context['doc_right'] = right_response.document
 
         return (context, left_response, right_response)
 
@@ -128,8 +145,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             return self.handle_judgment_actions(request.user, request.user.latest_judgment, request.POST)
         
         elif 'done_back' in request.POST:
-            print(':)))))))))')                
-            print(request.user.latest_judgment.id)
             prev_judge = request.user.latest_judgment
             prev_judge.is_round_done = False
             prev_judge.is_complete = False
@@ -179,7 +194,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         if prev_judge.is_tested:
             judgment = self.handle_test_judgment(prev_judge, action)
             user.latest_judgment = judgment
-            # user.is_tested = False
             user.save()
             
             return HttpResponseRedirect(
@@ -194,7 +208,9 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
             prev_judge.has_changed = True
             prev_judge.save()
-
+            parent_best_answer = None
+            if prev_judge.parent:
+                parent_best_answer = prev_judge.parent.best_answers
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -202,7 +218,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 parent=prev_judge.parent,
                 left_response=prev_judge.left_response,
                 right_response=prev_judge.right_response,
-                best_answers=prev_judge.parent.best_answers
+                best_answers=parent_best_answer
             )
             
         logger.info(f"This user had action: {prev_judge.action} about judment {prev_judge.id}")
@@ -292,7 +308,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         
         # test when there is we meet next interval
-        if len(judgement_list) < settings.JUDGMENT_TEST_INTERVAL or len(judgement_list) % settings.JUDGMENT_TEST_INTERVAL!=0:
+        if len(judgement_list) < settings.JUDGMENT_TEST_INTERVAL or random.random() > 0.1:
             return prev_judge, is_test
 
         is_test = True
@@ -306,7 +322,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
         prev_judge.is_tested = True
         prev_judge.save()
-        # user.is_tested = True
         user.save()
         
         return prev_judge, is_test 
@@ -314,7 +329,16 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def handle_test_judgment(self, prev_judge, action):
         
-        is_consistent = (prev_judge.action == action)
+
+        is_consistent = False
+        if prev_judge.action == action and action == 2:
+            is_consistent = True
+
+        if prev_judge.action == 3 and action == 1:
+            is_consistent = True
+        elif prev_judge.action == 1 and action == 3:
+            is_consistent = True
+
         JudgmentConsistency.objects.create(
             task=prev_judge.task,
             judgment = prev_judge,

@@ -96,7 +96,6 @@ class JudgmentConsistency(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self) -> str:
-        return f'(User:{self.user.username}, \
-            Topic:{self.task.topic.title}, \
+        return f'(Topic:{self.task.topic.title}, \
             Judgment:{self.judgment.id}, \
             Is Consistent:  {self.is_consistent})'
