@@ -322,13 +322,6 @@ body {
   white-space: pre-wrap;
 
 }
-/* #left-doc::-moz-selection { Code for Firefox */
-    /* background: yellow;
-} */
-
-/* #left-doc::selection {
-    background: yellow;
-}  */
       
 * {
   box-sizing: border-box;

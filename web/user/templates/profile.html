@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <link rel="stylesheet" href="{% static 'css/profile-style.css' %}" />
- 
+   
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,7 +16,8 @@
     
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
+    <link rel="stylesheet" href="{% static 'css/profile-style.css' %}" />
+ 
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
     <title>{{username}} profile</title>
 
@@ -90,39 +90,68 @@
                 </div>
                 
 
-
-                <!-- <div class="col-lg-4">
-                    <div class="card card-margin">
-                        <div class="card-header no-border">
-                            <h5 class="card-title">MOM</h5>
-                        </div>
-                        <div class="card-body pt-0">
-                            <div class="widget-49">
-                                <div class="widget-49-title-wrapper">
-                                    <div class="widget-49-date-primary">
-                                        <span class="widget-49-date-day">09</span>
-                                        <span class="widget-49-date-month">apr</span>
-                                    </div>
-                                    <div class="widget-49-meeting-info">
-                                        <span class="widget-49-pro-title">PRO-08235 DeskOpe. Website</span>
-                                        <span class="widget-49-meeting-time">12:00 to 13.30 Hrs</span>
-                                    </div>
-                                </div>
-                                <ol class="widget-49-meeting-points">
-                                    <li class="widget-49-meeting-item"><span>Expand module is removed</span></li>
-                                    <li class="widget-49-meeting-item"><span>Data migration is in scope</span></li>
-                                    <li class="widget-49-meeting-item"><span>Session timeout increase to 30 minutes</span></li>
-                                </ol>
-                                <div class="widget-49-meeting-action">
-                                    <a href="#" class="btn btn-sm btn-flash-border-primary">View All</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                <div id="tasks_container" class="task_container">
+                </div>
 
             </div>
         </div>
     </div>
+
+    <script>
+        const apiResult = [{
+            title: "title1",
+            description: "desc1",
+            output: "out1"
+            }, {
+            title: "title2",
+            description: "desc2",
+            output: "out2"
+            }, {
+            title: "title3",
+            description: "desc3",
+            output: "out3"
+            },{
+            title: "title1",
+            description: "desc1",
+            output: "out1"
+            }, {
+            title: "title2",
+            description: "desc2",
+            output: "out2"
+            }
+        ];
+
+
+        const container = document.getElementById('tasks_container');
+
+        apiResult.forEach((result, idx) => {
+        // Create card element
+        const card = document.createElement('div');
+        card.classList = 'card-body';
+
+        // Construct card content
+        const content = `
+            <div class="card">
+            
+
+            <div id="collapse-${idx}" class="collapse show" aria-labelledby="heading-${idx}" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="task_title">
+                        <p class="task_title">${result.title}</p>
+                        <p class="task_status">completed</p>
+                    </div>
+                    <div class="task_judgment">
+                        <p>123</p>
+                        <p>#Judgment</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        // Append newyly created card element to the container
+        container.innerHTML += content;
+        })
+    </script>
 </body>
 </html>
