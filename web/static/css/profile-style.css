@@ -52,7 +52,7 @@ body {
   
   .profile-usertitle-job {
     text-transform: uppercase;
-    color: #5b9bd1;
+    color: #6a8579;
     font-size: medium;
     font-weight: 600;
     margin-bottom: 15px;
@@ -96,6 +96,7 @@ body {
   .profile-usermenu ul li a i {
     margin-right: 8px;
     font-size: 14px;
+    color: #ff4742;
   }
   
   .profile-usermenu ul li a:hover {
@@ -108,9 +109,9 @@ body {
   }
   
   .profile-usermenu ul li.active a {
-    color: #5b9bd1;
+    color: #6a8579;
     background-color: #f6f9fb;
-    border-left: 2px solid #5b9bd1;
+    border-left: 2px solid #c7ad93;
     margin-left: -2px;
   }
   
@@ -130,10 +131,10 @@ body {
   
   .task_card{
     width: 100%;
-    border: #5a7391;
+    border: #e8b074;
     margin: 40px;
     font-size: 18px;
-    color: #5b9bd1;  
+    color: #6a8579;  
   }
   
   
@@ -158,11 +159,11 @@ body {
       margin-bottom: 15px;
   }
   .profile-stat {
-      padding-bottom: 20px;
-      border-bottom: 1px solid #f0f4f7;
+      padding: 20px;
+      /* border-bottom: 1px solid #f0f4f7; */
   }
   .profile-stat-title {
-      color: #7f90a4;
+      color: #9bb47c;
       font-size: 25px;
       text-align: center;
   }
@@ -171,8 +172,8 @@ body {
   }
   
   .profile-stat-text {
-      color: #5b9bd1;
-      font-size: 10px;
+      color: #525f41;
+      font-size: 13px;
       font-weight: 600;
       text-align: center;
   }
@@ -203,7 +204,7 @@ body {
   .card {
 
     padding: 1rem;
-    border: 1px solid #e1e3e3;
+    border: 1px solid #dddcdb;
     border-radius: 4px;
     margin: 15px 18px;
   }
@@ -212,9 +213,20 @@ body {
   }
 
   .task_title {
-    width: 70%;
-    font-size: 20px;
-    color: #789395;
+    width: 80%;
+    font-size: 15px;
+    color: #4e5050;
+  }
+
+  
+  .task_status {
+    font-size: 12px;
+    color: green;
+    text-decoration: underline;
+  }
+  .task_judgment{
+    font-size: 13px;
+    color: #4e5050;
   }
   
   

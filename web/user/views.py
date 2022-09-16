@@ -1,3 +1,5 @@
+import json
+import datetime
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,6 +11,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from core.models import Task
 from judgment.models import Judgment
+from django.utils.safestring import SafeString
 
 User = get_user_model()
 
@@ -49,6 +52,10 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 class UserProfile(LoginRequiredMixin, generic.TemplateView):
     template_name = 'profile.html'
 
+    def change_datetime(self, o):
+        if isinstance(o, (datetime.date, datetime.datetime)):
+            return o.isoformat()
+            
     def get_context_data(self, **kwargs):
         context = super(UserProfile, self).get_context_data(**kwargs)
 
@@ -59,13 +66,34 @@ class UserProfile(LoginRequiredMixin, generic.TemplateView):
             .filter(user_id=self.request.user)
 
         context["total_task"] = len(tasks)
-        tasks = tasks.exclude(is_completed=False)            
-        context["complete_task"] = len(tasks)
+        context["complete_task"] = len(tasks.exclude(is_completed=False))
 
         judgments = Judgment.objects\
-            .filter(user_id=self.request.user)
+            .filter(user_id=self.request.user)\
+            .order_by('-id')
 
         context["total_judgment"] = len(judgments)        
+
+        tasks_list = []
+        for task in tasks:
+
+            judgments = Judgment.objects\
+                .filter(task=task)
+
+            dic = [
+                task.topic.title,
+                "completed" if task.is_completed else "",
+                task.created_at,
+                len(judgments),
+                judgments[0].created_at if judgments else "",
+            ]
+            tasks_list.append(dic)
+
+
+
+        context["tasks_list"] = SafeString(json.dumps(tasks_list, sort_keys=True,
+            indent=1,
+            default=self.change_datetime))
 
         return context
 
