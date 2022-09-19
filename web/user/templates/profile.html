@@ -102,28 +102,6 @@
 
         var  apiResult = {{tasks_list|safe}};
         console.log(typeof apiResult)
-        // const apiResult = [{
-        //     title: "title1",
-        //     description: "desc1",
-        //     output: "out1"
-        //     }, {
-        //     title: "title2",
-        //     description: "desc2",
-        //     output: "out2"
-        //     }, {
-        //     title: "title3",
-        //     description: "desc3",
-        //     output: "out3"
-        //     },{
-        //     title: "title1",
-        //     description: "desc1",
-        //     output: "out1"
-        //     }, {
-        //     title: "title2",
-        //     description: "desc2",
-        //     output: "out2"
-        //     }
-        // ];
 
 
         const container = document.getElementById('tasks_container');
@@ -155,7 +133,6 @@
         </div>
         `;
 
-        // Append newyly created card element to the container
         container.innerHTML += content;
         })
     </script>

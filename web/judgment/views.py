@@ -97,8 +97,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             right_new = Response.objects.filter(user=user, document=right_doc)
             
             if not len(left_new) or not len(right_new):
-                context['new_left'] = 'NEW test'
-                context['new_right'] = 'NEW test'
+                context['new_left'] = 'NEW '
+                context['new_right'] = 'NEW '
             else:           
                 context['highlight_left_txt'] = right_response.highlight
                 context['highlight_right_txt'] = left_response.highlight
