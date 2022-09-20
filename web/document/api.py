@@ -14,10 +14,10 @@ def add_highlight(request, responseId):
         response = get_object_or_404(Response, id=responseId)
 
         if request.method == 'PUT' and not response.user.latest_judgment.is_tested:
+            
             data = json.load(request)
             highlights = data.get('highlight')
             response.highlight = highlights
-            # response.highlight = '|||'.join(tag for tag in set(highlights.split("|||")))
             
             response.save()
 

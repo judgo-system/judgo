@@ -82,31 +82,29 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         if prev_judge.is_tested:
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.parent.after_state)
         
-            left_response = prev_judge.left_response 
-            right_response = prev_judge.right_response 
+            # change the left and right documents
+            right_response = prev_judge.left_response 
+            left_response = prev_judge.right_response 
 
-            context['left_id'] = left_response.document.uuid
-            context['right_id'] = right_response.document.uuid
+            # context['left_id'] = left_response.document.uuid
+            # context['right_id'] = right_response.document.uuid
             
             # check if the following judgment documents are new or not 
-
             (left, right) = pref.get_documents(prev_judge.parent.after_state)
             left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
             right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
             left_new = Response.objects.filter(user=user, document=left_doc)
             right_new = Response.objects.filter(user=user, document=right_doc)
             
+            # context['new_left'] = 'TEST '
+            # context['new_right'] = 'TEST '
             if not len(left_new) or not len(right_new):
                 context['new_left'] = 'NEW '
                 context['new_right'] = 'NEW '
             else:           
-                context['highlight_left_txt'] = right_response.highlight
-                context['highlight_right_txt'] = left_response.highlight
+                context['highlight_left_txt'] = left_response.highlight
+                context['highlight_right_txt'] = right_response.highlight
             
-
-            context['doc_right'] = left_response.document
-            context['doc_left'] = right_response.document
- 
 
         else:  
             (left, right) = pref.get_documents(prev_judge.before_state)
@@ -130,8 +128,9 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge.save()
             context['highlight_left_txt'] = left_response.highlight
             context['highlight_right_txt'] = right_response.highlight
-            context['doc_left'] = left_response.document
-            context['doc_right'] = right_response.document
+        
+        context['doc_left'] = left_response.document
+        context['doc_right'] = right_response.document
 
         return (context, left_response, right_response)
 
