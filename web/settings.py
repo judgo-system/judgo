@@ -33,7 +33,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['judgo-system.herokuapp.com', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -243,8 +244,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     str(BASE_DIR / 'static'),
 ]
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage' 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
