@@ -136,9 +136,11 @@ dmypy.json
 data/
 *.csv
 *.out
+*.sql
 
 # Django Static folders
-web/staticfiles/
-web/fixtures/data
-web/fixtures/trec2022_*
+staticfiles/
+webfixtures/data
+fixtures/trec2022_*
+fixtures/
 .DS_Store
