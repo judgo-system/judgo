@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 import environ
+import dj_database_url
+import django_heroku
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -29,7 +31,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -70,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'web.urls'
@@ -106,12 +109,14 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
 
     "default": {
-        "ENGINE":  env("ENGINE"),
-        "NAME": env("NAME"),
-        "USER": env("USER"),
-        "PASSWORD": env("PASSWORD"),
-        "HOST": env("HOST"),
-        "PORT": env("PORT"),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'ciba',
+        # "ENGINE":  env("ENGINE"),
+        # "NAME": env("NAME"),
+        # "USER": env("USER"),
+        # "PASSWORD": env("PASSWORD"),
+        # "HOST": env("HOST"),
+        # "PORT": env("PORT"),
     }
 }
 
@@ -239,6 +244,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     str(BASE_DIR / 'static'),
 ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # EMAIL CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -261,3 +267,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Version of Application [deep_learning, health_misinformation]
 TREC_NAME = 'deep_learning'
 JUDGMENT_TEST_INTERVAL = 4
+
+django_heroku.settings(locals())
