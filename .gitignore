@@ -141,4 +141,5 @@ data/
 web/staticfiles/
 web/fixtures/data
 web/fixtures/trec2022*
+web/fixtures/ingest*
 .DS_Store
