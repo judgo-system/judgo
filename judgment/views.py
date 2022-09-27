@@ -61,8 +61,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
             context['left_txt'] = f"{left_response.document.content}"
-
-
             context['right_txt'] = f"{right_response.document.content}"
 
             if left_response.document.title:
