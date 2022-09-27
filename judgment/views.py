@@ -1,5 +1,6 @@
 import logging
 import random
+from turtle import left
 from braces.views import LoginRequiredMixin
 from django.views import generic
 from django.http import HttpResponseRedirect
@@ -17,7 +18,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     task_id = None
     left_doc_id = None
     right_doc_id = None
-    TOP_DOC_THRESHOULD = 10
 
 
     def render_to_response(self, context, **response_kwargs):
@@ -56,7 +56,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 context['highlights'] = prev_judge.task.tags
             
 
-            (context, left_response, right_response) = self.get_documents_related_context(context, self.request.user, prev_judge)
+            (context, left_response, right_response) = JudgmentView.get_documents_related_context(context, self.request.user, prev_judge)
             
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
@@ -73,10 +73,10 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         return context
 
+    
+    @staticmethod
+    def get_documents_related_context(context, user, prev_judge):
 
-    def get_documents_related_context(self, context, user, prev_judge):
-
-        
    
         if prev_judge.is_tested:
             context["progress_bar_width"] = pref.get_progress_count(prev_judge.parent.after_state)
@@ -85,8 +85,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             right_response = prev_judge.left_response 
             left_response = prev_judge.right_response 
 
-            # context['left_id'] = left_response.document.uuid
-            # context['right_id'] = right_response.document.uuid
             
             # check if the following judgment documents are new or not 
             (left, right) = pref.get_documents(prev_judge.parent.after_state)
@@ -136,6 +134,11 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request, *args, **kwargs):
         
+        print("************************************************")
+        print(self.request.path)
+        print(self.request.body)
+        print("************************************************")
+
         if 'prev' in request.POST: 
             return self.handle_prev_button(request.user, request.user.latest_judgment)
 
@@ -190,7 +193,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         action, after_state = JudgmentView.evaluate_after_state(requested_action, prev_judge.before_state)
 
         if prev_judge.is_tested:
-            judgment = self.handle_test_judgment(prev_judge, action)
+            judgment = JudgmentView.handle_test_judgment(prev_judge, action)
             user.latest_judgment = judgment
             user.save()
             
@@ -239,7 +242,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge.save()
 
     
-            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
+            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= settings.TOP_DOC_THRESHOULD:
                 prev_judge.is_complete = True
                 prev_judge.task.is_completed = True
                 prev_judge.task.best_answers = prev_judge.best_answers
@@ -257,7 +260,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             logger.info(f'One round is finished! you are going to the next step!')
 
         # for deep learning trec we want a test judgment feature
-        prev_judge, is_test = self.get_fake_test_judgment(user, prev_judge)
+        prev_judge, is_test = JudgmentView.get_fake_test_judgment(user, prev_judge)
         
 
         judgement = Judgment.objects.create(
@@ -288,7 +291,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
 
 
-    def get_fake_test_judgment(self, user, prev_judge):
+    @staticmethod
+    def get_fake_test_judgment(user, prev_judge):
 
         if settings.TREC_NAME != "deep_learning":
             return prev_judge, False
@@ -325,7 +329,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         return prev_judge, is_test 
     
 
-    def handle_test_judgment(self, prev_judge, action):
+    @staticmethod
+    def handle_test_judgment(prev_judge, action):
         
 
         is_consistent = False
@@ -376,5 +381,4 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         for doc in best_docs:
             new_ans += doc + "|"
         return answers +"--"+new_ans
-
 

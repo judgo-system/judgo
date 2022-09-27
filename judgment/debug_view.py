@@ -1,15 +1,16 @@
-import html
-import logging
+ import logging
+import random
+from turtle import left
 from braces.views import LoginRequiredMixin
-
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
+from django.conf import settings
 
 from document.models import Document, Response
-from judgment.models import Judgment, JudgingChoices
-from .views import JudgmentView
+from judgment.models import Judgment, JudgingChoices, JudgmentConsistency
 from interfaces import pref
+from .views import JudgmentView
 
 
 logger = logging.getLogger(__name__)
@@ -20,7 +21,6 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
     task_id = None
     left_doc_id = None
     right_doc_id = None
-    TOP_DOC_THRESHOULD = 10
 
 
     def render_to_response(self, context, **response_kwargs):
@@ -37,73 +37,50 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def get_context_data(self, **kwargs):
         
+        
         context = super(DebugJudgmentView, self).get_context_data(**kwargs)
+        
         if "judgment_id" in kwargs and 'user_id' in kwargs:
             
             # get the latest judment for this user and question
             prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-            
+
             if prev_judge.is_complete:
                 context["task_status"] = "complete"
                 return context
 
-            context["debug"] = "true"
-
             self.task_id = prev_judge.task.id
-            (left, right) = pref.get_documents(prev_judge.before_state)
-            
-            context['question_content'] = prev_judge.task.topic.title
 
+            context['topic'] = prev_judge.task.topic
+            context['font_size'] = prev_judge.task.font_size
+            
+            # if there is no tag is we don't need to fill it out.
+            if prev_judge.task.tags:
+                # modifyed tag inorder to work according Tagify information
+                context['highlights'] = prev_judge.task.tags
+            
+
+            (context, left_response, right_response) = JudgmentView.get_documents_related_context(context, self.request.user, prev_judge)
+            
+            self.left_doc_id = left_response.id
+            self.right_doc_id = right_response.id
+
+
+            context['left_txt'] = f"Title: {left_response.document.title}"\
+                    f"\nDocument ID: {left_response.document.uuid}\n\n"\
+                    f"{left_response.document.content}"
+
+
+            context['right_txt'] = f"Title: {right_response.document.title}"\
+                    f"\nDocument ID: {right_response.document.uuid}\n\n"\
+                    f"{right_response.document.content}"
+            #debug part
+            context["debug"] = "true"
             if prev_judge.parent and prev_judge.parent.action:
                 context['previous_action'] = dict(JudgingChoices.choices)[prev_judge.parent.action]
             context['tree_content'] = pref.get_str(prev_judge.before_state)
             
-            context["progress_bar_width"] = pref.get_progress_count(prev_judge.before_state)
             
-            context['state_object'] = pref.get_str(prev_judge.before_state)
-
-            context['topic'] = prev_judge.task.topic    
-            context['support'] = prev_judge.task.topic.uuid.split("_")[1].upper()
-
-            left_doc = Document.objects.get(uuid=left, topics=prev_judge.task.topic)
-            right_doc = Document.objects.get(uuid=right, topics=prev_judge.task.topic)
-            left_response, _ = Response.objects.get_or_create(user=self.request.user, document=left_doc)
-            right_response, _ = Response.objects.get_or_create(user=self.request.user, document=right_doc)
-            
-            context['doc_left'] = left_response.document
-            context['doc_right'] = right_response.document
-
-
-            prev_judge.left_response = left_response
-            prev_judge.right_response = right_response
-            prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
-
-            prev_judge.save()
-
-            self.left_doc_id = left_response.id
-            self.right_doc_id = right_response.id
-
-            if left_response.highlight:
-                context['left_txt'] = JudgmentView.highlight_document(
-                    left_response.document.content,
-                    left_response.highlight
-                ) 
-            else:
-                context['left_txt'] = left_response.document.content
-                
-            if right_response.highlight:
-                context['right_txt'] = JudgmentView.highlight_document(
-                    right_response.document.content,
-                    right_response.highlight
-                ) 
-            else:
-                context['right_txt'] = right_response.document.content
-
-            # if there is no tag is we don't need to fill it out.
-            if prev_judge.task.tags:
-                # modifyed tag inorder to work according Tagify information
-                context['highlights'] = prev_judge.task.tags.replace(",", ".").replace("-", ",")
-
         return context
 
 
@@ -137,21 +114,43 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             )
 
     
+
     def handle_judgment_actions(self, user, prev_judge, requested_action):
 
         action, after_state = JudgmentView.evaluate_after_state(requested_action, prev_judge.before_state)
 
+        if prev_judge.is_tested:
+            judgment = JudgmentView.handle_test_judgment(prev_judge, action)
+            user.latest_judgment = judgment
+            user.save()
+            
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:debug', 
+                    kwargs = {"user_id" : user.id, "judgment_id": judgment.id}
+                )
+            )
+
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
-            
+            logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+            prev_judge.has_changed = True
+            prev_judge.save()
+            parent_best_answer = None
+            if prev_judge.parent:
+                parent_best_answer = prev_judge.parent.best_answers
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
                 before_state=prev_judge.before_state,
-                parent=prev_judge.parent
+                parent=prev_judge.parent,
+                left_response=prev_judge.left_response,
+                right_response=prev_judge.right_response,
+                best_answers=parent_best_answer
             )
             
-        
+        logger.info(f"This user had action: {prev_judge.action} about judment {prev_judge.id}")
+
         # update pre_judge action
         prev_judge.action = action
         prev_judge.after_state = after_state
@@ -162,19 +161,18 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
 
             prev_judge.best_answers = JudgmentView.append_answer(after_state, prev_judge)
             prev_judge.task.num_ans = len(prev_judge.best_answers.split("|")) - 1
-            prev_judge.task.save()           
+            prev_judge.task.save()
+
             prev_judge.is_round_done = True
             after_state = pref.pop_best(after_state)
             prev_judge.after_state = after_state
             prev_judge.save()
 
     
-            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
-                
-
-                prev_judge.task.best_answers = prev_judge.best_answers        
+            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= settings.TOP_DOC_THRESHOULD:
                 prev_judge.is_complete = True
                 prev_judge.task.is_completed = True
+                prev_judge.task.best_answers = prev_judge.best_answers
                 prev_judge.task.save()
                 prev_judge.save()
 
@@ -184,7 +182,17 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                         kwargs = {"user_id" : user.id, "task_id": prev_judge.task.id}
                     )
                 ) 
-            
+
+            #     return HttpResponseRedirect(
+            #     reverse_lazy(
+            #         'judgment:judgment', 
+            #         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+            #     )
+            # )
+
+        # if prev_judge.is_round_done:
+        #     logger.info(f'One round is finished! you are going to the next step!')
+
 
         if prev_judge.is_round_done:
             
@@ -193,7 +201,10 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                     'topic:best_answer', 
                     kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
                 )
-            )    
+            ) 
+        # for deep learning trec we want a test judgment feature
+        prev_judge, is_test = JudgmentView.get_fake_test_judgment(user, prev_judge)
+        
 
         judgement = Judgment.objects.create(
                 user=user,
@@ -202,13 +213,23 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
                 parent=prev_judge
             )
 
-        user.latest_judgment = judgement
-        user.save()
-        return HttpResponseRedirect(
+        if is_test:
+            user.latest_judgment = prev_judge
+            user.save() 
+            return HttpResponseRedirect(
             reverse_lazy(
                 'judgment:debug', 
-                kwargs = {"user_id" : user.id, "judgment_id": judgement.id,}
+                kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
             )
         )
-
-
+        else: 
+            user.latest_judgment = judgement
+            user.save()
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:debug', 
+                    kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+                )
+            )
+            
+   
