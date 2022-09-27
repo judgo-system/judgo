@@ -267,5 +267,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Version of Application [deep_learning, health_misinformation]
 TREC_NAME = 'deep_learning'
 JUDGMENT_TEST_INTERVAL = 4
+TOP_DOC_THRESHOULD = 10
 
 django_heroku.settings(locals())
