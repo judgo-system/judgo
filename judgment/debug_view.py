@@ -1,6 +1,4 @@
- import logging
-import random
-from turtle import left
+import logging
 from braces.views import LoginRequiredMixin
 from django.views import generic
 from django.http import HttpResponseRedirect
