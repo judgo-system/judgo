@@ -60,19 +60,20 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.left_doc_id = left_response.id
             self.right_doc_id = right_response.id
 
-            context['left_txt'] = f"Document ID: {left_response.document.uuid}\n\n"\
-                    f"{left_response.document.content}"
+            context['left_txt'] = f"{left_response.document.content}"
 
 
-            context['right_txt'] = f"Document ID: {right_response.document.uuid}\n\n"\
-                    f"{right_response.document.content}"
+            context['right_txt'] = f"{right_response.document.content}"
 
             if left_response.document.title:
-                context['left_txt'] = f"Title: {left_response.document.title} \n" + context['left_txt']
+                context['left_txt'] = f"Title: {left_response.document.title} \n"\
+                        f"Document ID: {left_response.document.uuid}\n\n"\
+                        f"{context['left_txt']}"
             
             if right_response.document.title:
-                context['right_txt'] = f"Title: {right_response.document.title}\n" +  context['right_txt']
-
+                context['right_txt'] = f"Title: {right_response.document.title}\n"\
+                        f"Document ID: {right_response.document.uuid}\n\n"\
+                        f"{context['righ_txt']}"
 
         return context
 
