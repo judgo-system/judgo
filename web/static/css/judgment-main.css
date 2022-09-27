@@ -357,45 +357,6 @@ body {
   content: "\2212";
 }
 
-.content {
-  padding: 0 18px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-  background-color: #f1f1f1;
-  line-height: 1.5;
-  text-align: justify;
-}
-
-.best-answer-container {
-  width: 100%;
-  height: calc(100% - 70px);
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
-}
-
-.best-answer-container h2 {
-  background: #789395;
-  padding: 10px;
-  color: white;
-  font-size: 20px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.best-answer-list {
-  width: 500px;
-  max-height: calc(100vh - 220px);
-  overflow: auto;
-}
-
-.level-content {
-  padding: 10px;
-  margin-top: 10px;
-}
 
 .tree-header {
   text-align: center;
