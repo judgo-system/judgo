@@ -65,14 +65,18 @@ class DebugJudgmentView(LoginRequiredMixin, generic.TemplateView):
             self.right_doc_id = right_response.id
 
 
-            context['left_txt'] = f"Title: {left_response.document.title}"\
-                    f"\nDocument ID: {left_response.document.uuid}\n\n"\
-                    f"{left_response.document.content}"
+            context['left_txt'] = f"{left_response.document.content}"
+            context['right_txt'] = f"{right_response.document.content}"
 
-
-            context['right_txt'] = f"Title: {right_response.document.title}"\
-                    f"\nDocument ID: {right_response.document.uuid}\n\n"\
-                    f"{right_response.document.content}"
+            if left_response.document.title:
+                context['left_txt'] = f"Title: {left_response.document.title} \n"\
+                        f"Document ID: {left_response.document.uuid}\n\n"\
+                        f"{context['left_txt']}"
+            
+            if right_response.document.title:
+                context['right_txt'] = f"Title: {right_response.document.title}\n"\
+                        f"Document ID: {right_response.document.uuid}\n\n"\
+                        f"{context['righ_txt']}"        
             #debug part
             context["debug"] = "true"
             if prev_judge.parent and prev_judge.parent.action:

@@ -49,7 +49,7 @@ for file in os.listdir(path):
         data = json.load(f)
         try:
             if data['pid'] in topic_mappping:
-                Document.objects.create(uuid=data['pid'], content=" "+data['passage'], url=data['pid'])
+                Document.objects.create(uuid=data['pid'], content=" "+data['passage'], url="#")
         except Exception as e:
             print(e)
 
