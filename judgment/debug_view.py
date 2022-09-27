@@ -5,8 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.conf import settings
 
-from document.models import Document, Response
-from judgment.models import Judgment, JudgingChoices, JudgmentConsistency
+from judgment.models import Judgment, JudgingChoices
 from interfaces import pref
 from .views import JudgmentView
 
