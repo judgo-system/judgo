@@ -71,7 +71,7 @@
             <div class="header-btn-container">
 
                 <div class="progress-txt">
-                    <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
+                    <h3><strong>Estimated Remaining Judgments: {{ progress_bar_width }} </strong></h3>
                 </div>
                 
                 <button class="button topic-info-button" id="topic_info_li">
@@ -90,10 +90,15 @@
                     </ul>
                 </div>
             </div>
-        </div>
 
+   
+        </div>
+        <div class="title-header">
+            
+            <titlep>Topic:</titlep> {{ topic.title }}
+        </div>
         <div class="tag-container">
-            <input name='tags_words' value="{{ highlights }}">
+            <input name='tags_words' value="{{ highlights }}" pattern='^[0-9A-Za-z_✲ ]{2,}$'>
         </div>
 
 
@@ -109,16 +114,16 @@
             
         <div class="documents" id="wrapper">
             <div class="document-left" id="drag-left">
-                <div class="docment-header"> 
-                    <h2 class="document-url">
-                        <p class="new-document-label">
-                            {{new_left}}  
-                        </p>    
-                        <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">
-                            {{doc_left.url}}
-                        </a>
-                    </h2>
-                </div>
+                <!-- <div class="docment-header">  -->
+                <h2 class="document-url">
+                    <p class="new-document-label">
+                        {{new_left}}  
+                    </p>    
+                    <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">
+                        {{doc_left.url}}
+                    </a>
+                </h2>
+                <!-- </div> -->
                 {% autoescape off %}
                 <div class="document-content"><p id="left-doc" class="editable-doc">{{left_txt}}</p></div>
                 {% endautoescape %} 
@@ -132,15 +137,14 @@
             </div>
 
             <div class="document-right" id="drag-right">
-                <div>
-                    <h2 class="document-url">
-                        <p class="new-document-label">
-                            {{new_right}} 
-                        </p>
-                        <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
-                    </h2>
-                    
-                </div>
+                <!-- <div> -->
+                <h2 class="document-url">
+                    <p class="new-document-label">
+                        {{new_right}} 
+                    </p>
+                    <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
+                </h2>
+                <!-- </div> -->
                 {% autoescape off %}
                 <div class="document-content"><p id="right-doc" class="editable-doc">{{right_txt}}</p></div>
                 {% endautoescape %} 
@@ -408,8 +412,7 @@
         tagify = new Tagify(input, {
             transformTag        : transformTag,
             placeholder         : "Search keywords",
-            blacklist           : ["mark", "span", "style", "background", "class"]
-            
+            blacklist           : ["mark", "span", "style", "background", "class", "."],            
         })
         
         const colorGlobalList = [
@@ -461,7 +464,10 @@
             
             var tags = tagData["value"].split("|")
             // if a judgment with some tags is loaded then number of tags are more than zero
+            console.log("------------------------------")
+            console.log("ThiS IS TAG DATA!!!!")
             console.log(tagData)
+
             if (tags.length > 1) {
                 tagData.color = tags[1].replaceAll(".",",");
                 tagData.value = tags[0];
@@ -551,10 +557,6 @@
             var selectedText = selection.toString();
             var endpos = getCaretCharacterOffsetWithin(element.parentNode);
             
-            console.log(endpos-selectedText.length)
-            console.log(endpos)
-
-            console.log("==================")
             if (endpos-selectedText.length != endpos){  
                 var cooked_text = ""
                 if(doc=="#right-doc"){

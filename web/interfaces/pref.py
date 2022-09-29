@@ -142,7 +142,7 @@ class pref(object):
         self.__equiv = []
 
         total_len = self.__t.length()
-        self.total_judgment = (total_len - 1) + (k-1) * math.ceil(math.sqrt(total_len))
+        self.total_judgment = (total_len-1) + (k-1) * math.floor(math.log2(total_len-1)) 
         self.cur_judgment = 0
         
 
@@ -330,5 +330,8 @@ def get_size(pref_obj):
 def get_progress_count(pref_obj):
 
     pref_obj = pickle.loads(pref_obj)
-    progress = min(100, round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))
-    return "{:.2f}".format(progress)
+    # progress = (100, round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))
+    # progress = (100 - round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))f
+    # return "{:.2f}".format(progress)
+    progress = max(1, pref_obj.total_judgment - pref_obj.cur_judgment + 1)
+    return progress

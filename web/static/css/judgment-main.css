@@ -188,7 +188,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-top: 5px;
-  height: 45px;
+  height: 50px;
   text-align: center;
 }
 
@@ -582,5 +582,37 @@ strong::before {
   margin-right: 5px;
 }
 
+
+.title-header {
+  height: 35px;
+  margin: 10px;
+  padding-top: 10px;
+  font-size: 1.1rem;
+
+  color: black;
+  text-align: center;
+  overflow: hidden;
+  border-top: dashed;
+  border-color: #aab7aa;  
+  border-width: 2px;
+}
+
+titlep {
+  position: relative;
+  font-size: 1.1rem;
+}
+
+
+titlep::before {
+  background-color: #e4eae4;
+  content: "";
+  position: absolute;
+  width: calc(100% + 4px);
+  height: 60%;
+  left: -3px;
+  bottom: 0;
+  z-index: -1;
+  transform: rotate(-2deg);
+}
 
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */

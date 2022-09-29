@@ -137,11 +137,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
     def post(self, request, *args, **kwargs):
         
-        print("************************************************")
-        print(self.request.path)
-        print(self.request.body)
-        print("************************************************")
-
         if 'prev' in request.POST: 
             return self.handle_prev_button(request.user, request.user.latest_judgment)
 
