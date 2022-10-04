@@ -1,0 +1,232 @@
+/***
+User Profile Sidebar by @keenthemes
+A component of Metronic Theme - #1 Selling Bootstrap 3 Admin Theme in Themeforest: https://j.mp/metronictheme
+Licensed under MIT
+***/
+html {
+  height: 100%;
+}
+
+body {
+  font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+  /* font-family: "Open Sans", sans-serif; */
+  height: 100%;
+}
+.container {
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+  /* Profile container */
+  .profile {
+    margin: 0 0;
+  }
+  
+  /* Profile sidebar */
+  .profile-sidebar {
+    padding: 20px 0 10px 0;
+    background: #fff;
+  }
+  
+  .profile-userpic img {
+    float: none;
+    margin: 0 auto;
+    width: 50%;
+    height: 50%;
+    -webkit-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    border-radius: 50% !important;
+  }
+  
+  .profile-usertitle {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .profile-usertitle-name {
+    color: #5a7391;
+    font-size: large;
+    font-weight: 600;
+    margin-bottom: 7px;
+  }
+  
+  .profile-usertitle-job {
+    text-transform: uppercase;
+    color: #6a8579;
+    font-size: medium;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+  
+  .profile-userbuttons {
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .profile-userbuttons .btn {
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 15px;
+    margin-right: 5px;
+  }
+  
+  .profile-userbuttons .btn:last-child {
+    margin-right: 0px;
+  }
+      
+  .profile-usermenu {
+    margin-top: 30px;
+  }
+  
+  .profile-usermenu ul li {
+    border-bottom: 1px solid #f0f4f7;
+  }
+  
+  .profile-usermenu ul li:last-child {
+    border-bottom: none;
+  }
+  
+  .profile-usermenu ul li a {
+    color: #93a3b5;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  
+  .profile-usermenu ul li a i {
+    margin-right: 8px;
+    font-size: 14px;
+    color: #ff4742;
+  }
+  
+  .profile-usermenu ul li a:hover {
+    background-color: #fafcfd;
+    color: #5b9bd1;
+  }
+  
+  .profile-usermenu ul li.active {
+    border-bottom: none;
+  }
+  
+  .profile-usermenu ul li.active a {
+    color: #6a8579;
+    background-color: #f6f9fb;
+    border-left: 2px solid #c7ad93;
+    margin-left: -2px;
+  }
+  
+  /* Profile Content */
+  .profile-content {
+    padding: 20px;
+    background: #fff;
+    min-height: 120px;
+  }
+
+  .task_container{
+    width: 100%;
+    /* width: ; */
+    height: calc(100vh - 200px );
+    overflow: auto;
+  }
+  
+  .task_card{
+    width: 100%;
+    border: #e8b074;
+    margin: 40px;
+    font-size: 18px;
+    color: #6a8579;  
+  }
+  
+  
+  .portlet {
+      margin-top: 0;
+      margin-bottom: 25px;
+      padding: 0;
+      border-radius: 4px;
+  }
+  .portlet.bordered {
+      border-left: 2px solid #e6e9ec!important;
+  }
+  .portlet.light {
+      padding: 12px 20px 15px;
+      background-color: #fff;
+  }
+  .portlet.light.bordered {
+      border: 1px solid #e7ecf1!important;
+  }
+  .list-separated {
+      margin-top: 10px;
+      margin-bottom: 15px;
+  }
+  .profile-stat {
+      padding: 20px;
+      /* border-bottom: 1px solid #f0f4f7; */
+  }
+  .profile-stat-title {
+      color: #9bb47c;
+      font-size: 25px;
+      text-align: center;
+  }
+  .uppercase {
+      text-transform: uppercase!important;
+  }
+  
+  .profile-stat-text {
+      color: #525f41;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+  }
+  .profile-desc-title {
+      color: #7f90a4;
+      font-size: 17px;
+      font-weight: 600;
+  }
+  .profile-desc-text {
+      color: #7e8c9e;
+      font-size: 14px;
+  }
+  .margin-top-20 {
+      margin-top: 20px!important;
+  }
+  [class*=" fa-"]:not(.fa-stack), [class*=" glyphicon-"], [class*=" icon-"], [class^=fa-]:not(.fa-stack), [class^=glyphicon-], [class^=icon-] {
+      display: inline-block;
+      line-height: 14px;
+      -webkit-font-smoothing: antialiased;
+  }
+  .profile-desc-link i {
+      width: 22px;
+      font-size: 19px;
+      color: #abb6c4;
+      margin-right: 5px;
+  }
+  
+  .card {
+
+    padding: 1rem;
+    border: 1px solid #dddcdb;
+    border-radius: 4px;
+    margin: 15px 18px;
+  }
+  .card-body {
+    display: flex;
+  }
+
+  .task_title {
+    width: 80%;
+    font-size: 15px;
+    color: #4e5050;
+  }
+
+  
+  .task_status {
+    font-size: 12px;
+    color: green;
+    text-decoration: underline;
+  }
+  .task_judgment{
+    font-size: 13px;
+    color: #4e5050;
+  }
+  
+  

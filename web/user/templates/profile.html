@@ -1,0 +1,140 @@
+{% load i18n static has_group crispy_forms_tags  %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+   
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{% static 'css/profile-style.css' %}" />
+ 
+    <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
+    <title>{{username}} profile</title>
+
+</head>
+<body>
+    <div class="container">
+        <div class="row profile">
+            <div class="col-md-3">
+                <div class="profile-sidebar">
+                    <!-- SIDEBAR USERPIC -->
+                    <div class="profile-userpic">
+                        <img src="https://static.vecteezy.com/system/resources/previews/002/318/271/original/user-profile-icon-free-vector.jpg" class="img-responsive" alt="">
+                    </div>
+                    <!-- END SIDEBAR USERPIC -->
+                    <!-- SIDEBAR USER TITLE -->
+                    <div class="profile-usertitle">
+                        <div class="profile-usertitle-name">
+                            {{username}}
+                        </div>
+                        <div class="profile-usertitle-job">
+                            {{email}}
+                        </div>
+                    </div>
+                    
+                    <!-- END SIDEBAR BUTTONS -->
+                    <!-- SIDEBAR MENU -->
+                    <div class="profile-usermenu">
+                        <ul class="nav">
+                            <li class="active">
+                                <a href="{% url 'core:home' %}">
+                                <i class="glyphicon glyphicon-home"></i>
+                                Home </a>
+                            </li>
+                            <li>
+                                <a href="{% url 'account_logout' %}">
+                                <i class="glyphicon glyphicon-user"></i>
+                                Log out </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                <i class="glyphicon glyphicon-flag"></i>
+                                Help </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- END MENU -->
+                   
+               </div>
+            </div>
+            <div class="col-md-9">
+                
+                <div class="profile-content">
+
+                   <div class="portlet light bordered">
+                        <div class="row profile-stat">
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <div class="uppercase profile-stat-title"> {{total_task}} </div>
+                                <div class="uppercase profile-stat-text"> Total Tasks </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <div class="uppercase profile-stat-title"> {{complete_task}} </div>
+                                <div class="uppercase profile-stat-text"> Completed Tasks </div>
+                            </div>
+                            <div class="col-md-4 col-sm-4 col-xs-6">
+                                <div class="uppercase profile-stat-title"> {{total_judgment}} </div>
+                                <div class="uppercase profile-stat-text"> Number of Judgments </div>
+                            </div>
+                        </div>                     
+                    </div>
+                </div>
+                
+
+                <div id="tasks_container" class="task_container">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        var  apiResult = {{tasks_list|safe}};
+        console.log(typeof apiResult)
+
+
+        const container = document.getElementById('tasks_container');
+
+        apiResult.forEach((result, idx) => {
+        // Create card element
+        const card = document.createElement('div');
+        card.classList = 'card-body';
+
+        // Construct card content
+        const content = `
+            <div class="card">
+            
+
+            <div id="collapse-${idx}" class="collapse show" aria-labelledby="heading-${idx}" data-parent="#accordion">
+                <div class="card-body">
+                    <div class="task_title">
+                        <p class="task_title">${idx+1}. ${result[0]}</p>
+                    </div>
+                    <div >
+                        <p class="task_judgment">${result[3]} Judgments</p>
+                        <p class="task_status">${result[1]}</p>
+
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
+        `;
+
+        container.innerHTML += content;
+        })
+    </script>
+</body>
+</html>

@@ -8,12 +8,22 @@
     
     <link rel="stylesheet" href="{% static 'css/judgment-reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/home-style.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" />
+    <!-- <link rel="stylesheet" href="{% static 'css/judgment-main.css' %}" /> -->
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-   
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
     <link rel="icon" href="{% static 'images/favicon.png' %}" type="image/x-icon">
     <title>Preference Judgment System</title>
 
@@ -25,9 +35,21 @@
             <div class="home-header">
                 <h2 class="home-message"> </h2>
             </div>
-            <a href="{% url 'account_logout' %}">
+            <!-- <a href="{% url 'account_logout' %}">
                 <button class="button prev-document">Log out</button>
-            </a>
+            </a> -->
+            <div class="btn-group">
+                <button type="button" class="btn dropdown-toggle "  data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 24 24" width="30px" height="30px"><path d="M2 11H22V13H2zM2 5H22V7H2zM2 17H22V19H2z"/></svg>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="dropdown-item"><a href="{% url 'user:profile' %}">Profile</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-item"><a href="{% url 'account_logout' %}">Log out</a></li>
+                </ul>
+            </div>
+
         </div>
         
         <form method="post">
@@ -66,6 +88,7 @@
     <!-- JavaScript -->
     <script>
         localStorage.clear()
+
     </script>
 </body>
 </html>

@@ -2,12 +2,12 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html
 from document.models import Document
-from .models import Judgment
+from .models import Judgment, JudgmentConsistency
 
 @admin.register(Judgment)
 class JudgmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'view_user', 'parent_id', 'view_task', 'view_left_response', 'view_right_response',
-        'view_best_answer', 'is_round_done', 'is_complete', 
+        'view_best_answer', 'has_changed', 'is_tested', 'is_round_done', 'is_complete', 
         'action', 'created_at'
     )
 
@@ -59,3 +59,26 @@ class JudgmentAdmin(admin.ModelAdmin):
     view_right_response.short_description = "Right response"
 
 
+
+
+
+@admin.register(JudgmentConsistency)
+class JudgmentConsistencyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'view_task', 'view_judgment', 'is_consistent', 'created_at'
+    )    
+
+    def view_task(self, obj):
+        url = reverse("admin:core_task_change", args=(obj.task.id,))
+        return format_html('<a href="{}">Task ({})</a>', url, obj.task.topic.title)
+
+
+    def view_judgment(self, obj):
+        if not obj.judgment:
+            return None
+        id = obj.judgment.id
+        url = reverse("admin:judgment_judgment_change", args=(id,))
+        
+        return format_html('<a href="{}">{} Judgment</a>', url, id)
+
+    view_task.short_description = "task"
+    view_judgment.short_description = "judgment"

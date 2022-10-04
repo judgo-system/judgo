@@ -4,7 +4,7 @@ from braces.views import LoginRequiredMixin
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from datetime import datetime
+from django.conf import settings
 from .models import Task
 from judgment.models import Judgment
 from topic.models import Topic
@@ -64,7 +64,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                 state = prev_judge.after_state
         except Exception as e:
             logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
-            state = pref.create_new_pref_obj(topic)
+            state = pref.create_new_pref_obj(topic, settings.TOP_DOC_THRESHOULD)
                     
         if not prev_judge or prev_judge.is_complete:
 

@@ -1,8 +1,13 @@
 body {
   font-family:  Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
   /* font-family: "Open Sans", sans-serif; */
+  height: 100%;
 }
 
+.main {
+  height: 100%;
+  overflow: hidden;
+}
 .container {
   width: 992px;
   height: 100vh;
@@ -12,6 +17,63 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5px;
+  height: 50px;
+  text-align: center;
+}
+
+
+.home-header {
+  width: calc(100% - 300px);
+  justify-content: center;
+  align-items: center;
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  margin-right: 60px;
+  margin-left: 60px;
+}
+
+.home-message {
+  margin-left: 50px;
+  width: 100%;
+  text-align: center;
+}
+
+.question-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+.container-home {
+  width: 992px;
+  height: calc(100vh - 70px);
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 100px;
+}
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-logo {
+  width: 300px;
+  height: 300px;
+}
+
 
 /* CSS */
 /* CSS */
@@ -166,4 +228,15 @@ body {
 
 .modal-bold{
   font-weight: bold;
+}
+
+
+
+.dropdown-toggle {
+  margin-right: 10px !important;
+  background-color: white !important;
+}
+
+.dropdown-menu-right{
+  margin-right: 10px !important;
 }

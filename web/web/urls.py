@@ -21,6 +21,8 @@ from document.api import add_highlight, remove_highlight
 
 urlpatterns = [
     path('', include('core.urls', namespace='core')),
+    # path('profile', include('user.profile', namespace='core')),
+
     path('topic/', include('topic.urls', namespace='topic')),
     path('judgment/', include('judgment.urls', namespace='judgment')),
     path('admin/', admin.site.urls),
@@ -31,7 +33,6 @@ urlpatterns = [
 
     path('update_font_size/<int:taskId>/', update_font_size, name='update_font_size'),
     path('add_tag/<int:taskId>/', add_tag, name='add_tag'),
-
     path('remove_tag/<int:taskId>/', remove_tag, name='remove_tag'),
     path('add_highlight/<int:responseId>/', add_highlight, name='add_highlight'),
     path('remove_highlight/<int:responseId>/', remove_highlight, name='remove_highlight'),

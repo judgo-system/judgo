@@ -13,11 +13,11 @@ def add_highlight(request, responseId):
     if is_ajax:
         response = get_object_or_404(Response, id=responseId)
 
-        if request.method == 'PUT':
+        if request.method == 'PUT' and not response.user.latest_judgment.is_tested:
+            
             data = json.load(request)
             highlights = data.get('highlight')
             response.highlight = highlights
-            # response.highlight = '|||'.join(tag for tag in set(highlights.split("|||")))
             
             response.save()
 
@@ -32,7 +32,7 @@ def remove_highlight(request, responseId):
     if is_ajax:
         response = get_object_or_404(Response, id=responseId)
 
-        if request.method == 'PUT':
+        if request.method == 'PUT' and not response.user.latest_judgment.is_tested:
             data = json.load(request)
             deleted_value = data.get('payload')
             highlight = response.highlight.split(",")

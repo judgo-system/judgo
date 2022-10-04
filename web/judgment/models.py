@@ -30,7 +30,7 @@ class Judgment(models.Model):
     before_state = models.BinaryField(verbose_name='Before State')
 
     # contain a pickle object of pref class after action
-    after_state = models.BinaryField(verbose_name='After State')
+    after_state = models.BinaryField(verbose_name='After State', blank=True, null=True)
 
 
     # # Indicate if it's the first judment by this user in this session for this question
@@ -42,6 +42,14 @@ class Judgment(models.Model):
     # Indicate if question judgment is completed which means we have
     #  all documents sorted in the best_answers.
     is_complete = models.BooleanField(default=False)
+
+
+    # Indicate if user decided to change this or not!
+    has_changed = models.BooleanField(default=False)
+
+    # Indicate if this judgment is used for test or not!
+    is_tested = models.BooleanField(default=False)  
+
 
     left_response = models.ForeignKey(
         Response, on_delete=models.CASCADE, 
@@ -73,3 +81,21 @@ class Judgment(models.Model):
         return "(ID: {} USERNAME: {}, Topic{})".format(self.pk,
             self.user.username, self.task.topic
         )
+
+
+
+class JudgmentConsistency(models.Model):
+
+    task = models.ForeignKey(Task, on_delete=models.CASCADE)
+
+    judgment = models.ForeignKey(Judgment, on_delete=models.CASCADE)
+    
+    # check if the current action is the same with the previous one.
+    is_consistent = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
+
+    def __str__(self) -> str:
+        return f'(Topic:{self.task.topic.title}, \
+            Judgment:{self.judgment.id}, \
+            Is Consistent:  {self.is_consistent})'

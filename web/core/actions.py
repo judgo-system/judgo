@@ -24,7 +24,7 @@ def export_task_as_csv_action(description="Export selected objects as CSV file",
         writer = csv.writer(response)
 
         
-        field_names = ['ID', 'Topic ID', 'Is Completed', 'Grade', 'Document UUID']
+        field_names = ['ID', 'Username', 'Topic ID', 'Is Completed', 'Grade', 'Document UUID']
         
         writer.writerow(list(field_names))
         
@@ -36,7 +36,7 @@ def export_task_as_csv_action(description="Export selected objects as CSV file",
                 if temp:
                     grade = f'{i+1}'
                 for doc in temp:
-                    writer.writerow([obj.id, obj.topic.title, obj.is_completed, grade, doc])
+                    writer.writerow([obj.id, obj.user.username, obj.topic.uuid, obj.is_completed, grade, doc])
 
         return response
 

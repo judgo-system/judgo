@@ -12,16 +12,13 @@
     
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    
-    
-    
-    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
     
     <script src="https://cdn.jsdelivr.net/npm/@yaireo/tagify"></script>
 
-    <script type="text/javascript" src="{% static 'js/text_coloring.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/judgment_functions.js' %}"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
 
@@ -74,7 +71,7 @@
             <div class="header-btn-container">
 
                 <div class="progress-txt">
-                    <h3><strong>Progress: {{ progress_bar_width }}% </strong></h3>
+                    <h3><strong>Estimated Remaining Judgments: {{ progress_bar_width }} </strong></h3>
                 </div>
                 
                 <button class="button topic-info-button" id="topic_info_li">
@@ -93,11 +90,18 @@
                     </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="tag-container">
-            <input name='tags_words' value="{{ highlights }}">
+   
         </div>
+        <div>
+        <div class="title-header">
+            
+            <titlep>Topic:</titlep> {{ topic.title }}
+        </div>
+        <div class="tag-container">
+            <input name='tags_words' value="{{ highlights }}" pattern='^[0-9A-Za-z_✲ ]{2,}$'>
+        </div>
+    </div>
 
 
         <div id="debug-div"class="tree-container">
@@ -112,16 +116,18 @@
             
         <div class="documents" id="wrapper">
             <div class="document-left" id="drag-left">
-                <div class="docment-header"> 
-                    <h2 class="document-url">
-                        <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">
-                            {{doc_left.url}}
-                        </a>
-                    </h2>
-                </div>
+                <!-- <div class="docment-header">  -->
+                <h2 class="document-url">
+                    <p class="new-document-label">
+                        {{new_left}}  
+                    </p>    
+                    <a href="{{doc_left.url}}" target=”_blank” rel="noopener noreferrer">
+                        {{doc_left.url}}
+                    </a>
+                </h2>
+                <!-- </div> -->
                 {% autoescape off %}
-                <div class="document-content"><p id="left-doc" class="editable-doc">{{left_txt}}</p>
-                </div>
+                <div class="document-content"><p id="left-doc" class="editable-doc">{{left_txt}}</p></div>
                 {% endautoescape %} 
                 
             </div>
@@ -133,15 +139,16 @@
             </div>
 
             <div class="document-right" id="drag-right">
-                <div>
-                    <h2 class="document-url">
-                        <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
-                    </h2>
-                    
-                </div>
+                <!-- <div> -->
+                <h2 class="document-url">
+                    <p class="new-document-label">
+                        {{new_right}} 
+                    </p>
+                    <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
+                </h2>
+                <!-- </div> -->
                 {% autoescape off %}
-                <div class="document-content"><p id="right-doc" class="editable-doc">{{right_txt}}</p>
-                </div>
+                <div class="document-content"><p id="right-doc" class="editable-doc">{{right_txt}}</p></div>
                 {% endautoescape %} 
 
             </div>
@@ -152,20 +159,23 @@
     <!-- COMPLETE TASK MODAL -->
     <div class="modal fade" id="ccomplete-modal" role="dialog">
         <div class="modal-dialog">
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header" style="padding:35px 50px;">
                     <h3>This task is DONE!</h3>
+                    <p class="modal-sentence">If you want to go back to the previous judgment and change it, click on the back; otherwise, click on home.</p>
                 </div>
                 <div class="modal-body" style="padding:40px 50px;">
                     <form method='post'>
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-success btn-block" name="back_home">
-                                Home
-                        </button>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-block" name="back_home">
+                                    Home
+                            </button>
+                            <button type="submit" class="btn btn-success btn-block" name="done_back">
+                                Back
+                            </button>
                     </form>
-                    </div>
                 </div>
+            </div>
         </div>
     </div>
     
@@ -194,65 +204,7 @@
     <!-- JavaScript Block -->
     <script>
 
-
-        var left_highlights = "{{ highlight_left_txt }}".split("||")
-        var right_highlights = "{{ highlight_right_txt }}".split("||")
-        var left_highlight_list = []
-        var right_highlight_list = []
-        
-        for(i=0;i < left_highlights.length;i++){
-            if(left_highlights[i] != "None" && left_highlights[i] != ""){
-                var temp = left_highlights[i].split(",")
-                left_highlight_list.push([Number(temp[0]), Number(temp[1]), temp[2]])
-            }  
-        }
-
-
-        for(i=0;i < right_highlights.length;i++){
-            if(right_highlights[i] != "None"  && right_highlights[i] != ""){
-            
-            var temp = right_highlights[i].split(",")
-            right_highlight_list.push([Number(temp[0]), Number(temp[1]), temp[2]])
-            }
-        }
-        
-        var raw_tags = "{{ highlights }}".split(",")
-        var tags_dic = {}
-
-        for(let i=0; i < raw_tags.length; i++){
-            tags = raw_tags[i].split("|")
-            if (tags[0] !==""){
-                tags_dic[tags[0]] = tags[1]
-            }
-        }
-        
-
-        $("#left-doc").html(
-            get_cooked_text($("#left-doc").text(), tags_dic, left_highlight_list)
-        );
-            
-        $("#right-doc").html(
-            get_cooked_text($("#right-doc").text(), tags_dic, right_highlight_list)
-        );
-
-        $(function (){
-
-
-            $('.nav').hide(); 
-            $('.menu-btn').click(function (){ 
-                $('.nav').toggle(300);
-            });
-        });
-
-      function disableBack() { window.history.forward(); }
-        setTimeout("disableBack()", 0);
-        window.onunload = function () { null };
-
-        history.pushState(null, null, location.href);
-        window.onpopstate = function () { history.go(1); };
-
-        
-      function getCookie(name) {
+        function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== "") {
                     const cookies = document.cookie.split(";");
@@ -267,9 +219,18 @@
             return cookieValue;
         }
 
-        mouseXPosition = 0;
+        // Handle brower back buton.
+        function disableBack() { window.history.forward(); }
+        setTimeout("disableBack()", 0);
+        window.onunload = function () { null };
+
+        history.pushState(null, null, location.href);
+        window.onpopstate = function () { history.go(1); };
+
+        
         $(document).ready(function () {
             
+
             const debug = "{{debug}}"
             if(debug=="true"){
                 $("#debug-div").show();
@@ -291,12 +252,63 @@
             }
 
         });
+
+
+        // Step1 - Extract mouse highlights
+        // When the page is loaded the first action is to create highlight list for the left and right documents.
+        // each highlight_*_txt contains list of one highlight pair concatenated with `||`. 
+        // each pair contain (first_index, last_index, color)
+
+        var left_highlights = "{{ highlight_left_txt }}".split("||")
+        var right_highlights = "{{ highlight_right_txt }}".split("||")
+        var left_highlight_list = []
+        var right_highlight_list = []
+        
+        for(i=0;i < left_highlights.length;i++){
+            if(left_highlights[i] != "None" && left_highlights[i] != ""){
+                var temp = left_highlights[i].split(",")
+                left_highlight_list.push([Number(temp[0]), Number(temp[1]), temp[2]])
+            }  
+        }
+
+        for(i=0;i < right_highlights.length;i++){
+            if(right_highlights[i] != "None"  && right_highlights[i] != ""){
+            
+            var temp = right_highlights[i].split(",")
+            right_highlight_list.push([Number(temp[0]), Number(temp[1]), temp[2]])
+            }
+        }
         
 
+        // Step2 - extract highlight keywords
+        // the given highlights is a string that contain a list of highlight keyword pairs, concatenated with `,`
+        // each pair contains (terms|color)
+
+        var raw_tags = "{{ highlights }}".split(",")
+        var tags_dic = {}
+
+        for(let i=0; i < raw_tags.length; i++){
+            tags = raw_tags[i].split("|")
+            if (tags[0] !==""){
+                tags_dic[tags[0]] = tags[1]
+            }
+        }
+        
+        // Step 3 - apply highlight keywords to the left and right documents
+        $("#left-doc").html(
+            get_cooked_text($("#left-doc").text(), tags_dic, left_highlight_list)
+        );
+            
+        $("#right-doc").html(
+            get_cooked_text($("#right-doc").text(), tags_dic, right_highlight_list)
+        );
+
+
+        // Step 4 - As soon as user click on any button in judgment page, 
+        // all mouse highlight doucments and font-size will be sent to backend 
         $(".button").click( function(e3){
             var right_doc_highlights = "";
             var left_doc_highlights = "";
-            
 
             for (i=0; i< left_highlight_list.length;i++){
                 left_doc_highlights += left_highlight_list[i] +"||"
@@ -377,6 +389,7 @@
         })
 
 
+        // ------------------------ Mange highlight keywords in search box is started ---------------------------
         function manage_tags(search_area, tag, action, highlight_list){
             
             var textarea = $(search_area);    
@@ -390,18 +403,19 @@
                 delete tags_dic[tags[0]]
             }
             
-            var cooked_text = get_cooked_text(textarea.text(), tags_dic, highlight_list)
-            textarea.html(cooked_text);
+            textarea.html(
+                get_cooked_text(textarea.text(), tags_dic, highlight_list)
+            );
         }
 
 
         // TAGIFY
         var input = document.querySelector('input[name=tags_words]'),
+        // by default delimiters is ','
         tagify = new Tagify(input, {
             transformTag        : transformTag,
             placeholder         : "Search keywords",
-            blacklist           : ["mark", "span", "style", "background", "class"]
-            
+            blacklist           : ["mark", "span", "style", "background", "class", "."],            
         })
         
         const colorGlobalList = [
@@ -412,7 +426,7 @@
         ]
         
 
-        // generate a random color (in HSL format, which I like to use)
+        // handle tags color according to colorGlobalList
         function getTagColor(tag){
 
             var randomColor
@@ -452,6 +466,8 @@
         function transformTag( tagData ){
             
             var tags = tagData["value"].split("|")
+            // if a judgment with some tags is loaded then number of tags are more than zero
+           
             if (tags.length > 1) {
                 tagData.color = tags[1].replaceAll(".",",");
                 tagData.value = tags[0];
@@ -518,9 +534,11 @@
             });
         })
 
-        
-        // New Highlighting Method!
+        // ------------------------ Mange highlight keywords in search box END ---------------------------
 
+
+
+        // ------------------------ Mange mouse highlighting is started ---------------------------
         function empty_selection(){
             if (window.getSelection) {
                 if (window.getSelection().empty) { 
@@ -533,68 +551,53 @@
             }
         }
 
-        var target = ""
-        $(".editable-doc").mousedown(function (e1) {
-            if (e1.target.id=="left-doc" || e1.target.parentNode.id=="left-doc"){
-                target = "#left-doc"
-            }
-            if (e1.target.id=="right-doc" || e1.target.parentNode.id=="right-doc"){
-                target = "#right-doc"
-            }
-        });
-
-        $(".editable-doc").mouseup(function (e2) {
-            
-            var target2 = ""
-            if (e2.target.id=="left-doc" || e2.target.parentNode.id=="left-doc" ){
-                target2 = "#left-doc"
-            }
-            if (e2.target.id=="right-doc" || e2.target.parentNode.id=="right-doc"){
-                target2 = "#right-doc"
-            }
-
-            if (target2 != target){
-                empty_selection()
-                return;
-            }
+        function highlight_document(doc, element){
 
             var selection = window.getSelection();
             var selectedText = selection.toString();
-
-            var endpos = getCaretCharacterOffsetWithin(e2.target.parentNode);
-            console.log(endpos-selectedText.length, endpos)
+            var endpos = getCaretCharacterOffsetWithin(element.parentNode);
             
             if (endpos-selectedText.length != endpos){  
                 var cooked_text = ""
-                if(target2=="#right-doc"){
+                if(doc=="#right-doc"){
                     right_highlight_list = update_highlight_list(right_highlight_list, endpos-selectedText.length, endpos)
-                    cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, right_highlight_list)
+                    cooked_text = get_cooked_text(element.parentNode.textContent, tags_dic, right_highlight_list)
                 }
-                if(target2=="#left-doc"){
+                if(doc=="#left-doc"){
                     left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
-                    console.log(left_highlight_list)
-                    cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, left_highlight_list)
+                    cooked_text = get_cooked_text(element.parentNode.textContent, tags_dic, left_highlight_list)
                 }
-                $(target2).html(cooked_text)    
+                $(doc).html(cooked_text)   
+                // copy selected text in the clipboard
+                navigator.clipboard.writeText(selectedText);
 
             }
-            empty_selection()            
+            empty_selection()
+        }
+
+
+        $("#left-doc").click(function (e){
+            highlight_document("#left-doc", e.target)           
         });
 
-        
+        $("#right-doc").click(function (e){
+            highlight_document("#right-doc", e.target)           
+        });
 
-    // // DragBar
+        // ------------------------ Mange mouse highlighting is end ---------------------------
+
+        
+        // ------------------------ Dragbar is started ---------------------------
         var left = document.getElementById('drag-left');
         var bar = document.getElementById('dragbar');
         var isHandlerDragging = false;
-
         var handler = document.querySelector('.dragbar');
-
        
+
         document.addEventListener('mousedown', function(e) {
             if (e.target === handler) {
                 isHandlerDragging = true;
-                return;
+                return 
             }
         });
 
@@ -602,17 +605,18 @@
             if (!isHandlerDragging) {
                 return false;
             }
+            
             document.selection ? document.selection.empty() : window.getSelection().removeAllRanges();
             left.style.width = (e.pageX - bar.offsetWidth / 2)+ 'px';
-
         });
 
         document.addEventListener('mouseup', function(e) {
             isHandlerDragging = false;
         });
+        // ------------------------ Mange mouse highlighting is ended ---------------------------
 
 
-        // FONT CHANGE
+        // ------------------------ Font Changes is started ---------------------------
         $("#increase-btn").click(function(){
             changeFontSize(1, "left-doc");
             changeFontSize(1, "right-doc");
@@ -622,45 +626,13 @@
             changeFontSize(-1, "left-doc");
             changeFontSize(-1, "right-doc");
         })
+        // ------------------------ Font Changes is ended ---------------------------
 
-        function changeFontSize(direction, element){
-            var element = document.getElementById(element);
-            style = window.getComputedStyle(element, null).getPropertyValue('font-size');
-            currentSize = parseFloat(style);
-            element.style.fontSize = (currentSize + direction) + 'px';
-        }
+    
 
     // Minimpa :))))))))))))))))))))
     // https://codepen.io/shshaw/pen/wGPpqL  ==> doesn't work
-
-
-    function getCaretCharacterOffsetWithin(element) {
-        var caretOffset = 0;
-        var doc = element.ownerDocument || element.document;
-        var win = doc.defaultView || doc.parentWindow;
-        var sel;
-        if (typeof win.getSelection != "undefined") {
-            sel = win.getSelection();
-            if (sel.rangeCount > 0) {
-            var range = win.getSelection().getRangeAt(0);
-            var preCaretRange = range.cloneRange();
-            preCaretRange.selectNodeContents(element);
-            preCaretRange.setEnd(range.endContainer, range.endOffset);
-            caretOffset = preCaretRange.toString().length;
-            }
-        } else if ((sel = doc.selection) && sel.type != "Control") {
-            var textRange = sel.createRange();
-            var preCaretTextRange = doc.body.createTextRange();
-            preCaretTextRange.moveToElementText(element);
-            preCaretTextRange.setEndPoint("EndToEnd", textRange);
-            caretOffset = preCaretTextRange.text.length;
-        }
-        return caretOffset;
-        }
         
     </script>
 </body>
 </html>
-
-
-<!-- http://jsfiddle.net/3t8n0s5v/ -->

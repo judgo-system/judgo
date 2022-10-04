@@ -18,35 +18,6 @@ body {
   margin: 0 auto;
 }
 
-.container-home {
-  width: 992px;
-  height: calc(100vh - 70px);
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 100px;
-}
-
-.home-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.home-logo {
-  width: 300px;
-  height: 300px;
-}
-
-.question-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
 .documents {
   display: flex;
   width: 100%;
@@ -188,7 +159,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-top: 5px;
-  height: 45px;
+  height: 50px;
   text-align: center;
 }
 
@@ -322,13 +293,6 @@ body {
   white-space: pre-wrap;
 
 }
-/* #left-doc::-moz-selection { Code for Firefox */
-    /* background: yellow;
-} */
-
-/* #left-doc::selection {
-    background: yellow;
-}  */
       
 * {
   box-sizing: border-box;
@@ -364,45 +328,6 @@ body {
   content: "\2212";
 }
 
-.content {
-  padding: 0 18px;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-out;
-  background-color: #f1f1f1;
-  line-height: 1.5;
-  text-align: justify;
-}
-
-.best-answer-container {
-  width: 100%;
-  height: calc(100% - 70px);
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: column;
-}
-
-.best-answer-container h2 {
-  background: #789395;
-  padding: 10px;
-  color: white;
-  font-size: 20px;
-  width: 100%;
-  box-sizing: border-box;
-  text-align: center;
-}
-
-.best-answer-list {
-  width: 500px;
-  max-height: calc(100vh - 220px);
-  overflow: auto;
-}
-
-.level-content {
-  padding: 10px;
-  margin-top: 10px;
-}
 
 .tree-header {
   text-align: center;
@@ -436,34 +361,20 @@ body {
   overflow: auto;
 }
 
-.home-header {
-  width: calc(100% - 300px);
-  justify-content: center;
-  align-items: center;
-  font-size: 1.1rem;
-  line-height: 1.1rem;
-  margin-right: 60px;
-  margin-left: 60px;
-}
-
-.home-message {
-  margin-left: 50px;
-  width: 100%;
-  text-align: center;
-}
-
 .modal-sentence{
   margin-top: 10px;
   line-height: normal;
+  font-size: smaller;
 }
+
 
 
 .tag-container {
   display: flex;
-  margin: 10px 15px;
-  height: 50px;
+  margin: 10px 17px;
+  height: 45px;
   background-color: #f6f4f2;
-  padding: 10px;
+  padding: 7px;
   border-radius: 1ch;
 }
 
@@ -493,11 +404,11 @@ body {
 }
 
 
-
 .document:nth-child(2n) .document-title {
   border-left: 2px solid white;
 }
 .document-url {
+  display: flex;
   height: 40px;
   background: #aab7aa;  
   padding: 10px;
@@ -520,12 +431,8 @@ body {
   height: 100% !important; 
   width: 100% !important;
   overflow: auto !important;
-  font-size: 0.65rem !important;
+  font-size: 11px !important;
 }
-/* 
-.highlighter {
-  background:yellow;
-} */
 
 .dragbar {
   width:  15px;
@@ -565,7 +472,7 @@ strong {
 }
 
 strong::before {
-  background-color: #d4dbd4;
+  background-color: #eaeeea;
 
   content: "";
   position: absolute;
@@ -617,6 +524,44 @@ strong::before {
 
 .editable-doc{
   height: 100%;
+}
+
+.new-document-label{
+  font-style: italic;
+  text-shadow: 2px 2px 5px grey;
+  margin-right: 5px;
+}
+
+
+.title-header {
+  height: 40px;
+  margin: 15px 20px;
+  padding-top: 15px;
+  font-size: 1.1rem;
+  color: black;
+  text-align: center;
+  overflow: hidden;
+  border-top: double;
+  border-color: #e2e7e2;  
+  border-width: 1px;
+}
+
+titlep {
+  position: relative;
+  font-size: 1.1rem;
+}
+
+
+titlep::before {
+  background-color: #f6a5a1;
+  content: "";
+  position: absolute;
+  width: calc(100% + 4px);
+  height: 60%;
+  left: -3px;
+  bottom: 0;
+  z-index: -1;
+  transform: rotate(-2deg);
 }
 
 /* https://colorhunt.co/palette/fef5edd3e4cdadc2a999a799 */
