@@ -411,6 +411,7 @@
 
         // TAGIFY
         var input = document.querySelector('input[name=tags_words]'),
+        // by default delimiters is ','
         tagify = new Tagify(input, {
             transformTag        : transformTag,
             placeholder         : "Search keywords",
@@ -466,10 +467,7 @@
             
             var tags = tagData["value"].split("|")
             // if a judgment with some tags is loaded then number of tags are more than zero
-            console.log("------------------------------")
-            console.log("ThiS IS TAG DATA!!!!")
-            console.log(tagData)
-
+           
             if (tags.length > 1) {
                 tagData.color = tags[1].replaceAll(".",",");
                 tagData.value = tags[0];
@@ -569,7 +567,9 @@
                     left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
                     cooked_text = get_cooked_text(element.parentNode.textContent, tags_dic, left_highlight_list)
                 }
-                $(doc).html(cooked_text)    
+                $(doc).html(cooked_text)   
+                // copy selected text in the clipboard
+                navigator.clipboard.writeText(selectedText);
 
             }
             empty_selection()
@@ -577,61 +577,13 @@
 
 
         $("#left-doc").click(function (e){
-            // console.log(e)
             highlight_document("#left-doc", e.target)           
         });
 
         $("#right-doc").click(function (e){
-            // console.log(e)
             highlight_document("#right-doc", e.target)           
         });
 
-        // var start_target = "";
-        // var target = ""
-        // $(".editable-doc").mousedown(function (e1) {
-        //     if (e1.target.id=="left-doc" || e1.target.parentNode.id=="left-doc"){
-        //         target = "#left-doc"
-        //     }
-        //     if (e1.target.id=="right-doc" || e1.target.parentNode.id=="right-doc"){
-        //         target = "#right-doc"
-        //     }
-        // });
-
-        // $(".editable-doc").mouseup(function (e2) {
-            
-        //     var target2 = ""
-        //     if (e2.target.id=="left-doc" || e2.target.parentNode.id=="left-doc" ){
-        //         target2 = "#left-doc"
-        //     }
-        //     if (e2.target.id=="right-doc" || e2.target.parentNode.id=="right-doc"){
-        //         target2 = "#right-doc"
-        //     }
-
-        //     if (target2 != target){
-        //         empty_selection()
-        //         return;
-        //     }
-
-            // var selection = window.getSelection();
-            // var selectedText = selection.toString();
-
-            // var endpos = getCaretCharacterOffsetWithin(e2.target.parentNode);
-            
-            // if (endpos-selectedText.length != endpos){  
-            //     var cooked_text = ""
-            //     if(target2=="#right-doc"){
-            //         right_highlight_list = update_highlight_list(right_highlight_list, endpos-selectedText.length, endpos)
-            //         cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, right_highlight_list)
-            //     }
-            //     if(target2=="#left-doc"){
-            //         left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
-            //         cooked_text = get_cooked_text(e2.target.parentNode.textContent, tags_dic, left_highlight_list)
-            //     }
-            //     $(target2).html(cooked_text)    
-
-            // }
-            // empty_selection()            
-        // });
         // ------------------------ Mange mouse highlighting is end ---------------------------
 
         
