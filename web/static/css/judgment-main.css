@@ -18,35 +18,6 @@ body {
   margin: 0 auto;
 }
 
-.container-home {
-  width: 992px;
-  height: calc(100vh - 70px);
-  margin: 0 auto;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-top: 100px;
-}
-
-.home-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.home-logo {
-  width: 300px;
-  height: 300px;
-}
-
-.question-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
 .documents {
   display: flex;
   width: 100%;
@@ -390,22 +361,6 @@ body {
   overflow: auto;
 }
 
-.home-header {
-  width: calc(100% - 300px);
-  justify-content: center;
-  align-items: center;
-  font-size: 1.1rem;
-  line-height: 1.1rem;
-  margin-right: 60px;
-  margin-left: 60px;
-}
-
-.home-message {
-  margin-left: 50px;
-  width: 100%;
-  text-align: center;
-}
-
 .modal-sentence{
   margin-top: 10px;
   line-height: normal;
@@ -416,10 +371,10 @@ body {
 
 .tag-container {
   display: flex;
-  margin: 10px 15px;
-  height: 50px;
+  margin: 10px 17px;
+  height: 45px;
   background-color: #f6f4f2;
-  padding: 10px;
+  padding: 7px;
   border-radius: 1ch;
 }
 
@@ -449,7 +404,6 @@ body {
 }
 
 
-
 .document:nth-child(2n) .document-title {
   border-left: 2px solid white;
 }
@@ -477,12 +431,8 @@ body {
   height: 100% !important; 
   width: 100% !important;
   overflow: auto !important;
-  font-size: 0.65rem !important;
+  font-size: 11px !important;
 }
-/* 
-.highlighter {
-  background:yellow;
-} */
 
 .dragbar {
   width:  15px;
@@ -522,7 +472,7 @@ strong {
 }
 
 strong::before {
-  background-color: #d4dbd4;
+  background-color: #eaeeea;
 
   content: "";
   position: absolute;
@@ -584,17 +534,16 @@ strong::before {
 
 
 .title-header {
-  height: 35px;
-  margin: 10px;
-  padding-top: 10px;
+  height: 40px;
+  margin: 15px 20px;
+  padding-top: 15px;
   font-size: 1.1rem;
-
   color: black;
   text-align: center;
   overflow: hidden;
-  border-top: dashed;
-  border-color: #aab7aa;  
-  border-width: 2px;
+  border-top: double;
+  border-color: #e2e7e2;  
+  border-width: 1px;
 }
 
 titlep {
@@ -604,7 +553,7 @@ titlep {
 
 
 titlep::before {
-  background-color: #e4eae4;
+  background-color: #f6a5a1;
   content: "";
   position: absolute;
   width: calc(100% + 4px);
