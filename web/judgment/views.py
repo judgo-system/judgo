@@ -3,6 +3,7 @@ import html
 import logging
 from tracemalloc import start
 from operator import itemgetter
+from datetime import datetime
 
 from braces.views import LoginRequiredMixin
 
@@ -21,8 +22,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     task_id = None
     left_doc_id = None
     right_doc_id = None
-    TOP_DOC_THRESHOULD = 10
-
+    # TOP_DOC_THRESHOULD = 10
 
     def render_to_response(self, context, **response_kwargs):
 
@@ -112,9 +112,6 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         
         return HttpResponseRedirect(reverse_lazy('core:home'))
 
-
-
-
     def handle_prev_button(self, user, prev_judge):
 
         if prev_judge.parent:    
@@ -141,7 +138,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         # the user is back to the same judment so we need to make a copy of this    
         if prev_judge.action != None:
-            logger.info(f"User change their mind about judment {prev_judge.id} which was {prev_judge.action}")
+            logger.info(f"The user = '{user.username}' changed their mind about judgement {prev_judge.id} which was '{prev_judge.action}'")
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
@@ -149,12 +146,15 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 parent=prev_judge.parent
             )
             
-        logger.info(f"This user had action: {prev_judge.action} about judment {prev_judge.id}")
-
         # update pre_judge action
         prev_judge.action = action
+        prev_judge.completed_at = datetime.now()
         prev_judge.after_state = after_state
         prev_judge.save()
+
+        logger.info(f"For topic_id = '{prev_judge.task.topic.uuid}' with topic_title = '{prev_judge.task.topic.title}', the user = '{user.username}' began judgement id {prev_judge.id} at {prev_judge.created_at}")
+        logger.info(f"For topic_id = '{prev_judge.task.topic.uuid}' with topic_title = '{prev_judge.task.topic.title}', the user = '{user.username}' completed action: '{prev_judge.action.label}' for judgement id {prev_judge.id} at {prev_judge.completed_at}")
+
 
         # check if this round of judgment is finished or not!
         while pref.is_judgment_finished(after_state):
@@ -169,12 +169,15 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge.save()
 
     
-            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
+            # if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
+            if pref.is_judgment_completed(after_state):
                 prev_judge.is_complete = True
                 prev_judge.task.is_completed = True
                 prev_judge.task.best_answers = prev_judge.best_answers
                 prev_judge.task.save()
                 prev_judge.save()
+
+                logger.info(f"User = '{user.username}' has completed judging topic_id = '{prev_judge.task.topic.uuid}', topic_title = '{prev_judge.task.topic.title}'!")
 
                 return HttpResponseRedirect(
                 reverse_lazy(
@@ -184,7 +187,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             )
 
         if prev_judge.is_round_done:
-            logger.info(f'One round is finished! you are going to the next step!')
+            logger.info(f'One round is finished! You are going to the next step!')
 
         judgement = Judgment.objects.create(
                 user=user,

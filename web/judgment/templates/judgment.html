@@ -62,6 +62,10 @@
                             </form>  
                         </div>
                 </div> 
+                <!-- <form method='post' id="popup-form">
+                    {% csrf_token %}
+                    <button class="button btn-action" type="submit" value="popup">BLAAAAAAAAAAAAA</button>
+                </form> -->
                 
             </div>
 
@@ -656,7 +660,45 @@
             caretOffset = preCaretTextRange.text.length;
         }
         return caretOffset;
+    }
+
+        function alertTime(){
+            ms = 5*60*1000 //5 minutes
+  
+            counter = setInterval(popup,ms);
         }
+        
+        function popup(){
+            $.ajax
+            ({ 
+                url: "/../../popup_alert/" + getCookie("task_id") + "/",
+                method: 'POST',
+
+                credentials: "same-origin",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRFToken": getCookie("csrftoken"),
+                },
+                success: function(result)
+                {
+                    console.log(result)
+                },
+                error: (error) => {
+                    console.log(error)
+                },
+            });
+            clearInterval(counter);
+            if (confirm("You have taken more than 5 minutes judging these two documents. Press 'Ok' if you would like to continue judging. Press 'Cancel' if you would like to take a break and log out.")){
+                alertTime();
+            } else {
+                window.location.href = "{% url 'account_logout' %}";
+            }
+        }
+
+        $(document).ready(function () {
+            alertTime();
+        });
+        
         
     </script>
 </body>

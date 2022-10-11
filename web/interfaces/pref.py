@@ -231,12 +231,21 @@ def create_new_pref_obj(topic):
         bytes of a pref obj created from a list of documents related to topic id
     """
 
-    document_list = Document.objects.filter(topics = topic)
-    docs_list = []
-    for d in document_list:
-        docs_list.append(d.uuid)
-    random.shuffle(docs_list)
-    pref_obj = pref(docs_list)
+    tutorial_topic = '147'
+    #check if topic_id is tutorial topic or not, if yes then stop shuffle, if no then continue shuffle 
+    if topic.uuid  == tutorial_topic:
+        document_list = Document.objects.filter(topics = topic)
+        docs_list = []
+        for d in document_list:
+            docs_list.append(d.uuid)
+        pref_obj = pref(docs_list)  
+    else:
+        document_list = Document.objects.filter(topics = topic)
+        docs_list = []
+        for d in document_list:
+            docs_list.append(d.uuid)
+        random.shuffle(docs_list) #shuffles documents
+        pref_obj = pref(docs_list)
 
     return pickle.dumps(pref_obj) 
 

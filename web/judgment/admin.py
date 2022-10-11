@@ -8,7 +8,7 @@ from .models import Judgment
 class JudgmentAdmin(admin.ModelAdmin):
     list_display = ('id', 'view_user', 'parent_id', 'view_task', 'view_left_response', 'view_right_response',
         'view_best_answer', 'is_round_done', 'is_complete', 
-        'action', 'created_at'
+        'action', 'created_at', 'completed_at'
     )
 
     search_fields = ['user__username', 'task__topic__title']

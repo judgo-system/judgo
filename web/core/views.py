@@ -31,6 +31,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         else:
             context["message"] = 'There is no topic to review right now.'      
 
+        logger.info(f"User = '{self.request.user.username}' is at Home page")
 
         return context
 
@@ -55,6 +56,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
         prev_judge = None
         try:
+            logger.info(f"Topic = '{topic.title}' is being judged by user = '{self.request.user.username}'")
             prev_judge = Judgment.objects.filter(
                     user = self.request.user.id,
                     task=task.id
@@ -63,7 +65,7 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             if prev_judge.after_state:
                 state = prev_judge.after_state
         except Exception as e:
-            logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
+            logger.warning(f"There is no previous judgment for topic = '{topic.title}' by user = '{self.request.user.username}'")
             state = pref.create_new_pref_obj(topic)
                     
         if not prev_judge or prev_judge.is_complete:

@@ -63,7 +63,7 @@ class Judgment(models.Model):
     best_answers = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
-
+    completed_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
         if self.left_response and self.right_response:

@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import include
-from topic.api import add_tag, remove_tag, update_font_size
+from topic.api import add_tag, remove_tag, update_font_size, handle_popup
 from document.api import add_highlight, remove_highlight
 
 urlpatterns = [
@@ -36,4 +36,5 @@ urlpatterns = [
     path('add_highlight/<int:responseId>/', add_highlight, name='add_highlight'),
     path('remove_highlight/<int:responseId>/', remove_highlight, name='remove_highlight'),
 
+    path('popup_alert/<int:taskId>/', handle_popup, name ='handle_popup'),
 ]
