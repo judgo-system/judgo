@@ -1,5 +1,6 @@
 import csv
 from django.http import HttpResponse
+from document.models import Document
 
 def export_task_as_csv_action(description="Export selected objects as CSV file", fields=None, exclude=None, header=True):
     """
@@ -24,10 +25,10 @@ def export_task_as_csv_action(description="Export selected objects as CSV file",
         writer = csv.writer(response)
 
         
-        field_names = ['ID', 'Topic ID', 'Is Completed', 'Grade', 'Document UUID']
+        field_names = ['user', 'topic_id', 'topic_question', 'grade', 'doc_no', 'url']
         
         writer.writerow(list(field_names))
-        
+
         for obj in queryset:
             best_answers = obj.best_answers.split('--')[1:]
 
@@ -36,7 +37,8 @@ def export_task_as_csv_action(description="Export selected objects as CSV file",
                 if temp:
                     grade = f'{i+1}'
                 for doc in temp:
-                    writer.writerow([obj.id, obj.topic.title, obj.is_completed, grade, doc])
+                    document = Document.objects.get(uuid=doc, topics=obj.topic)
+                    writer.writerow([obj.user.username, obj.topic.uuid, obj.topic.title, grade, doc, document.url])
 
         return response
 
