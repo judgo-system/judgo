@@ -231,9 +231,9 @@ def create_new_pref_obj(topic):
         bytes of a pref obj created from a list of documents related to topic id
     """
 
-    tutorial_topic = '147'
+    tutorial_topic = ['127', '133']
     #check if topic_id is tutorial topic or not, if yes then stop shuffle, if no then continue shuffle 
-    if topic.uuid  == tutorial_topic:
+    if topic.uuid  in tutorial_topic:
         document_list = Document.objects.filter(topics = topic)
         docs_list = []
         for d in document_list:

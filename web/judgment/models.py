@@ -73,3 +73,12 @@ class Judgment(models.Model):
         return "(ID: {} USERNAME: {}, Topic{})".format(self.pk,
             self.user.username, self.task.topic
         )
+
+class Logs(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    username = models.TextField(null=True, blank=True)
+    log_created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    log_message = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.username}"

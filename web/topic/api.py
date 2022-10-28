@@ -1,19 +1,22 @@
 import json
-import logging
-
+from datetime import datetime
 from django.http import HttpResponseBadRequest, JsonResponse
 from django.shortcuts import get_object_or_404, render
 
 from core.models import Task
+from user.models import User
+from topic.models import Topic
+from interfaces import add_log
 
-logger = logging.getLogger(__name__)
 
 def handle_popup(request, taskId):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
     if is_ajax:
         task = get_object_or_404(Task, id=taskId)
+        user = User.objects.get(id=task.user_id)
+        topic = Topic.objects.get(id=task.topic_id)
         if request.method == 'POST':
-            logger.info(f"'5' minute alert pop-up appeared at this DateTime for task id " + str(task.id))
+            add_log.add_log_entry(user, f"'5' minute alert pop-up appeared at {datetime.now()} for task id {task.id}, topic_id = {topic.uuid}, title = {topic.title}")
 
             return JsonResponse({'status': ' Popup Handled!'})
 
