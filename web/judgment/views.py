@@ -13,9 +13,7 @@ from django.urls import reverse_lazy
 
 from document.models import Document, Response
 from judgment.models import Judgment, JudgingChoices
-from interfaces import pref
-
-from interfaces import add_log
+from interfaces import pref, add_log
 
 # logger = logging.getLogger(__name__)
 
