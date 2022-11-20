@@ -1,8 +1,7 @@
 set -o errexit
 set -o nounset
 
-echo "Load Environment Variable"
-export $(grep -v '^#' judgo.env | xargs)
+sleep 10
 
 rm -rf logs
 mkdir logs

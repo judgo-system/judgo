@@ -16,7 +16,7 @@ for i, t in pd.read_csv(os.path.join(ROOT_PATH, "question.csv")).iterrows():
 print("2- Map documents")
 for i, t in pd.read_csv(os.path.join(ROOT_PATH, 'passages.csv')).iterrows():
     try:
-        Document.objects.create(uuid=t[0], content=" "+t[1])
+        Document.objects.create(uuid=t[0], content=" "+t[1], title=t[0])
     except:
         continue
 

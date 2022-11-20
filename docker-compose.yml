@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
    
 services:
 
@@ -7,21 +7,21 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data/
     env_file:
-      - ./.envs/.postgres
+      - ./docker/.postgres
     ports:
       - 5432:5432
 
   web:
     build:
       context: .
-      dockerfile: ./dockers/web/Dockerfile
-    command: sh /run_web.sh
+      dockerfile: ./docker/Dockerfile
+    command: sh ./docker/run_web.sh
     volumes:
       - .:/code
     ports:
       - "8000:8000"
     env_file:
-      - ./.envs/.web
-      - ./.envs/.postgres
+      - ./docker/.web
+      - ./docker/.postgres
     depends_on:
       - postgres

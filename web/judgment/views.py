@@ -72,7 +72,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             if right_response.document.title:
                 context['right_txt'] = f"Title: {right_response.document.title}\n"\
                         f"Document ID: {right_response.document.uuid}\n\n"\
-                        f"{context['righ_txt']}"
+                        f"{context['right_txt']}"
 
         return context
 
@@ -292,7 +292,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     @staticmethod
     def get_fake_test_judgment(user, prev_judge):
 
-        if settings.TREC_NAME != "deep_learning":
+        if not settings.IS_JUDGMENT_TEST_EXIST:
             return prev_judge, False
 
         is_test = False
@@ -308,7 +308,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
         
         # test when there is we meet next interval
-        if len(judgement_list) < settings.JUDGMENT_TEST_INTERVAL or random.random() > 0.1:
+        if len(judgement_list) < settings.JUDGMENT_TEST_THRESHOULD or random.random() > 0.1:
             return prev_judge, is_test
 
         is_test = True
