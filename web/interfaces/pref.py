@@ -4,6 +4,11 @@ import random
 import math
 from topic.models import Topic
 from document.models import Document
+import environ
+
+# Load operating system environment variables and then prepare to use them
+env = environ.Env()
+environ.Env.read_env()
 
 class lisp(object):
     def __init__(self, ar = None, dr = None):
@@ -144,6 +149,8 @@ class pref(object):
         total_len = self.__t.length()
         self.total_judgment = (total_len - 1) + math.pow((total_len) // 2, 2)
         self.cur_judgment = 0
+        self.pref_version = env("PREF_ALGORITHM")
+
         
 
     def __repr__(self):
@@ -190,10 +197,12 @@ class pref(object):
             rest = rest.cdr()
             if item == one.caar():
                 outcome = cons(one.car(), cons(two, one.cdr()))
-                self.__t = rest.append(outcome)
             elif item == two.caar():
                 outcome = cons(two.car(), cons(one, two.cdr()))
+            if self.pref_version == "v.1":
                 self.__t = rest.append(outcome)
+            elif self.pref_version == "v.2":
+                self.__t = cons(outcome, rest)
 
     def equivalent(self):
         if not self.done():
@@ -203,12 +212,16 @@ class pref(object):
             two = rest.car()
             secondary = two.car()
             rest = rest.cdr()
-            self.__t = rest.append(one.concat(two.cdr()))
             x = primary.car()
             y = secondary.car()
             if x != y:
                 self.__equiv.append((x, y))
 
+            if self.pref_version == "v.1":
+                self.__t = rest.append(one.concat(two.cdr()))
+            elif self.pref_version == "v.2":
+                self.__t = cons(one.concat(two.cdr()), rest)
+            
     def pop(self):
         if not self.done() or self.empty():
             return
