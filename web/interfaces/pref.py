@@ -196,14 +196,10 @@ class pref(object):
                 outcome = cons(one.car(), cons(two, one.cdr()))
             elif item == two.caar():
                 outcome = cons(two.car(), cons(one, two.cdr()))
-            print("tolokhoda")
-            print(self.pref_version)
             if self.pref_version == "v.1":
                 self.__t = rest.append(outcome)
-                print("inja chi heivoon")
             elif self.pref_version == "v.2":
                 self.__t = cons(outcome, rest)
-                print("maiy injaaa? :|||||||")
 
     def equivalent(self):
         if not self.done():
@@ -345,8 +341,5 @@ def get_size(pref_obj):
 def get_progress_count(pref_obj):
 
     pref_obj = pickle.loads(pref_obj)
-    # progress = (100, round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))
-    # progress = (100 - round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))f
-    # return "{:.2f}".format(progress)
     progress = max(1, pref_obj.total_judgment - pref_obj.cur_judgment + 1)
     return progress
