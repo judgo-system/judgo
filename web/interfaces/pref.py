@@ -143,8 +143,6 @@ class pref(object):
         self.__equiv = []
 
         self.pref_version = os.getenv("PREF_ALGORITHM")
-        print("haaaaaay")
-        print(self.pref_version)
         total_len = self.__t.length()
         self.total_judgment = (total_len-1) + (k-1) * math.floor(math.log2(total_len-1)) 
         self.cur_judgment = 0
@@ -196,15 +194,11 @@ class pref(object):
                 outcome = cons(one.car(), cons(two, one.cdr()))
             elif item == two.caar():
                 outcome = cons(two.car(), cons(one, two.cdr()))
-            print("tolokhoda")
-            print(self.pref_version)
             if self.pref_version == "v.1":
                 self.__t = rest.append(outcome)
-                print("inja chi heivoon")
             elif self.pref_version == "v.2":
                 self.__t = cons(outcome, rest)
-                print("maiy injaaa? :|||||||")
-
+            
     def equivalent(self):
         if not self.done():
             one = self.__t.car()
