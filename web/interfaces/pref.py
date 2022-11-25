@@ -143,8 +143,6 @@ class pref(object):
         self.__equiv = []
 
         self.pref_version = os.getenv("PREF_ALGORITHM")
-        print("haaaaaay")
-        print(self.pref_version)
         total_len = self.__t.length()
         self.total_judgment = (total_len-1) + (k-1) * math.floor(math.log2(total_len-1)) 
         self.cur_judgment = 0
@@ -200,7 +198,7 @@ class pref(object):
                 self.__t = rest.append(outcome)
             elif self.pref_version == "v.2":
                 self.__t = cons(outcome, rest)
-
+            
     def equivalent(self):
         if not self.done():
             one = self.__t.car()
@@ -341,5 +339,8 @@ def get_size(pref_obj):
 def get_progress_count(pref_obj):
 
     pref_obj = pickle.loads(pref_obj)
+    # progress = (100, round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))
+    # progress = (100 - round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))f
+    # return "{:.2f}".format(progress)
     progress = max(1, pref_obj.total_judgment - pref_obj.cur_judgment + 1)
     return progress
