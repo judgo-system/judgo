@@ -31,12 +31,22 @@ def export_task_as_csv_action(description="Export selected objects as CSV file",
         writer.writerow(list(field_names))
 
         for obj in queryset:
-            action_dict = {1: "Right", 2: "Equal", 3: "Left"}
+            action_dict = {1: "Right", 2: "Equal", 3: "Left", None: "-"}
             task = Task.objects.get(id = obj.task_id)
             topic = Topic.objects.get(id = task.topic_id)
             action = action_dict[obj.action]
+
+            if obj.left_response == None:
+                left_response = None
+            else:
+                left_response = obj.left_response.document.uuid
             
-            writer.writerow([obj.user.username, topic.uuid, topic.title, obj.left_response.document.uuid, obj.right_response.document.uuid, action, obj.created_at, obj.completed_at])
+            if obj.right_response == None:
+                right_response = None
+            else:
+                right_response = obj.right_response.document.uuid
+
+            writer.writerow([obj.user.username, topic.uuid, topic.title, left_response, right_response, action, obj.created_at, obj.completed_at])
 
         return response
 
