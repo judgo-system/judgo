@@ -3,9 +3,12 @@ from django.urls import reverse
 from django.utils.html import format_html
 from document.models import Document
 from .models import Judgment
+from .actions import export_task_as_csv_action
+
 
 @admin.register(Judgment)
 class JudgmentAdmin(admin.ModelAdmin):
+    actions = [export_task_as_csv_action("CSV Export", fields=['id', 'user__username'])]
     list_display = ('id', 'view_user', 'parent_id', 'view_task', 'view_left_response', 'view_right_response',
         'view_best_answer', 'is_round_done', 'is_complete', 
         'action', 'created_at', 'completed_at'
