@@ -22,7 +22,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
     task_id = None
     left_doc_id = None
     right_doc_id = None
-    # TOP_DOC_THRESHOULD = 10
+    TOP_DOC_THRESHOULD = 10
 
     def render_to_response(self, context, **response_kwargs):
 
@@ -171,8 +171,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge.save()
 
     
-            # if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
-            if pref.is_judgment_completed(after_state):
+            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= self.TOP_DOC_THRESHOULD:
                 prev_judge.is_complete = True
                 prev_judge.task.is_completed = True
                 prev_judge.task.best_answers = prev_judge.best_answers
