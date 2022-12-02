@@ -136,16 +136,23 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         """
         action, after_state = JudgmentView.evaluate_after_state(requested_action, prev_judge.before_state)
 
-        # the user is back to the same judgment so we need to make a copy of this    
+        # the user is back to the same judgment so we need to make a copy of this 
         if prev_judge.action != None:
-            # logger.info(f"The user = '{user.username}' changed their mind about judgement {prev_judge.id} which was '{prev_judge.action}'")
             add_log.add_log_entry(user, f"The user = '{user.username}' changed their mind about judgement {prev_judge.id} which was '{prev_judge.action}' for topic_id = '{prev_judge.task.topic.uuid}', topic_title = '{prev_judge.task.topic.title}")
+            prev_judge.has_changed = True
+            prev_judge.save()
+            parent_best_answer = None
+            if prev_judge.parent:
+                parent_best_answer = prev_judge.parent.best_answers
             prev_judge = Judgment.objects.create(
                 user=user,
                 task=prev_judge.task,
                 before_state=prev_judge.before_state,
-                parent=prev_judge.parent
-            )
+                parent=prev_judge.parent,
+                left_response=prev_judge.left_response,
+                right_response=prev_judge.right_response,
+                best_answers=parent_best_answer
+            )   
             
         # update pre_judge action
         prev_judge.action = action
