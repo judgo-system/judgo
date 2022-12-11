@@ -39,6 +39,11 @@
 </head>
 <body>
     
+    <div class="loading-indicator"> 
+        <div class="lds-ring"><div></div><div></div><div></div><div></div>
+        </div> 
+        Judgment is loading ...
+    </div>
     
     <div class="main">
         <div class="header">
@@ -59,13 +64,10 @@
                                 <button class="button btn-action" type="submit" value="left" name="left">Left</button>
                                 <button class="button btn-action" type="submit" value="equal" name="equal">Equal</button>
                                 <button class="button btn-action" type="submit" value="right" name="right">Right</button>
+                                <div class="safe-overlay"></div>
                             </form>  
                         </div>
                 </div> 
-                <!-- <form method='post' id="popup-form">
-                    {% csrf_token %}
-                    <button class="button btn-action" type="submit" value="popup">BLAAAAAAAAAAAAA</button>
-                </form> -->
                 
             </div>
 
@@ -198,6 +200,15 @@
     <!-- JavaScript Block -->
     <script>
 
+        // Safari Djago problem is solved!
+        setInterval(function() {
+            $('.safe-overlay').addClass("invisible")
+        }, 50)
+
+        $('form').submit(function(e){
+            
+            $('.loading-indicator').addClass('visible');
+        });
 
         var left_highlights = "{{ highlight_left_txt }}".split("||")
         var right_highlights = "{{ highlight_right_txt }}".split("||")

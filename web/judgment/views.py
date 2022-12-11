@@ -71,7 +71,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
 
             prev_judge.left_response = left_response
             prev_judge.right_response = right_response
-            prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
+            # prev_judge.best_answers = prev_judge.parent.best_answers if prev_judge.parent else ""
 
             prev_judge.save()
 
@@ -202,7 +202,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 user=user,
                 task=prev_judge.task,
                 before_state=after_state,
-                parent=prev_judge
+                parent=prev_judge,
+                best_answers = prev_judge.best_answers
             )
 
         user.latest_judgment = judgement
