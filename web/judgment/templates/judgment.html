@@ -125,7 +125,21 @@
                         {{doc_left.url}}
                     </a>
                 </h2>
-                <!-- </div> -->
+
+
+                <div class="toggle-button-cover">
+                    <div class="button-cover">
+                        Hide Highlight
+                      <div class="button-layout r" id="button-1">
+                        <input type="checkbox" class="checkbox" id="full_left_checkbox" />
+                        <div class="knobs"></div>
+                        <div class="layer"></div>
+                      </div>
+                    </div>
+                </div>
+                <!-- <button class="button highlight_button" id="full_doc_left">
+                    <h3>Full Document</h3>
+                </button> -->
                 {% autoescape off %}
                 <div class="document-content"><p id="left-doc" class="editable-doc">{{left_txt}}</p></div>
                 {% endautoescape %} 
@@ -140,13 +154,24 @@
 
             <div class="document-right" id="drag-right">
                 <!-- <div> -->
+
                 <h2 class="document-url">
                     <p class="new-document-label">
                         {{new_right}} 
                     </p>
                     <a href="{{doc_right.url}}" target=”_blank” rel="noopener noreferrer">{{doc_right.url}}</a>
                 </h2>
-                <!-- </div> -->
+
+                <div class="toggle-button-cover">
+                    <div class="button-cover">
+                        Hide Highlight
+                      <div class="button-layout r" id="button-1">
+                        <input type="checkbox" class="checkbox" id="full_right_checkbox" />
+                        <div class="knobs"></div>
+                        <div class="layer"></div>
+                      </div>
+                    </div>
+                </div>
                 {% autoescape off %}
                 <div class="document-content"><p id="right-doc" class="editable-doc">{{right_txt}}</p></div>
                 {% endautoescape %} 
@@ -203,7 +228,7 @@
 
     <!-- JavaScript Block -->
     <script>
-
+        
         function getCookie(name) {
             let cookieValue = null;
             if (document.cookie && document.cookie !== "") {
@@ -295,14 +320,42 @@
         }
         
         // Step 3 - apply highlight keywords to the left and right documents
-        $("#left-doc").html(
-            get_cooked_text($("#left-doc").text(), tags_dic, left_highlight_list)
-        );
+        var left_summary_mode = false
+        if ("{{new_left}}" === ''){
+            console.log("ah anine")
+            console.log(left_highlight_list)
+            var full_text = $("#left-doc").text()
+            var highlighted_text = ""
+            for(let i=0; i < left_highlight_list.length; i++){
+                console.log("miay inha kir khar?")
+                console.log((left_highlight_list[i][0], left_highlight_list[i][1]) )
+                highlighted_text = highlighted_text  + 
+                    full_text.substring(
+                        left_highlight_list[i][0], 
+                        left_highlight_list[i][1]) + "\n\n"
+            }
+            console.log(highlighted_text)
+            left_summary_mode = true
+            console.log(
+                get_cooked_full_text(highlighted_text, tags_dic, []))
+            console.log("1111111")
+                $("#left-doc").html(highlighted_text, tags_dic);
+
+        }else{
+
+            // $("#left-doc").html(
+            //     get_cooked_full_text($("#left-doc").text(), tags_dic, left_highlight_list)
+            // );
+        }
             
         $("#right-doc").html(
-            get_cooked_text($("#right-doc").text(), tags_dic, right_highlight_list)
+            get_cooked_full_text($("#right-doc").text(), tags_dic, right_highlight_list)
         );
 
+        $("#full_right_checkbox").click( function(e){
+            console.log("Sad Mahsa")
+            console.log(document.getElementById("full_right_checkbox").checked)
+        })
 
         // Step 4 - As soon as user click on any button in judgment page, 
         // all mouse highlight doucments and font-size will be sent to backend 
@@ -404,7 +457,7 @@
             }
             
             textarea.html(
-                get_cooked_text(textarea.text(), tags_dic, highlight_list)
+                get_cooked_full_text(textarea.text(), tags_dic, highlight_list)
             );
         }
 
@@ -473,7 +526,12 @@
                 tagData.value = tags[0];
                 const value = tagData.value +"|"+tagData.color
             
-                manage_tags("#left-doc", value, 'add', left_highlight_list)
+                if (left_summary_mode ===false){
+                    manage_tags("#left-doc", value, 'add', left_highlight_list)
+                }else{
+                    manage_tags("#left-doc", value, 'add', [])
+                }
+                console.log("2222222222")
                 manage_tags("#right-doc", value, 'add', right_highlight_list)
             } else{
                 tagData.color = getTagColor(tags[0]);
@@ -505,6 +563,7 @@
             )
             .then(data => {
                 manage_tags("#left-doc", value, 'add', left_highlight_list)
+                console.log("33333")
                 manage_tags("#right-doc", value, 'add', right_highlight_list)
             });
         })
@@ -530,6 +589,7 @@
             .then(response => response.json())
             .then(data => {
                 manage_tags("#left-doc", value, 'del', left_highlight_list)
+                console.log("444444")
                 manage_tags("#right-doc", value, 'del', right_highlight_list)
             });
         })
@@ -561,11 +621,11 @@
                 var cooked_text = ""
                 if(doc=="#right-doc"){
                     right_highlight_list = update_highlight_list(right_highlight_list, endpos-selectedText.length, endpos)
-                    cooked_text = get_cooked_text(element.parentNode.textContent, tags_dic, right_highlight_list)
+                    cooked_text = get_cooked_full_text(element.parentNode.textContent, tags_dic, right_highlight_list)
                 }
                 if(doc=="#left-doc"){
                     left_highlight_list = update_highlight_list(left_highlight_list, endpos-selectedText.length, endpos)
-                    cooked_text = get_cooked_text(element.parentNode.textContent, tags_dic, left_highlight_list)
+                    cooked_text = get_cooked_full_text(element.parentNode.textContent, tags_dic, left_highlight_list)
                 }
                 $(doc).html(cooked_text)   
                 // copy selected text in the clipboard

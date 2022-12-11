@@ -213,8 +213,7 @@ function get_flat_html_elements(highlights, tags){
 }
 
 
-
-function get_cooked_text(text, raw_tags, flat_highlights){
+function get_cooked_full_text(text, raw_tags, flat_highlights){
 
     var flat_tags = []
     if(Object.keys(raw_tags).length != 0){
