@@ -36,6 +36,11 @@
 </head>
 <body>
     
+    <div class="loading-indicator"> 
+        <div class="lds-ring"><div></div><div></div><div></div><div></div>
+        </div> 
+        Judgment is loading ...
+    </div>
     
     <div class="main">
         <div class="header">
@@ -56,6 +61,7 @@
                                 <button class="button btn-action" type="submit" value="left" name="left">Left</button>
                                 <button class="button btn-action" type="submit" value="equal" name="equal">Equal</button>
                                 <button class="button btn-action" type="submit" value="right" name="right">Right</button>
+                                <div class="safe-overlay"></div>
                             </form>  
                         </div>
                 </div> 
@@ -203,6 +209,17 @@
 
     <!-- JavaScript Block -->
     <script>
+
+        // Safari Djago problem is solved!
+        setInterval(function() {
+            $('.safe-overlay').addClass("invisible")
+        }, 50)
+
+        $('form').submit(function(e){
+            
+            $('.loading-indicator').addClass('visible');
+        });
+
 
         function getCookie(name) {
             let cookieValue = null;
