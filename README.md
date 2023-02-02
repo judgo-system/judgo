@@ -1,8 +1,34 @@
-# judgo
+<div align="center"><p>
+    <a href="https://github.com/judgo-system/judgo/releases/latest">
+      <img alt="Latest release" src="https://img.shields.io/github/v/release/judgo-system/judgo" />
+    </a>
+    <a href="https://github.com/judgo-system/judgo/pulse">
+      <img alt="Last commit" src="https://img.shields.io/github/last-commit/judgo-system/judgo"/>
+    </a>
+    <a href="https://github.com/judgo-system/judgo/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/judgo-system/judgo?style=flat-square&logo=MIT&label=License" alt="License"
+    />
+    </a>
+</p>
+
+</div>
+
+
+![Overview judgo](./figures/judgo-overview.png)
+
+## Introduction
+
+> For Python >= 3.8
 
 A tool to rank documents for each query based on users' preference which has been used for TREC 2022 Health Misinformation Track!
 
-## Install Application and Test with sample data
+Main features:
+ - Supported by a novel preference judgment algorithm.
+ - Flexible configuration.
+ - Several UI features for acceleration of making decision.
+ 
+ 
+## Install
 
 ### 1. Without Docker
 
