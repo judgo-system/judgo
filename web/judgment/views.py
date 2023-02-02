@@ -247,15 +247,27 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
                 prev_judge.task.save()
                 prev_judge.save()
 
+            #     return HttpResponseRedirect(
+            #     reverse_lazy(
+            #         'judgment:judgment', 
+            #         kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+            #     )
+            # )
                 return HttpResponseRedirect(
-                reverse_lazy(
-                    'judgment:judgment', 
-                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
-                )
-            )
+                    reverse_lazy(
+                        'core:task_results', 
+                        kwargs = {"user_id" : user.id, "task_id": prev_judge.task.id}
+                    )
+                ) 
 
         if prev_judge.is_round_done:
             logger.info(f'One round is finished! you are going to the next step!')
+            return HttpResponseRedirect(
+                reverse_lazy(
+                    'core:single_round_results', 
+                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+                )
+            )
 
         # for deep learning trec we want a test judgment feature
         prev_judge, is_test = JudgmentView.get_fake_test_judgment(user, prev_judge)

@@ -5,10 +5,13 @@ from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.conf import settings
+
+
 from .models import Task
 from judgment.models import Judgment
 from topic.models import Topic
 from user.models import User
+from document.models import Document
 from interfaces import pref
 
 logger = logging.getLogger(__name__)
@@ -86,3 +89,88 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                 )
             )
   
+
+
+class SingleRoundResultsView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'single_round_results.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SingleRoundResultsView, self).get_context_data(**kwargs)
+
+        prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
+        context['question_content'] = prev_judge.task.topic.title
+        answer_list = prev_judge.best_answers.split('--')[-1].split('|')[:-1]
+        documets = []
+        for answer in answer_list:
+            documets.append(Document.objects.get(uuid=answer, topics=prev_judge.task.topic))
+            
+        context['documents'] = documets
+        return context
+
+
+    def post(self, request, *args, **kwargs):
+
+        user = User.objects.get(id=request.user.id)
+        prev_judge = user.latest_judgment
+
+        if 'no' in request.POST:
+            return HttpResponseRedirect(reverse_lazy('core:home'))
+
+        elif 'prev' in request.POST: 
+            judgement = user.latest_judgment
+            # remove the best answer so far in case of changes
+            prev_judge.task.best_answers = '--'.join(x for x in prev_judge.task.best_answers.split("--")[:-1])
+            prev_judge.task.save()
+
+        if 'yes' in request.POST:
+            judgement = Judgment.objects.create(
+                    user=user,
+                    task=prev_judge.task,
+                    before_state=prev_judge.after_state,
+                    parent=prev_judge,
+                    best_answers = prev_judge.best_answers
+                )
+            user.latest_judgment = judgement
+            user.save()
+        return HttpResponseRedirect(
+                reverse_lazy(
+                    'judgment:judgment', 
+                    kwargs = {"user_id" : user.id, "judgment_id": judgement.id}
+                )
+        ) 
+
+
+
+class TaskResultsView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'task_results.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(TaskResultsView, self).get_context_data(**kwargs)
+
+        task = Task.objects.get(id=self.kwargs['task_id'])
+        context['question_content'] = task.topic.title
+        
+        answer_list = {}
+        for i, answer in enumerate(task.best_answers.split('--')[1:]):
+            answer_list[i+1] = answer
+         
+        for k, v in answer_list.items():
+            documets = []
+
+            for doc in v.split('|')[:-1]:    
+               documets.append(Document.objects.get(uuid=doc, topics=task.topic))
+
+            answer_list[k] = documets        
+        
+        context['answer_list'] = answer_list
+        return context
+
+
+
+    def post(self, request, *args, **kwargs):
+
+        return HttpResponseRedirect(
+                reverse_lazy(
+                    'core:home', 
+                )
+        ) 
