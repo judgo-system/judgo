@@ -1,7 +1,9 @@
+<p align="center">
+  <img width=200 src="./figures/icon.png">
+</p>
+
+
 <div align="center"><p>
-    <a href="https://github.com/judgo-system/judgo/releases/latest">
-      <img alt="Latest release" src="https://img.shields.io/github/v/release/judgo-system/judgo" />
-    </a>
     <a href="https://github.com/judgo-system/judgo/pulse">
       <img alt="Last commit" src="https://img.shields.io/github/last-commit/judgo-system/judgo"/>
     </a>
@@ -14,13 +16,14 @@
 </div>
 
 
-![Overview judgo](./figures/judgo-overview.png)
+![](./figures/judgo-overview.png)
+
 
 ## Introduction
 
 > For Python >= 3.8
 
-A tool to rank documents for each query based on users' preference which has been used for TREC 2022 Health Misinformation Track!
+JUDGO is a python framework for ranking documents based on users' preference and has been used in [TREC 2022 Health Misinformation Track](https://trec-health-misinfo.github.io).
 
 Main features:
  - Supported by a novel preference judgment algorithm.
@@ -28,6 +31,10 @@ Main features:
  - Several UI features for acceleration of making decision.
  
  
+## Creators
+
+This framework has been designed and developed by the [Data System Group](https://uwaterloo.ca/data-systems-group/) at [University of Waterloo](https://uwaterloo.ca/). 
+
 ## Install
 
 ### 1. Without Docker
