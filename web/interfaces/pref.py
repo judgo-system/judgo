@@ -143,8 +143,8 @@ class pref(object):
         self.__equiv = []
 
         self.pref_version = os.getenv("PREF_ALGORITHM")
-        total_len = self.__t.length()
-        self.total_judgment = (total_len-1) + (k-1) * math.floor(math.log2(total_len-1)) 
+        # total_len = self.__t.length()
+        # self.total_judgment = (total_len-1) + (k-1) * math.floor(math.log2(total_len-1)) 
         self.cur_judgment = 0
         
 
@@ -263,7 +263,7 @@ def get_documents(pref_obj):
         return pref_obj.request() 
     return None
 
-def is_judgment_finished(pref_obj):
+def is_round_completed(pref_obj):
     """
     Args:
 
@@ -275,7 +275,7 @@ def is_judgment_finished(pref_obj):
     return pref_obj.done()
         
 
-def is_judgment_completed(pref_obj):
+def is_session_completed(pref_obj):
     """
     Args:
 
@@ -339,8 +339,9 @@ def get_size(pref_obj):
 def get_progress_count(pref_obj):
 
     pref_obj = pickle.loads(pref_obj)
-    # progress = (100, round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))
-    # progress = (100 - round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))f
-    # return "{:.2f}".format(progress)
-    progress = max(1, pref_obj.total_judgment - pref_obj.cur_judgment + 1)
-    return progress
+#     # progress = (100, round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))
+#     # progress = (100 - round(100 * (pref_obj.cur_judgment / pref_obj.total_judgment), 2))f
+#     # return "{:.2f}".format(progress)
+#     progress = max(1, pref_obj.total_judgment - pref_obj.cur_judgment + 1)
+    # return progress
+    return pref_obj.length()

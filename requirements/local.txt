@@ -1,5 +1,5 @@
 dj-database-url==0.5.0
-Django==3.2
+django==3.2
 django-allauth==0.41.0
 django-autocomplete-light==3.5.1
 django-braces==1.14.0

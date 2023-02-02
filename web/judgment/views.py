@@ -227,8 +227,8 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
         prev_judge.after_state = after_state
         prev_judge.save()
 
-        # check if this round of judgment is finished or not!
-        while pref.is_judgment_finished(after_state):
+        # check if the current round of judgment is finished or not!
+        while pref.is_round_completed(after_state):
 
             prev_judge.best_answers = JudgmentView.append_answer(after_state, prev_judge)
             prev_judge.task.num_ans = len(prev_judge.best_answers.split("|")) - 1
@@ -240,7 +240,7 @@ class JudgmentView(LoginRequiredMixin, generic.TemplateView):
             prev_judge.save()
 
     
-            if pref.is_judgment_completed(after_state) or prev_judge.task.num_ans >= settings.TOP_DOC_THRESHOULD:
+            if pref.is_session_completed(after_state) or prev_judge.task.num_ans >= settings.TOP_DOC_THRESHOULD:
                 prev_judge.is_complete = True
                 prev_judge.task.is_completed = True
                 prev_judge.task.best_answers = prev_judge.best_answers
