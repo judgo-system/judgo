@@ -47,48 +47,45 @@ class Home(LoginRequiredMixin, generic.TemplateView):
     def post(self, request, *args, **kwargs):
 
         if "selected_question" in self.request.POST: 
-            return self.start_judgment(self.request.POST["selected_question"])
+            task_id = self.request.POST["selected_question"]
         
+            task = Task.objects\
+                .get(id=task_id)
+            topic = Topic.objects.get(id=task.topic.id)
 
-    def start_judgment(self, task_id):
+            prev_judge = None
+            try:
+                prev_judge = Judgment.objects.filter(
+                        user = self.request.user.id,
+                        task=task.id
+                ).order_by('id').latest('id')
+                state = prev_judge.before_state
+                if prev_judge.after_state:
+                    state = prev_judge.after_state
+            except Exception as e:
+                logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
+                state = pref.create_new_pref_obj(topic, settings.TOP_DOC_THRESHOULD)
+                        
+            if not prev_judge or prev_judge.is_complete:
 
-        task = Task.objects\
-            .get(id=task_id)
-        topic = Topic.objects.get(id=task.topic.id)
+                prev_judge = Judgment.objects.create(
+                        user=self.request.user,
+                        task=task,
+                        before_state=state,
+                        parent=prev_judge,
+                        best_answers = ""
+                    )
+            user = User.objects.get(id=self.request.user.id)
+            user.latest_judgment = prev_judge
+            user.save()
 
-        prev_judge = None
-        try:
-            prev_judge = Judgment.objects.filter(
-                    user = self.request.user.id,
-                    task=task.id
-            ).order_by('id').latest('id')
-            state = prev_judge.before_state
-            if prev_judge.after_state:
-                state = prev_judge.after_state
-        except Exception as e:
-            logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
-            state = pref.create_new_pref_obj(topic, settings.TOP_DOC_THRESHOULD)
-                    
-        if not prev_judge or prev_judge.is_complete:
-
-            prev_judge = Judgment.objects.create(
-                    user=self.request.user,
-                    task=task,
-                    before_state=state,
-                    parent=prev_judge,
-                    best_answers = ""
+            return HttpResponseRedirect(
+                    reverse_lazy(
+                        'judgment:judgment', 
+                        kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+                    )
                 )
-        user = User.objects.get(id=self.request.user.id)
-        user.latest_judgment = prev_judge
-        user.save()
-
-        return HttpResponseRedirect(
-                reverse_lazy(
-                    'judgment:judgment', 
-                    kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
-                )
-            )
-  
+    
 
 
 class SingleRoundResultsView(LoginRequiredMixin, generic.TemplateView):
@@ -165,12 +162,3 @@ class TaskResultsView(LoginRequiredMixin, generic.TemplateView):
         context['answer_list'] = answer_list
         return context
 
-
-
-    def post(self, request, *args, **kwargs):
-
-        return HttpResponseRedirect(
-                reverse_lazy(
-                    'core:home', 
-                )
-        ) 

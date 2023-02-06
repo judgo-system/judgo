@@ -12,11 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 import os
-# import environ
+import environ
 
 # Load operating system environment variables and then prepare to use them
-# env = environ.Env()
-# environ.Env.read_env()
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = env('SECRET_KEY', default="secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -41,11 +41,10 @@ INSTALLED_APPS = [
     'dal_select2',
     
     'django.contrib.admin',
-
+    'django_nose',
     'crispy_forms',  # Form layouts
     'allauth',  # registration
     'allauth.account',  # registration
-
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -106,12 +105,12 @@ WSGI_APPLICATION = 'web.wsgi.application'
 DATABASES = {
 
     "default": {
-        "ENGINE":  os.getenv("ENGINE"),
-        "NAME": os.getenv("NAME"),
-        "USER": os.getenv("USER"),
-        "PASSWORD": os.getenv("PASSWORD"),
-        "HOST": os.getenv("HOST"),
-        "PORT": os.getenv("PORT"),
+        "ENGINE":  env("ENGINE", default="django.db.backends.postgresql"),
+        "NAME": env("NAME", default="django_test"),
+        "USER": env("USER", default="postgres"),
+        "PASSWORD": env("PASSWORD", default="postgres"),
+        "HOST": env("HOST", default="localhost"),
+        "PORT": env("PORT", default="5432"),
     }
 }
 
@@ -257,8 +256,17 @@ STATICFILES_FINDERS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Version of Application [deep_learning, health_misinformation]
-IS_JUDGMENT_TEST_EXIST = int(os.getenv('IS_JUDGMENT_TEST_EXIST'))
-JUDGMENT_TEST_THRESHOULD = int(os.getenv('JUDGMENT_TEST_THRESHOULD'))
-TOP_DOC_THRESHOULD = int(os.getenv('TOP_DOC_THRESHOULD'))
-True
+IS_JUDGMENT_TEST_EXIST = int(env('IS_JUDGMENT_TEST_EXIST', default="0"))
+JUDGMENT_TEST_THRESHOULD = int(env('JUDGMENT_TEST_THRESHOULD', default="5"))
+TOP_DOC_THRESHOULD = int(env('TOP_DOC_THRESHOULD', default="10"))
+
+
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on different apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=core,judgment,topic,user,document',
+]

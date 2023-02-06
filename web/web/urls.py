@@ -23,7 +23,6 @@ urlpatterns = [
     path('', include('core.urls', namespace='core')),
     # path('profile', include('user.profile', namespace='core')),
 
-    path('topic/', include('topic.urls', namespace='topic')),
     path('judgment/', include('judgment.urls', namespace='judgment')),
     path('admin/', admin.site.urls),
 

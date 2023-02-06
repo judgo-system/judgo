@@ -20,11 +20,7 @@
     
     <div class="main">
         <div class="header">
-        <form method='post'>
-            {% csrf_token %}
-                 
-
-        </form> 
+                
             <div class="question-header">
                 <p>{{ question_content }}</p>
             </div>
@@ -53,8 +49,7 @@
             </div>
             <div class="question">
                 <p>Back to homepage</p>
-                <form method='post' >
-                    {% csrf_token %}
+                <a href="{% url 'core:home' %}" >
                     <div class="answer-box">
                         <button class="button" type="submit" value="home" name="home">Home</button>
                     </div>
