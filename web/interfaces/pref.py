@@ -257,7 +257,6 @@ def get_documents(pref_obj):
     Returns:
         
     """
-    
     pref_obj = pickle.loads(pref_obj)
     if not pref_obj.done():
         return pref_obj.request() 
