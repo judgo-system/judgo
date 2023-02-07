@@ -15,9 +15,14 @@
 
 </div>
 
-
-![](./figures/judgo-overview.png)
-
+<div align="center">
+	<a href="https://judgo-system.github.io/">Introduction</a>
+  <span> • </span>
+    	<a href="https://judgo-system.github.io/install.html">Install</a>
+  <span> • </span>
+       	<a href="https://judgo-system.github.io/usage.html">Usage</a>
+  <p></p>
+</div>
 
 ## Introduction
 
@@ -25,54 +30,22 @@
 
 JUDGO is a python framework for ranking documents based on users' preference and has been used in [TREC 2022 Health Misinformation Track](https://trec-health-misinfo.github.io).
 
-Main features:
- - Supported by a novel preference judgment algorithm.
- - Flexible configuration.
- - Several UI features for acceleration of making decision.
+<h4>Main features:</b></h4>
+							<ul>
+								<li><b>Novel preference judgment algorithm</b>: The system is supported by a proprietary algorithm that enables it to accurately rank documents based on user preferences.</li>
+								<li><b>Enriched UI features</b>: The system has a user-friendly interface with advanced features that accelerate the decision-making process.</li>
+								<li><b>User behavior tracking</b>: The system tracks user behavior to gain a deeper understanding of their preferences and make more accurate recommendations.</li>
+								<li><b>Flexible configuration</b>: The system has a flexible configuration that allows administrators to customize the settings and parameters to meet the specific needs of their organization.</li>
+								<li><b>Crowdsourcing support</b>: The system is designed to be used in crowdsourcing settings, allowing multiple users to provide input and rankings.</li>
+							</ul> 
  
- 
+
+## Install 
+Visit <a href="https://judgo-system.github.io/">JUDGO</a> website for usage and installation instruction. 
+
+
 ## Creators
 
 This framework has been designed and developed by the [Data System Group](https://uwaterloo.ca/data-systems-group/) at [University of Waterloo](https://uwaterloo.ca/). 
-
-## Install
-
-### 1. Without Docker
-
-- Step 1: Create an activate a new virtual environment and run:
-
-```
-pip install -r requirements/local.txt
-```
-
-- Step 2:  Change `judgo.env` file according to your own settings
-
-- Step 3: Execute the following file to setup and run application for the first time.
-
-```
-./setup_judgo.sh
-```
-If you previously run this file and you need to run the system with the previous setting, execute ```./run_judgo.sh```
-
-- Step 4: Open http://0.0.0.0:8000/
-
-
-
-
-
-### 2. with Docker
-
- - Step 0: Before install this project make sure your sysytem has `docker` and `docker-compose` installed.
-
- - Step 1:  Change `docker/.web` file according to your own settings
-
- - Step 2: Run the following command.
-
-  ```
-  docker-compose up --build -d 
-  ```
-
-  Step 3- Open http://0.0.0.0:8000/
-
 
 
