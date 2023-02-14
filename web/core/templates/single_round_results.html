@@ -39,14 +39,27 @@
             
             <h2>Best answers in this round!</h2>
             <div class="best-answer-list">
-            {% for document in documents %}
+                {% for k, documents in round_answer_list.items %}
+                    <div class="level-content">
+                        <p>Grade {{ k }}</p>
+                    </div>
+                    {% for document in documents %}
+                        <div>
+                            <button class="collapsible"> {{ document.uuid }}</button>
+                            <div class="content">
+                            <p>{{ document.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            <!-- {% for document in documents %}
                 <div>
                     <button class="collapsible"> {{ document.uuid }}</button>
                     <div class="content">
                     <p>{{ document.content }}</p>
                     </div>
                 </div>
-            {% endfor %}
+            {% endfor %} -->
                 
             </div>
             <div class="question">

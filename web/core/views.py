@@ -53,36 +53,36 @@ class Home(LoginRequiredMixin, generic.TemplateView):
                 .get(id=task_id)
             topic = Topic.objects.get(id=task.topic.id)
 
-            prev_judge = None
+            judge = None
             try:
-                prev_judge = Judgment.objects.filter(
+                judge = Judgment.objects.filter(
                         user = self.request.user.id,
                         task=task.id
                 ).order_by('id').latest('id')
-                state = prev_judge.before_state
-                if prev_judge.after_state:
-                    state = prev_judge.after_state
+                state = judge.before_state
+                if judge.after_state:
+                    state = judge.after_state
             except Exception as e:
                 logger.warning(f"There is no previous judgment for topic={topic.title} and user={self.request.user.username}")
                 state = pref.create_new_pref_obj(topic, settings.TOP_DOC_THRESHOULD)
                         
-            if not prev_judge or prev_judge.is_complete:
+            if not judge or judge.is_complete:
 
-                prev_judge = Judgment.objects.create(
+                judge = Judgment.objects.create(
                         user=self.request.user,
                         task=task,
                         before_state=state,
-                        parent=prev_judge,
+                        parent=judge,
                         best_answers = ""
                     )
             user = User.objects.get(id=self.request.user.id)
-            user.latest_judgment = prev_judge
+            user.latest_judgment = judge
             user.save()
 
             return HttpResponseRedirect(
                     reverse_lazy(
                         'judgment:judgment', 
-                        kwargs = {"user_id" : user.id, "judgment_id": prev_judge.id}
+                        kwargs = {"user_id" : user.id, "judgment_id": judge.id}
                     )
                 )
     
@@ -94,21 +94,39 @@ class SingleRoundResultsView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(SingleRoundResultsView, self).get_context_data(**kwargs)
 
-        prev_judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
-        context['question_content'] = prev_judge.task.topic.title
-        answer_list = prev_judge.best_answers.split('--')[-1].split('|')[:-1]
-        documets = []
-        for answer in answer_list:
-            documets.append(Document.objects.get(uuid=answer, topics=prev_judge.task.topic))
-            
-        context['documents'] = documets
+        judge = Judgment.objects.get(id=self.kwargs['judgment_id'])
+        context['question_content'] = judge.task.topic.title
+        
+        parent_judge = judge.parent
+        
+        complete_round_number = len(judge.best_answers.split('--'))
+        if parent_judge:
+            prev_round_number = len(parent_judge.best_answers.split("--"))
+            complete_round_number -= prev_round_number
+        
+
+        answer_list = {}
+        for answer in judge.best_answers.split('--')[-complete_round_number:]:
+            answer_list[prev_round_number] = answer
+            prev_round_number+=1
+        
+        for k, v in answer_list.items():
+            documets = []
+
+            for doc in v.split('|')[:-1]:    
+               documets.append(Document.objects.get(uuid=doc, topics=judge.task.topic))
+
+            answer_list[k] = documets        
+        
+        print(answer_list)
+        context['round_answer_list'] = answer_list
         return context
 
 
     def post(self, request, *args, **kwargs):
 
         user = User.objects.get(id=request.user.id)
-        prev_judge = user.latest_judgment
+        judge = user.latest_judgment
 
         if 'no' in request.POST:
             return HttpResponseRedirect(reverse_lazy('core:home'))
@@ -116,16 +134,16 @@ class SingleRoundResultsView(LoginRequiredMixin, generic.TemplateView):
         elif 'prev' in request.POST: 
             judgement = user.latest_judgment
             # remove the best answer so far in case of changes
-            prev_judge.task.best_answers = '--'.join(x for x in prev_judge.task.best_answers.split("--")[:-1])
-            prev_judge.task.save()
+            judge.task.best_answers = '--'.join(x for x in judge.task.best_answers.split("--")[:-1])
+            judge.task.save()
 
         if 'yes' in request.POST:
             judgement = Judgment.objects.create(
                     user=user,
-                    task=prev_judge.task,
-                    before_state=prev_judge.after_state,
-                    parent=prev_judge,
-                    best_answers = prev_judge.best_answers
+                    task=judge.task,
+                    before_state=judge.after_state,
+                    parent=judge,
+                    best_answers = judge.best_answers
                 )
             user.latest_judgment = judgement
             user.save()
