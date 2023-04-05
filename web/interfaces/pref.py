@@ -197,7 +197,6 @@ class pref(object):
             rest = rest.cdr()
             if item == one.caar():
                 outcome = cons(one.car(), cons(two, one.cdr()))
-                # self.__t = rest.append(outcome)
             elif item == two.caar():
                 outcome = cons(two.car(), cons(one, two.cdr()))
             if self.pref_version == "v.1":
@@ -213,7 +212,6 @@ class pref(object):
             two = rest.car()
             secondary = two.car()
             rest = rest.cdr()
-            # self.__t = rest.append(one.concat(two.cdr()))
             x = primary.car()
             y = secondary.car()
             if x != y:
@@ -223,7 +221,7 @@ class pref(object):
                 self.__t = rest.append(one.concat(two.cdr()))
             elif self.pref_version == "v.2":
                 self.__t = cons(one.concat(two.cdr()), rest)
-
+            
     def pop(self):
         if not self.done() or self.empty():
             return
