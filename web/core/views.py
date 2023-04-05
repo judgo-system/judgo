@@ -1,4 +1,3 @@
-import logging
 from braces.views import LoginRequiredMixin
 
 from django.views import generic
@@ -11,7 +10,6 @@ from topic.models import Topic
 from user.models import User
 from interfaces import pref, add_log
 
-# logger = logging.getLogger(__name__)
 
 class Home(LoginRequiredMixin, generic.TemplateView):
     template_name = 'home.html'
@@ -31,7 +29,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
         else:
             context["message"] = 'There is no topic to review right now.'      
 
-        # logger.info(f"User = '{self.request.user.username}' is at Home page")
         add_log.add_log_entry(self.request.user, f"User = '{self.request.user.username}' is at Home page")
 
         return context
@@ -57,7 +54,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
 
         prev_judge = None
         try:
-            # logger.info(f"Topic = '{topic.title}' is being judged by user = '{self.request.user.username}'")
             add_log.add_log_entry(self.request.user, f"Topic_id = '{topic.uuid}', Topic = '{topic.title}' is being judged by user = '{self.request.user.username}'")
             prev_judge = Judgment.objects.filter(
                     user = self.request.user.id,
@@ -67,7 +63,6 @@ class Home(LoginRequiredMixin, generic.TemplateView):
             if prev_judge.after_state:
                 state = prev_judge.after_state
         except Exception as e:
-            # logger.warning(f"There is no previous judgment for topic = '{topic.title}' by user = '{self.request.user.username}'")
             add_log.add_log_entry(self.request.user, f"There is no previous judgment for topic_id = '{topic.uuid}', topic = '{topic.title}' by user = '{self.request.user.username}'")
             state = pref.create_new_pref_obj(topic)
                     
