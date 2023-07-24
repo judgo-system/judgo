@@ -51,8 +51,6 @@ This framework has been designed and developed by the [Data System Group](https:
 
 ## Paper
 
-https://dl.acm.org/doi/10.1145/3539618.3591801
-
 ```
 
 @inproceedings{10.1145/3539618.3591801,
