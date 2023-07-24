@@ -49,3 +49,30 @@ Visit <a href="https://judgo-system.github.io/">JUDGO</a> website for usage and 
 This framework has been designed and developed by the [Data System Group](https://uwaterloo.ca/data-systems-group/) at [University of Waterloo](https://uwaterloo.ca/). 
 
 
+## Paper
+
+https://dl.acm.org/doi/10.1145/3539618.3591801
+
+```
+
+@inproceedings{10.1145/3539618.3591801,
+author = {Seifikar, Mahsa and Phan Minh, Linh Nhi and Arabzadeh, Negar and Clarke, Charles L. A. and Smucker, Mark D.},
+title = {A Preference Judgment Tool for Authoritative Assessment},
+year = {2023},
+isbn = {9781450394086},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3539618.3591801},
+doi = {10.1145/3539618.3591801},
+abstract = {Preference judgments have been established as an effective method for offline evaluation of information retrieval systems with advantages to graded or binary relevance judgments. Graded judgments assign each document a pre-defined grade level, while preference judgments involve assessing a pair of items presented side by side and indicating which is better. However, leveraging preference judgments may require a more extensive number of judgments, and there are limitations in terms of evaluation measures. In this study, we present a new preference judgment tool called JUDGO, designed for expert assessors and researchers. The tool is supported by a new heap-like preference judgment algorithm that assumes transitivity and allows for ties. An earlier version of the tool was employed by NIST to determine up to the top-10 best items for each of the 38 topics for the TREC 2022 Health Misinformation track, with over 2,200 judgments collected. The current version has been applied in a separate research study to collect almost 10,000 judgments, with multiple assessors completing each topic. The code and resources are available at https://judgo-system.github.io.},
+booktitle = {Proceedings of the 46th International ACM SIGIR Conference on Research and Development in Information Retrieval},
+pages = {3100–3104},
+numpages = {5},
+keywords = {pairwise preference, offline evaluation, relevance judgment},
+location = {Taipei, Taiwan},
+series = {SIGIR '23}
+}
+
+
+```
+
